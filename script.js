@@ -1,55 +1,58 @@
-// પેજ લોડ થાય ત્યારે વિદ્યાર્થીઓનું લિસ્ટ ફેચ કરો
+// પેજ લોડ થાય ત્યારે LocalStorage માંથી ડેટા લાવો
 document.addEventListener('DOMContentLoaded', loadStudents);
 
-function loadStudents() {
-    fetch('/get_students')
-        .then(response => response.json())
-        .then(data => {
-            const tbody = document.getElementById('student-table-body');
-            tbody.innerHTML = '';
-            data.forEach(student => {
-                const row = `<tr>
-                    <td>${student.id}</td>
-                    <td>${student.name}</td>
-                    <td>${student.roll_no}</td>
-                    <td>${student.standard}</td>
-                </tr>`;
-                tbody.innerHTML += row;
-            });
-        })
-        .catch(error => console.error('Error loading students:', error));
+function getStudentsFromStorage() {
+    const students = localStorage.getItem('ambica_students');
+    return students ? JSON.parse(students) : [];
 }
 
-// નવો વિદ્યાર્થી ડેટાબેઝમાં એડ કરવા માટે
+function loadStudents() {
+    const students = getStudentsFromStorage();
+    const tbody = document.getElementById('student-table-body');
+    tbody.innerHTML = '';
+
+    students.forEach((student, index) => {
+        const row = `<tr>
+            <td>${index + 1}</td>
+            <td>${student.name}</td>
+            <td>${student.roll_no}</td>
+            <td>${student.standard}</td>
+        </tr>`;
+        tbody.innerHTML += row;
+    });
+}
+
 function addStudent() {
-    const name = document.getElementById('name').value.trim();
-    const roll_no = document.getElementById('roll_no').value.trim();
-    const standard = document.getElementById('standard').value.trim();
+    const nameInput = document.getElementById('name');
+    const rollNoInput = document.getElementById('roll_no');
+    const standardInput = document.getElementById('standard');
+
+    const name = nameInput.value.trim();
+    const roll_no = rollNoInput.value.trim();
+    const standard = standardInput.value.trim();
 
     if (!name || !roll_no || !standard) {
         alert('કૃપા કરીને બધી વિગતો ભરો.');
         return;
     }
 
-    fetch('/add_student', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            name: name,
-            roll_no: roll_no,
-            standard: standard
-        })
-    })
-    .then(response => response.json())
-    .then(result => {
-        // ઇનપુટ બોક્સ ખાલી કરવા
-        document.getElementById('name').value = '';
-        document.getElementById('roll_no').value = '';
-        document.getElementById('standard').value = '';
-        // લિસ્ટ ફરી રિફ્રેશ કરવું
-        loadStudents();
-    })
-    .catch(error => console.error('Error adding student:', error));
+    const students = getStudentsFromStorage();
+
+    // નવો વિદ્યાર્થી એરેમાં ઉમેરો
+    students.push({
+        name: name,
+        roll_no: roll_no,
+        standard: standard
+    });
+
+    // LocalStorage માં ડેટા સેવ કરો
+    localStorage.setItem('ambica_students', JSON.stringify(students));
+
+    // ઇનપુટ બોક્સ ખાલી કરો
+    nameInput.value = '';
+    rollNoInput.value = '';
+    standardInput.value = '';
+
+    // ટેબલ રિફ્રેશ કરો
+    loadStudents();
 }
