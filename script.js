@@ -1,34 +1,47 @@
 let currentRole = 'school';
 
-// --- લોગિન અને રોલ કંટ્રોલ ---
 function setRole(role) {
     currentRole = role;
     document.getElementById('role-school').classList.toggle('active', role === 'school');
     document.getElementById('role-student').classList.toggle('active', role === 'student');
 }
 
-function sendOTP() {
-    const mobile = document.getElementById('mobile-input').value.trim();
-    if (mobile.length !== 10) {
-        alert('કૃપા કરીને માન્ય 10 આંકડાનો મોબાઇલ નંબર લખો.');
+function loginWithCredentials() {
+    const user = document.getElementById('user-identifier').value.trim();
+    const pass = document.getElementById('user-password').value.trim();
+
+    if (!user || !pass) {
+        alert('Krupya kari username ane password lakhvo.');
         return;
     }
-    alert('મોબાઇલ નંબર ' + mobile + ' પર OTP મોકલવામાં આવ્યો છે: 1234 (ડેમો)');
-    document.getElementById('otp-input').style.display = 'block';
-    document.getElementById('verify-btn').style.display = 'inline-block';
+    initSession(currentRole);
+}
+
+function toggleOtpView() {
+    const otpSection = document.getElementById('otp-section');
+    otpSection.style.display = otpSection.style.display === 'none' ? 'block' : 'none';
+}
+
+function sendOTP() {
+    const mobile = document.getElementById('mobile-otp-input').value.trim();
+    if (mobile.length !== 10) {
+        alert('Maany 10 aankdano mobile number lakho.');
+        return;
+    }
+    alert('OTP tame lidhela number par mokli didho chhe: 1234 (Demo)');
 }
 
 function verifyOTP() {
-    const otp = document.getElementById('otp-input').value.trim();
+    const otp = document.getElementById('otp-verify-input').value.trim();
     if (otp === '1234') {
         initSession(currentRole);
     } else {
-        alert('ખોટો OTP! સાચો OTP દાખલ કરો.');
+        alert('Khoto OTP! 1234 nakho.');
     }
 }
 
 function loginWithGoogle() {
-    alert('Google Login સફળ થયું!');
+    alert('Google Login safal thayu!');
     initSession(currentRole);
 }
 
@@ -37,7 +50,6 @@ function initSession(role) {
     document.getElementById('main-content').style.display = 'block';
     document.getElementById('user-badge').innerText = role === 'school' ? 'School Admin' : 'Student Mode';
 
-    // જો વિદ્યાર્થી લોગિન હોય તો તેને ફક્ત લિસ્ટ જોવા મળશે (Add/Delete સંતાડવું)
     if (role === 'student') {
         document.getElementById('admin-panel').style.display = 'none';
         document.getElementById('action-header').style.display = 'none';
@@ -52,7 +64,7 @@ function logout() {
     location.reload();
 }
 
-// --- LOCALSTORAGE અને DELETE ફીચર ---
+// LocalStorage Records Handling
 function getStudents() {
     const data = localStorage.getItem('ambica_students');
     return data ? JSON.parse(data) : [];
@@ -65,7 +77,7 @@ function loadStudents() {
 
     students.forEach((student, index) => {
         const actionCell = currentRole === 'school' 
-            ? `<td><button class="btn-delete" onclick="deleteStudent(${index})">Delete</button></td>`
+            ? `<td><button class="btn-delete" onclick="deleteStudent(${index})">Delete</button></td>` 
             : '';
 
         const row = `<tr>
@@ -85,7 +97,7 @@ function addStudent() {
     const standard = document.getElementById('standard').value.trim();
 
     if (!name || !roll_no || !standard) {
-        alert('બધી માહિતી ભરવી ફરજિયાત છે.');
+        alert('Badhi vigato bharo.');
         return;
     }
 
@@ -100,42 +112,10 @@ function addStudent() {
 }
 
 function deleteStudent(index) {
-    if (confirm('શું તમે આ વિદ્યાર્થીનો રેકોર્ડ ડિલીટ કરવા માંગો છો?')) {
+    if (confirm('Aa record delete karvo chhe?')) {
         const students = getStudents();
-        students.splice(index, 1); // પસંદ કરેલો વિદ્યાર્થી લિસ્ટમાંથી દૂર કરો
+        students.splice(index, 1);
         localStorage.setItem('ambica_students', JSON.stringify(students));
         loadStudents();
     }
-}
-
-// --- AI CHATBOT INTEGRATION ---
-function toggleChat() {
-    const box = document.getElementById('chat-box');
-    box.style.display = box.style.display === 'none' ? 'flex' : 'none';
-}
-
-function sendChatMessage() {
-    const input = document.getElementById('chat-input');
-    const msg = input.value.trim();
-    if (!msg) return;
-
-    const chatBody = document.getElementById('chat-messages');
-    chatBody.innerHTML += `<div class="msg user-msg">${msg}</div>`;
-    input.value = '';
-    chatBody.scrollTop = chatBody.scrollHeight;
-
-    // Python સર્વર પર API કોલ
-    fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: msg })
-    })
-    .then(res => res.json())
-    .then(data => {
-        chatBody.innerHTML += `<div class="msg ai-msg">${data.reply}</div>`;
-        chatBody.scrollTop = chatBody.scrollHeight;
-    })
-    .catch(err => {
-        chatBody.innerHTML += `<div class="msg ai-msg">સર્વર કનેક્શનમાં ખામી છે.</div>`;
-    });
 }
