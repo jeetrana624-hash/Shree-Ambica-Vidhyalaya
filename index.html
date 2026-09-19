@@ -4,70 +4,84 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shree Ambica Vidhyalaya - Management & Portal</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- GitHub Pages mate sidho path -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- ૧. લોગિન મોડલ (3D કાર્ડ લુક) -->
+    <!-- Login Modal (3D Card) -->
     <div id="login-modal" class="modal-overlay">
         <div class="card-3d login-card">
             <h2>Shree Ambica Vidhyalaya</h2>
             <p class="tagline">School Portal Login</p>
 
             <div class="role-selector">
-                <button type="button" id="role-school" class="active" onclick="setRole('school')">સ્કૂલ એડમિન</button>
-                <button type="button" id="role-student" onclick="setRole('student')">વિદ્યાર્થી</button>
+                <button type="button" id="role-school" class="active" onclick="setRole('school')">School Admin</button>
+                <button type="button" id="role-student" onclick="setRole('student')">Student</button>
             </div>
 
-            <!-- મોબાઈલ OTP લોગિન -->
-            <div id="otp-section">
-                <input type="tel" id="mobile-input" placeholder="મોબાઇલ નંબર (10 આંકડા)">
-                <button type="button" class="btn-3d btn-primary" onclick="sendOTP()">Get OTP</button>
-                <input type="text" id="otp-input" placeholder="OTP દાખલ કરો" style="display:none; margin-top:10px;">
-                <button type="button" id="verify-btn" class="btn-3d btn-accent" style="display:none; margin-top:10px;" onclick="verifyOTP()">Login with OTP</button>
+            <!-- Standard Login Form -->
+            <div id="credential-login">
+                <input type="text" id="user-identifier" placeholder="Username / Mobile / Email" required>
+                <input type="password" id="user-password" placeholder="Password" required>
+                <button type="button" class="btn-3d btn-primary btn-block" onclick="loginWithCredentials()">Login</button>
             </div>
 
-            <div class="divider"><span>અથવા</span></div>
+            <div class="divider"><span>OR</span></div>
 
-            <!-- ગૂગલ લોગિન -->
-            <button type="button" class="btn-3d btn-google" onclick="loginWithGoogle()">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> Continue with Google
-            </button>
+            <!-- Alternate Login Options -->
+            <div class="alt-options">
+                <button type="button" class="btn-3d btn-secondary btn-block" onclick="toggleOtpView()">Login with Mobile OTP</button>
+
+                <!-- OTP Section (Hidden by default) -->
+                <div id="otp-section" style="display: none; margin-top: 10px;">
+                    <div style="display: flex; gap: 8px;">
+                        <input type="tel" id="mobile-otp-input" placeholder="10 Digit Mobile Number">
+                        <button type="button" class="btn-3d btn-primary" onclick="sendOTP()">Send OTP</button>
+                    </div>
+                    <input type="text" id="otp-verify-input" placeholder="Enter OTP (1234)">
+                    <button type="button" class="btn-3d btn-accent btn-block" onclick="verifyOTP()">Verify & Login</button>
+                </div>
+
+                <button type="button" class="btn-3d btn-google btn-block" onclick="loginWithGoogle()">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> Continue with Google
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- ૨. મેઇન એપ્લિકેશન કન્ટેનર -->
+    <!-- Main Portal Area -->
     <div class="container" id="main-content" style="display:none;">
         <header class="school-header card-3d">
             <div class="header-top">
                 <h1>Shree Ambica Vidhyalaya</h1>
                 <button class="btn-logout" onclick="logout()">Logout</button>
             </div>
-            <p class="subtitle">Management System & AI Portal (<span id="user-badge">Admin</span>)</p>
+            <p class="subtitle">Management System (<span id="user-badge">Admin</span>)</p>
         </header>
 
-        <!-- એડમિન માટે સ્ટુડન્ટ એડ ફોર્મ -->
+        <!-- Admin Registration Section -->
         <section id="admin-panel" class="card-3d form-section">
-            <h3>નવા વિદ્યાર્થીની નોંધણી</h3>
+            <h3>Navo Vidyarthi Add Karo</h3>
             <div class="form-container">
-                <input type="text" id="name" placeholder="વિદ્યાર્થીનું નામ">
-                <input type="text" id="roll_no" placeholder="રોલ નંબર">
-                <input type="text" id="standard" placeholder="ધોરણ">
+                <input type="text" id="name" placeholder="Student Name">
+                <input type="text" id="roll_no" placeholder="Roll Number">
+                <input type="text" id="standard" placeholder="Standard">
                 <button class="btn-3d btn-primary" onclick="addStudent()">Add Student</button>
             </div>
         </section>
 
-        <!-- વિદ્યાર્થીઓનું ટેબલ (Delete બટન સાથે) -->
+        <!-- Student Records Table -->
         <section class="card-3d table-section">
-            <h3>વિદ્યાર્થીઓની યાદી</h3>
+            <h3>Vidyarthio ni Yaadi</h3>
             <div class="table-responsive">
                 <table>
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>નામ</th>
-                            <th>રોલ નંબર</th>
-                            <th>ધોરણ</th>
+                            <th>Naam</th>
+                            <th>Roll No</th>
+                            <th>Dhoran</th>
                             <th id="action-header">Action</th>
                         </tr>
                     </thead>
@@ -76,7 +90,6 @@
             </div>
         </section>
 
-        <!-- ટીમ ક્રેડિટ્સ -->
         <footer class="card-3d credits-footer">
             <p><strong>Made by:</strong></p>
             <div class="team-members">
@@ -88,24 +101,7 @@
         </footer>
     </div>
 
-    <!-- ૩. AI ચેટબોટ ફ્લોટિંગ વિજેટ -->
-    <div class="chat-widget">
-        <button id="chat-toggle-btn" class="chat-badge-btn" onclick="toggleChat()">💬 AI Chat</button>
-        <div id="chat-box" class="chat-window card-3d" style="display:none;">
-            <div class="chat-header">
-                <strong>Ambica AI Assistant</strong>
-                <span class="close-chat" onclick="toggleChat()">✖</span>
-            </div>
-            <div id="chat-messages" class="chat-body">
-                <div class="msg ai-msg">નમસ્તે! હું અંબિકા વિદ્યાલયનો AI સહાયક છું. અભ્યાસ અંગે કંઈ પણ પૂછો.</div>
-            </div>
-            <div class="chat-footer">
-                <input type="text" id="chat-input" placeholder="સવાલ લખો..." onkeydown="if(event.key==='Enter') sendChatMessage()">
-                <button onclick="sendChatMessage()">Send</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <!-- GitHub Pages mate sidho script path -->
+    <script src="script.js"></script>
 </body>
 </html>
