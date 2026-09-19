@@ -3,45 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shree Ambica Vidhyalaya - Management System</title>
-      <link rel="stylesheet" href='style.css'>
+    <title>Shree Ambica Vidhyalaya - Management & Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-    <div class="container">
-        <!-- હેડર / સ્કૂલનું નામ -->
-        <header class="school-header">
-            <h1>Shree Ambica Vidhyalaya</h1>
-            <p class="subtitle">School Management System</p>
+    <!-- ૧. લોગિન મોડલ (3D કાર્ડ લુક) -->
+    <div id="login-modal" class="modal-overlay">
+        <div class="card-3d login-card">
+            <h2>Shree Ambica Vidhyalaya</h2>
+            <p class="tagline">School Portal Login</p>
+
+            <div class="role-selector">
+                <button type="button" id="role-school" class="active" onclick="setRole('school')">સ્કૂલ એડમિન</button>
+                <button type="button" id="role-student" onclick="setRole('student')">વિદ્યાર્થી</button>
+            </div>
+
+            <!-- મોબાઈલ OTP લોગિન -->
+            <div id="otp-section">
+                <input type="tel" id="mobile-input" placeholder="મોબાઇલ નંબર (10 આંકડા)">
+                <button type="button" class="btn-3d btn-primary" onclick="sendOTP()">Get OTP</button>
+                <input type="text" id="otp-input" placeholder="OTP દાખલ કરો" style="display:none; margin-top:10px;">
+                <button type="button" id="verify-btn" class="btn-3d btn-accent" style="display:none; margin-top:10px;" onclick="verifyOTP()">Login with OTP</button>
+            </div>
+
+            <div class="divider"><span>અથવા</span></div>
+
+            <!-- ગૂગલ લોગિન -->
+            <button type="button" class="btn-3d btn-google" onclick="loginWithGoogle()">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> Continue with Google
+            </button>
+        </div>
+    </div>
+
+    <!-- ૨. મેઇન એપ્લિકેશન કન્ટેનર -->
+    <div class="container" id="main-content" style="display:none;">
+        <header class="school-header card-3d">
+            <div class="header-top">
+                <h1>Shree Ambica Vidhyalaya</h1>
+                <button class="btn-logout" onclick="logout()">Logout</button>
+            </div>
+            <p class="subtitle">Management System & AI Portal (<span id="user-badge">Admin</span>)</p>
         </header>
 
-        <!-- વિદ્યાર્થી એડ કરવાનું ફોર્મ -->
-        <div class="form-container">
-            <input type="text" id="name" placeholder="વિદ્યાર્થીનું નામ" required>
-            <input type="text" id="roll_no" placeholder="રોલ નંબર" required>
-            <input type="text" id="standard" placeholder="ધોરણ (Class)" required>
-            <button onclick="addStudent()">Add Student</button>
-        </div>
+        <!-- એડમિન માટે સ્ટુડન્ટ એડ ફોર્મ -->
+        <section id="admin-panel" class="card-3d form-section">
+            <h3>નવા વિદ્યાર્થીની નોંધણી</h3>
+            <div class="form-container">
+                <input type="text" id="name" placeholder="વિદ્યાર્થીનું નામ">
+                <input type="text" id="roll_no" placeholder="રોલ નંબર">
+                <input type="text" id="standard" placeholder="ધોરણ">
+                <button class="btn-3d btn-primary" onclick="addStudent()">Add Student</button>
+            </div>
+        </section>
 
-        <!-- વિદ્યાર્થીઓનું ટેબલ -->
-        <div class="table-responsive">
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>નામ</th>
-                        <th>રોલ નંબર</th>
-                        <th>ધોરણ</th>
-                    </tr>
-                </thead>
-                <tbody id="student-table-body">
-                    <!-- JavaScript દ્વારા ડેટા ઉમેરાશે -->
-                </tbody>
-            </table>
-        </div>
+        <!-- વિદ્યાર્થીઓનું ટેબલ (Delete બટન સાથે) -->
+        <section class="card-3d table-section">
+            <h3>વિદ્યાર્થીઓની યાદી</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>નામ</th>
+                            <th>રોલ નંબર</th>
+                            <th>ધોરણ</th>
+                            <th id="action-header">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="student-table-body"></tbody>
+                </table>
+            </div>
+        </section>
 
-        <!-- ક્રેડિટ્સ / ડેવલપર્સ -->
-        <footer class="credits-footer">
+        <!-- ટીમ ક્રેડિટ્સ -->
+        <footer class="card-3d credits-footer">
             <p><strong>Made by:</strong></p>
             <div class="team-members">
                 <span>Jeet J. Rana</span> • 
@@ -52,6 +88,24 @@
         </footer>
     </div>
 
-    <script src="script.js"></script>
+    <!-- ૩. AI ચેટબોટ ફ્લોટિંગ વિજેટ -->
+    <div class="chat-widget">
+        <button id="chat-toggle-btn" class="chat-badge-btn" onclick="toggleChat()">💬 AI Chat</button>
+        <div id="chat-box" class="chat-window card-3d" style="display:none;">
+            <div class="chat-header">
+                <strong>Ambica AI Assistant</strong>
+                <span class="close-chat" onclick="toggleChat()">✖</span>
+            </div>
+            <div id="chat-messages" class="chat-body">
+                <div class="msg ai-msg">નમસ્તે! હું અંબિકા વિદ્યાલયનો AI સહાયક છું. અભ્યાસ અંગે કંઈ પણ પૂછો.</div>
+            </div>
+            <div class="chat-footer">
+                <input type="text" id="chat-input" placeholder="સવાલ લખો..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+                <button onclick="sendChatMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
