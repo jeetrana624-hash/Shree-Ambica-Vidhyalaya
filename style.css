@@ -10,127 +10,78 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: Arial, sans-serif;
     background-color: var(--bg-white);
     color: var(--text-dark);
     padding: 20px;
 }
 
-/* 3D કાર્ડ અસર */
 .card-3d {
     background: var(--pure-white);
-    border-radius: 16px;
+    border-radius: 14px;
     box-shadow: var(--shadow-3d);
     border-bottom: 5px solid #ffccba;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
     padding: 25px;
     margin-bottom: 25px;
 }
-.card-3d:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 30px -5px rgba(255, 107, 53, 0.25);
-}
 
-/* 3D બટન્સ */
 .btn-3d {
     border: none;
     border-radius: 8px;
-    font-weight: 600;
+    font-weight: bold;
     cursor: pointer;
-    transition: all 0.1s ease;
-    padding: 12px 20px;
+    padding: 10px 18px;
+    transition: 0.1s ease;
 }
-.btn-primary {
-    background: var(--primary-orange);
-    color: #fff;
-    border-bottom: 4px solid var(--primary-dark);
-}
-.btn-primary:active {
-    transform: translateY(3px);
-    border-bottom-width: 1px;
-}
-.btn-accent {
-    background: #2b6cb0;
-    color: white;
-    border-bottom: 4px solid #1a365d;
-}
+.btn-block { width: 100%; margin-top: 8px; }
+.btn-primary { background: var(--primary-orange); color: white; border-bottom: 4px solid var(--primary-dark); }
+.btn-secondary { background: #4a5568; color: white; border-bottom: 4px solid #2d3748; }
+.btn-accent { background: #2b6cb0; color: white; border-bottom: 4px solid #1a365d; }
+.btn-3d:active { transform: translateY(2px); border-bottom-width: 1px; }
 
-/* લોગિન મોડલ */
 .modal-overlay {
     position: fixed; inset: 0;
-    background: rgba(0, 0, 0, 0.55);
-    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.6);
     display: flex; justify-content: center; align-items: center;
     z-index: 1000;
 }
 .login-card { width: 100%; max-width: 420px; text-align: center; }
-.login-card h2 { color: var(--primary-orange); margin-bottom: 5px; }
-.role-selector { display: flex; gap: 8px; margin: 20px 0; }
+.login-card h2 { color: var(--primary-orange); margin-bottom: 6px; }
+.role-selector { display: flex; gap: 10px; margin: 15px 0; }
 .role-selector button {
     flex: 1; padding: 10px; border: 2px solid var(--primary-orange);
     background: white; border-radius: 8px; cursor: pointer; font-weight: bold;
 }
-.role-selector button.active {
-    background: var(--primary-orange); color: white;
-}
+.role-selector button.active { background: var(--primary-orange); color: white; }
+
 input {
-    width: 100%; padding: 12px; border: 2px solid #e2e8f0;
-    border-radius: 8px; margin-bottom: 12px; font-size: 14px;
+    width: 100%; padding: 11px; border: 2px solid #e2e8f0;
+    border-radius: 8px; margin-top: 8px; font-size: 14px;
 }
 input:focus { outline: none; border-color: var(--primary-orange); }
 
 .divider { margin: 15px 0; position: relative; text-align: center; }
 .divider span { background: #fff; padding: 0 10px; color: var(--text-light); }
-.btn-google {
-    width: 100%; background: #fff; border: 2px solid #e2e8f0;
-    border-bottom: 4px solid #cbd5e0; display: flex; align-items: center;
-    justify-content: center; gap: 10px; font-size: 14px;
-}
 
-/* એપ્લિકેશન એરિયા */
-.container { max-width: 900px; margin: 0 auto; }
+.btn-google {
+    background: #fff; border: 2px solid #e2e8f0; border-bottom: 4px solid #cbd5e0;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    color: var(--text-dark);
+}
+.btn-google img { width: 20px; height: 20px; }
+
+.container { max-width: 850px; margin: 0 auto; }
 .header-top { display: flex; justify-content: space-between; align-items: center; }
 .header-top h1 { color: var(--primary-orange); }
-.btn-logout { background: #e53e3e; color: #fff; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; }
-.form-container { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
-.form-container input { flex: 1; min-width: 150px; margin-bottom: 0; }
+.btn-logout { background: #e53e3e; color: white; border: none; padding: 7px 15px; border-radius: 6px; cursor: pointer; }
 
-/* ટેબલ */
+.form-container { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
+.form-container input { flex: 1; min-width: 140px; margin-top: 0; }
+
 table { width: 100%; border-collapse: collapse; margin-top: 15px; }
 th, td { padding: 12px; border: 1px solid #fed7c2; text-align: left; }
 th { background-color: #fff4ed; color: var(--primary-dark); }
-.btn-delete {
-    background: #ff4d4f; color: white; border: none; padding: 6px 12px;
-    border-radius: 6px; cursor: pointer;
-}
-.btn-delete:hover { background: #d9363e; }
+.btn-delete { background: #ff4d4f; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; }
 
-/* AI ચેટ વિજેટ */
-.chat-widget { position: fixed; bottom: 25px; right: 25px; z-index: 999; }
-.chat-badge-btn {
-    background: var(--primary-orange); color: white; border: none;
-    border-bottom: 4px solid var(--primary-dark); padding: 14px 22px;
-    border-radius: 50px; font-size: 16px; font-weight: bold; cursor: pointer;
-    box-shadow: var(--shadow-3d);
-}
-.chat-window {
-    position: absolute; bottom: 70px; right: 0; width: 340px; height: 440px;
-    display: flex; flex-direction: column; padding: 0; overflow: hidden;
-}
-.chat-header {
-    background: var(--primary-orange); color: white; padding: 15px;
-    display: flex; justify-content: space-between;
-}
-.close-chat { cursor: pointer; }
-.chat-body { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-.msg { padding: 10px 14px; border-radius: 12px; font-size: 13px; max-width: 80%; line-height: 1.4; }
-.user-msg { background: #ffe8d6; align-self: flex-end; }
-.ai-msg { background: #edf2f7; align-self: flex-start; }
-.chat-footer { display: flex; padding: 10px; border-top: 1px solid #eee; }
-.chat-footer input { margin-bottom: 0; border-radius: 6px 0 0 6px; }
-.chat-footer button {
-    background: var(--primary-orange); color: white; border: none;
-    padding: 0 16px; border-radius: 0 6px 6px 0; cursor: pointer;
-}
 .credits-footer { text-align: center; }
-.team-members { margin-top: 5px; color: var(--text-light); }
+.team-members { margin-top: 6px; color: var(--text-light); }
