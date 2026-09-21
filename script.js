@@ -1,4 +1,4 @@
-// 1. Firebase Initialization
+// 1. Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAPsW-Yn9hLqF8arfRlcdT3gWmNuDlIFAQ",
   authDomain: "shree-ambica-vidhyalaya.firebaseapp.com",
@@ -8,8 +8,8 @@ const firebaseConfig = {
   appId: "1:347039718162:web:645fe9b67afbd4e5da31cb"
 };
 
-// 2. Gemini AI Integration Key
-const GEMINI_API_KEY = "AQ.Ab8RN6IShk7fnFCRpaO3WXEUQs3kTzLiSdVWWu89JEU8Ut6_Jw";
+// 2. Gemini AI Integration Auth Key (તમારી નવી કી ફિટ કરી દીધી છે)
+const GEMINI_API_KEY = "AQ.Ab8RN6IEQekAK3lxBpge6iNAqBdqjSKqog6An6NLKLPP5cq1Lg";
 
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
@@ -133,7 +133,7 @@ function deleteStudent(index) {
     }
 }
 
-// 7. Gemini Flash AI Assistant Engine
+// 7. Gemini AI Assistant Engine (Authorization: Bearer સાથે ફિટ કરેલું)
 function handleKey(e) {
     if (e.key === 'Enter') sendChatMessage();
 }
@@ -157,6 +157,7 @@ async function sendChatMessage() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${GEMINI_API_KEY}`,
                 'x-goog-api-key': GEMINI_API_KEY
             },
             body: JSON.stringify({
