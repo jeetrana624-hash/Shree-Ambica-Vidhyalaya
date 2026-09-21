@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shree Ambica Vidhyalaya - School Management Portal</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=3">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -41,26 +41,11 @@
                 <span>OR SIGN IN WITH</span>
             </div>
 
-            <!-- Google Sign-In & OTP -->
+            <!-- Google Single Sign-On Only -->
             <div class="sso-actions">
                 <button type="button" class="btn-3d btn-google btn-full" onclick="googleLogin()">
                     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> Continue with Google
                 </button>
-                <button type="button" class="btn-3d btn-secondary btn-full" onclick="toggleOtpSection()">Sign in with Mobile OTP</button>
-            </div>
-
-            <!-- OTP Verification Section -->
-            <div id="otp-section" class="otp-verification-panel" style="display: none;">
-                <label for="mobile-input" class="field-label">Mobile Number</label>
-                <input type="tel" id="mobile-input" class="input-field" placeholder="+91 9876543210" value="+91">
-                <div id="recaptcha-container"></div>
-                <button type="button" class="btn-3d btn-primary btn-full" onclick="sendRealSMS()">Request Security OTP</button>
-
-                <div id="verify-area" class="otp-entry-box" style="display: none;">
-                    <label for="sms-code-input" class="field-label">6-Digit OTP Code</label>
-                    <input type="text" id="sms-code-input" class="input-field" placeholder="Enter OTP code" maxlength="6">
-                    <button type="button" class="btn-3d btn-success btn-full" onclick="verifyRealSMS()">Verify & Continue</button>
-                </div>
             </div>
         </div>
     </div>
