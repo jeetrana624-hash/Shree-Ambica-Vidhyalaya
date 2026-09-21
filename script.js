@@ -1,4 +1,4 @@
-// 1. Firebase Configuration
+// 1. Firebase Initialization
 const firebaseConfig = {
   apiKey: "AIzaSyAPsW-Yn9hLqF8arfRlcdT3gWmNuDlIFAQ",
   authDomain: "shree-ambica-vidhyalaya.firebaseapp.com",
@@ -8,7 +8,7 @@ const firebaseConfig = {
   appId: "1:347039718162:web:645fe9b67afbd4e5da31cb"
 };
 
-// 2. Gemini AI Integration Key (Tamari Navi Key)
+// 2. Gemini AI Integration Key
 const GEMINI_API_KEY = "AQ.Ab8RN6IShk7fnFCRpaO3WXEUQs3kTzLiSdVWWu89JEU8Ut6_Jw";
 
 if (!firebase.apps.length) {
@@ -17,9 +17,8 @@ if (!firebase.apps.length) {
 const auth = firebase.auth();
 
 let currentRole = 'school';
-let confirmationResultRef = null;
 
-// Role Switcher Function
+// Role Switcher
 function setRole(role) {
     currentRole = role;
     document.getElementById('role-school').classList.toggle('active', role === 'school');
@@ -51,53 +50,7 @@ function googleLogin() {
         });
 }
 
-// 5. SMS Phone OTP Verification Flow
-function toggleOtpSection() {
-    const el = document.getElementById('otp-section');
-    el.style.display = el.style.display === 'none' ? 'flex' : 'none';
-
-    if (!window.recaptchaVerifier) {
-        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-            'size': 'invisible'
-        });
-    }
-}
-
-function sendRealSMS() {
-    const phone = document.getElementById('mobile-input').value.trim();
-    if (phone.length < 12) {
-        alert('Please enter a valid 10-digit mobile number prefixed with +91 (e.g., +919876543210).');
-        return;
-    }
-
-    auth.signInWithPhoneNumber(phone, window.recaptchaVerifier)
-        .then((confirmationResult) => {
-            confirmationResultRef = confirmationResult;
-            alert('A verification code has been dispatched to your mobile device via SMS.');
-            document.getElementById('verify-area').style.display = 'flex';
-        })
-        .catch((error) => {
-            alert('SMS Dispatch Error: ' + error.message);
-        });
-}
-
-function verifyRealSMS() {
-    const code = document.getElementById('sms-code-input').value.trim();
-    if (!code) {
-        alert('Please input the 6-digit OTP code.');
-        return;
-    }
-
-    confirmationResultRef.confirm(code)
-        .then((result) => {
-            openPortal(result.user.phoneNumber);
-        })
-        .catch((error) => {
-            alert('Invalid verification code: ' + error.message);
-        });
-}
-
-// 6. Session Orchestration & Authorization
+// 5. Session Orchestration & Authorization
 function openPortal(name) {
     document.getElementById('login-modal').style.display = 'none';
     document.getElementById('main-content').style.display = 'block';
@@ -120,7 +73,7 @@ function logout() {
     });
 }
 
-// 7. Student Registry Persistence (LocalStorage Engine)
+// 6. Student Registry Persistence (LocalStorage Engine)
 function getStudents() {
     const data = localStorage.getItem('ambica_students');
     return data ? JSON.parse(data) : [];
@@ -180,7 +133,7 @@ function deleteStudent(index) {
     }
 }
 
-// 8. Gemini Flash AI Assistant Engine
+// 7. Gemini Flash AI Assistant Engine
 function handleKey(e) {
     if (e.key === 'Enter') sendChatMessage();
 }
@@ -226,7 +179,7 @@ async function sendChatMessage() {
         document.getElementById(loadingId).innerText = reply;
     } catch (err) {
         console.error("Network Error:", err);
-        document.getElementById(loadingId).innerText = "Connection error. Please try again.";
+        document.getElementById(loadingId).innerText = "Connection error. Please check your network and try again.";
     }
     chatBody.scrollTop = chatBody.scrollHeight;
 }
