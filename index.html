@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html lang="gu">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shree Ambica Vidhyalaya - Official Portal</title>
+    <title>Shree Ambica Vidhyalaya - School Management Portal</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -12,80 +15,112 @@
 </head>
 <body>
 
-    <!-- 3D Login Modal Overlay -->
-    <div id="login-modal" class="modal-overlay">
-        <div class="card-3d login-card">
-            <h2>Shree Ambica Vidhyalaya</h2>
-            <p class="tagline">Official School Portal</p>
+    <!-- iOS Glass Authentication Modal -->
+    <div id="login-modal" class="modal-backdrop">
+        <div class="card-3d auth-card">
+            <div class="school-brand">
+                <div class="brand-badge">SAV</div>
+                <h2>Shree Ambica Vidhyalaya</h2>
+                <p class="brand-subtitle">School Information & Management System</p>
+            </div>
 
             <!-- Role Selector -->
-            <div class="role-selector">
-                <button type="button" id="role-school" class="active" onclick="setRole('school')">School Admin</button>
-                <button type="button" id="role-student" onclick="setRole('student')">Student</button>
+            <div class="role-segmented-control">
+                <button type="button" id="role-school" class="role-tab active" onclick="setRole('school')">Administrator</button>
+                <button type="button" id="role-student" class="role-tab" onclick="setRole('student')">Student Portal</button>
             </div>
 
-            <!-- Standard ID/Password Login -->
-            <div id="credentials-box">
-                <input type="text" id="login-username" placeholder="Username / ID">
-                <input type="password" id="login-password" placeholder="Password">
-                <button type="button" class="btn-3d btn-primary btn-block" onclick="manualLogin()">Login</button>
+            <!-- Standard Credentials Form -->
+            <div id="credentials-box" class="form-group">
+                <input type="text" id="login-username" class="input-field" placeholder="Username, Enrollment, or Email">
+                <input type="password" id="login-password" class="input-field" placeholder="Password">
+                <button type="button" class="btn-3d btn-primary btn-full" onclick="manualLogin()">Access Dashboard</button>
             </div>
 
-            <div class="divider"><span>OR AUTHENTICATE WITH</span></div>
+            <div class="auth-divider">
+                <span>OR SIGN IN WITH</span>
+            </div>
 
-            <!-- Real Google Account Login -->
-            <button type="button" class="btn-3d btn-google btn-block" onclick="googleLogin()">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> Continue with Google
-            </button>
+            <!-- Google Sign-In & OTP -->
+            <div class="sso-actions">
+                <button type="button" class="btn-3d btn-google btn-full" onclick="googleLogin()">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> Continue with Google
+                </button>
+                <button type="button" class="btn-3d btn-secondary btn-full" onclick="toggleOtpSection()">Sign in with Mobile OTP</button>
+            </div>
 
-            <!-- Real Mobile SMS OTP Section Toggle -->
-            <button type="button" class="btn-3d btn-secondary btn-block" onclick="toggleOtpSection()">Login with Mobile OTP</button>
-
-            <div id="otp-section" style="display: none; margin-top: 15px;">
-                <input type="tel" id="mobile-input" placeholder="+91 9876543210" value="+91">
+            <!-- OTP Verification Section -->
+            <div id="otp-section" class="otp-verification-panel" style="display: none;">
+                <label for="mobile-input" class="field-label">Mobile Number</label>
+                <input type="tel" id="mobile-input" class="input-field" placeholder="+91 9876543210" value="+91">
                 <div id="recaptcha-container"></div>
-                <button type="button" class="btn-3d btn-primary btn-block" onclick="sendRealSMS()">Send Real SMS OTP</button>
+                <button type="button" class="btn-3d btn-primary btn-full" onclick="sendRealSMS()">Request Security OTP</button>
 
-                <div id="verify-area" style="display: none; margin-top: 10px;">
-                    <input type="text" id="sms-code-input" placeholder="6-digit SMS OTP">
-                    <button type="button" class="btn-3d btn-accent btn-block" onclick="verifyRealSMS()">Verify & Login</button>
+                <div id="verify-area" class="otp-entry-box" style="display: none;">
+                    <label for="sms-code-input" class="field-label">6-Digit OTP Code</label>
+                    <input type="text" id="sms-code-input" class="input-field" placeholder="Enter OTP code" maxlength="6">
+                    <button type="button" class="btn-3d btn-success btn-full" onclick="verifyRealSMS()">Verify & Continue</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Main Portal Dashboard -->
-    <div class="container" id="main-content" style="display:none;">
-        <header class="school-header card-3d">
-            <div class="header-top">
-                <h1>Shree Ambica Vidhyalaya</h1>
-                <button class="btn-logout" onclick="logout()">Logout</button>
+    <!-- Main Dashboard Application -->
+    <div class="app-layout" id="main-content" style="display: none;">
+        <!-- Top App Bar -->
+        <header class="card-3d app-header">
+            <div class="header-left">
+                <div class="brand-icon-sm">SAV</div>
+                <div>
+                    <h1>Shree Ambica Vidhyalaya</h1>
+                    <p class="active-session-text">
+                        Session: <strong id="user-display-name">Active User</strong> 
+                        <span id="user-badge" class="badge-pill">Administrator</span>
+                    </p>
+                </div>
             </div>
-            <p class="subtitle">Logged in as: <strong id="user-display-name">User</strong> (<span id="user-badge">Admin</span>)</p>
+            <button class="btn-3d btn-danger btn-sm" onclick="logout()">Terminate Session</button>
         </header>
 
-        <!-- Admin Only: Add Student Form -->
-        <section id="admin-panel" class="card-3d form-section">
-            <h3>Navo Vidyarthi Add Karo</h3>
-            <div class="form-container">
-                <input type="text" id="name" placeholder="Student Name">
-                <input type="text" id="roll_no" placeholder="Roll Number">
-                <input type="text" id="standard" placeholder="Standard">
-                <button class="btn-3d btn-primary" onclick="addStudent()">Add Student</button>
+        <!-- Admin Management Panel -->
+        <section id="admin-panel" class="card-3d content-card">
+            <div class="card-title-row">
+                <h3>Enroll New Student</h3>
+                <span class="card-meta">Database Management</span>
+            </div>
+            <div class="form-grid">
+                <div class="input-wrapper">
+                    <label class="field-label">Full Name</label>
+                    <input type="text" id="name" class="input-field" placeholder="e.g., Aarav Patel">
+                </div>
+                <div class="input-wrapper">
+                    <label class="field-label">Roll Number</label>
+                    <input type="text" id="roll_no" class="input-field" placeholder="e.g., SAV-1024">
+                </div>
+                <div class="input-wrapper">
+                    <label class="field-label">Standard / Grade</label>
+                    <input type="text" id="standard" class="input-field" placeholder="e.g., Grade 10-A">
+                </div>
+                <div class="input-wrapper btn-align-bottom">
+                    <button class="btn-3d btn-primary btn-full" onclick="addStudent()">Save Record</button>
+                </div>
             </div>
         </section>
 
-        <!-- Student Records Table -->
-        <section class="card-3d table-section">
-            <h3>Vidyarthio ni Yaadi</h3>
-            <div class="table-responsive">
-                <table>
+        <!-- Student Database Table -->
+        <section class="card-3d content-card">
+            <div class="card-title-row">
+                <h3>Student Registry</h3>
+                <span class="card-meta">Total Active Records</span>
+            </div>
+            <div class="table-wrapper">
+                <table class="data-table">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Naam</th>
-                            <th>Roll No</th>
-                            <th>Dhoran</th>
+                            <th>Student Name</th>
+                            <th>Roll Number</th>
+                            <th>Standard</th>
                             <th id="action-header">Action</th>
                         </tr>
                     </thead>
@@ -94,22 +129,27 @@
             </div>
         </section>
 
-        <!-- Gemini AI School Assistant Section -->
-        <section class="card-3d chatbot-section">
-            <h3>Ambica Vidhyalaya AI સહાયક 🤖</h3>
-            <div id="chat-messages" class="chat-box">
-                <div class="msg ai-msg">નમસ્તે! હું અંબિકા વિદ્યાલયનો AI સહાયક છું. અભ્યાસ અથવા શાળા સંબંધી કોઈ પણ પ્રશ્ન પૂછો.</div>
+        <!-- Gemini AI Assistant -->
+        <section class="card-3d content-card ai-assistant-card">
+            <div class="card-title-row">
+                <h3>Ambica AI Academic Assistant</h3>
+                <span class="badge-pill badge-ai">Gemini Flash</span>
             </div>
-            <div class="chat-input-row">
-                <input type="text" id="chat-input" placeholder="અહીં તમારો પ્રશ્ન લખો..." onkeypress="handleKey(event)">
-                <button class="btn-3d btn-primary" onclick="sendChatMessage()">Send</button>
+            <div id="chat-messages" class="chat-viewport">
+                <div class="chat-bubble ai-bubble">
+                    Hello! I am the Shree Ambica Vidhyalaya AI Assistant. How can I assist you with your academics, syllabus, or administrative inquiries today?
+                </div>
+            </div>
+            <div class="chat-input-bar">
+                <input type="text" id="chat-input" class="input-field" placeholder="Ask any academic or institutional question..." onkeypress="handleKey(event)">
+                <button class="btn-3d btn-primary" onclick="sendChatMessage()">Send Query</button>
             </div>
         </section>
 
         <!-- Credits Footer -->
-        <footer class="card-3d credits-footer">
-            <p><strong>Made by:</strong></p>
-            <div class="team-members">
+        <footer class="card-3d app-footer">
+            <p class="footer-title">Engineering & Development Team</p>
+            <div class="team-grid">
                 <span>Jeet J. Rana</span> • 
                 <span>Gopal H. Valiya</span> • 
                 <span>Divy S. Pipaliya</span> • 
