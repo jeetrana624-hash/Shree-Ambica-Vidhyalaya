@@ -8,7 +8,7 @@ const firebaseConfig = {
   appId: "1:347039718162:web:645fe9b67afbd4e5da31cb"
 };
 
-// 2. Gemini AI Integration Key (New Auth Key)
+// 2. Gemini AI Integration Key (Tamari Navi Key)
 const GEMINI_API_KEY = "AQ.Ab8RN6IShk7fnFCRpaO3WXEUQs3kTzLiSdVWWu89JEU8Ut6_Jw";
 
 if (!firebase.apps.length) {
@@ -19,7 +19,7 @@ const auth = firebase.auth();
 let currentRole = 'school';
 let confirmationResultRef = null;
 
-// Role Switcher
+// Role Switcher Function
 function setRole(role) {
     currentRole = role;
     document.getElementById('role-school').classList.toggle('active', role === 'school');
@@ -180,7 +180,7 @@ function deleteStudent(index) {
     }
 }
 
-// 8. Gemini Flash AI Assistant Engine (x-goog-api-key Header Support)
+// 8. Gemini Flash AI Assistant Engine
 function handleKey(e) {
     if (e.key === 'Enter') sendChatMessage();
 }
@@ -218,7 +218,7 @@ async function sendChatMessage() {
 
         if (!response.ok) {
             console.error("Gemini API Error:", data);
-            document.getElementById(loadingId).innerText = "API Error: " + (data.error?.message || "Invalid Key");
+            document.getElementById(loadingId).innerText = "API Error: " + (data.error?.message || "Check API Key");
             return;
         }
 
@@ -226,7 +226,7 @@ async function sendChatMessage() {
         document.getElementById(loadingId).innerText = reply;
     } catch (err) {
         console.error("Network Error:", err);
-        document.getElementById(loadingId).innerText = "Connection error. Please check your network and try again.";
+        document.getElementById(loadingId).innerText = "Connection error. Please try again.";
     }
     chatBody.scrollTop = chatBody.scrollHeight;
 }
