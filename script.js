@@ -8,8 +8,8 @@ const firebaseConfig = {
   appId: "1:347039718162:web:645fe9b67afbd4e5da31cb"
 };
 
-// 2. Gemini AI Integration Auth Key (તમારી નવી કી ફિટ કરી દીધી છે)
-const GEMINI_API_KEY = "AQ.Ab8RN6IEQekAK3lxBpge6iNAqBdqjSKqog6An6NLKLPP5cq1Lg";
+// 2. Google AI Auth Key (નવા ફોર્મેટ વાળી કી ફિટ કરી દીધી છે)
+const GEMINI_API_KEY = "AQ.Ab8RN6J1l5xSXJgdIWpiN3pt28TrQ0Li0CxHxEOW3s1ZyKBdBg";
 
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
@@ -25,19 +25,19 @@ function setRole(role) {
     document.getElementById('role-student').classList.toggle('active', role === 'student');
 }
 
-// 3. Username / Password Login
+// 3. Manual Login
 function manualLogin() {
     const user = document.getElementById('login-username').value.trim();
     const pass = document.getElementById('login-password').value.trim();
     
     if (!user || !pass) {
-        alert('Please enter your username and password.');
+        alert('કૃપા કરીને યુઝરનેમ અને પાસવર્ડ દાખલ કરો.');
         return;
     }
     openPortal(user);
 }
 
-// 4. Real Google Account Popup Authentication
+// 4. Google Account Popup Authentication
 function googleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider)
@@ -46,11 +46,11 @@ function googleLogin() {
             openPortal(user.displayName || user.email);
         })
         .catch((error) => {
-            alert('Google Authentication Error: ' + error.message);
+            alert('Google લૉગિન એરર: ' + error.message);
         });
 }
 
-// 5. Session Orchestration & Authorization
+// 5. Session Control
 function openPortal(name) {
     document.getElementById('login-modal').style.display = 'none';
     document.getElementById('main-content').style.display = 'block';
@@ -85,7 +85,7 @@ function loadStudents() {
     tbody.innerHTML = '';
 
     if (list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="${currentRole === 'school' ? 5 : 4}" style="text-align:center; color:#636366; padding:24px;">No student records found in the registry.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="${currentRole === 'school' ? 5 : 4}" style="text-align:center; color:#636366; padding:24px;">કોઈ વિદ્યાર્થીનો રેકોર્ડ મળ્યો નથી.</td></tr>`;
         return;
     }
 
@@ -110,7 +110,7 @@ function addStudent() {
     const standard = document.getElementById('standard').value.trim();
 
     if (!name || !roll_no || !standard) {
-        alert('All fields are mandatory. Please provide Name, Roll Number, and Standard.');
+        alert('બધા ખાના ભરવા ફરજિયાત છે: નામ, રોલ નંબર અને ધોરણ.');
         return;
     }
 
@@ -125,7 +125,7 @@ function addStudent() {
 }
 
 function deleteStudent(index) {
-    if (confirm('Are you certain you want to permanently delete this student record?')) {
+    if (confirm('શું તમે ખરેખર આ વિદ્યાર્થીનો રેકોર્ડ કાઢી નાખવા માંગો છો?')) {
         const list = getStudents();
         list.splice(index, 1);
         localStorage.setItem('ambica_students', JSON.stringify(list));
@@ -133,7 +133,7 @@ function deleteStudent(index) {
     }
 }
 
-// 7. Gemini AI Assistant Engine (Authorization: Bearer સાથે ફિટ કરેલું)
+// 7. Gemini AI Assistant Engine (AQ. કી માટેનું એડવાન્સ ડ્યુઅલ એન્ડપોઇન્ટ હેન્ડલર)
 function handleKey(e) {
     if (e.key === 'Enter') sendChatMessage();
 }
@@ -149,38 +149,48 @@ async function sendChatMessage() {
     chatBody.scrollTop = chatBody.scrollHeight;
 
     const loadingId = "loading-" + Date.now();
-    chatBody.innerHTML += `<div class="chat-bubble ai-bubble" id="${loadingId}">Synthesizing response...</div>`;
+    chatBody.innerHTML += `<div class="chat-bubble ai-bubble" id="${loadingId}">વિચારી રહ્યું છે...</div>`;
     chatBody.scrollTop = chatBody.scrollHeight;
 
+    const requestPayload = {
+        contents: [{ parts: [{ text: msg }] }]
+    };
+
     try {
-        const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent", {
+        // First try: Express REST endpoint with Auth Bearer
+        let response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${GEMINI_API_KEY}`,
-                'x-goog-api-key': GEMINI_API_KEY
+                'Authorization': `Bearer ${GEMINI_API_KEY}`
             },
-            body: JSON.stringify({
-                system_instruction: {
-                    parts: [{ text: "You are the official academic AI assistant of Shree Ambica Vidhyalaya. Deliver structured, articulate, professional, and clear answers regarding academics, curriculum, sciences, mathematics, and institutional queries." }]
-                },
-                contents: [{ parts: [{ text: msg }] }]
-            })
+            body: JSON.stringify(requestPayload)
         });
+
+        // Second try fallback: Standard key header if Bearer requires token mapping
+        if (!response.ok) {
+            response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestPayload)
+            });
+        }
 
         const data = await response.json();
 
         if (!response.ok) {
             console.error("Gemini API Error:", data);
-            document.getElementById(loadingId).innerText = "API Error: " + (data.error?.message || "Check API Key");
+            document.getElementById(loadingId).innerText = "API Error: " + (data.error?.message || "પ્રક્રિયા પૂર્ણ થઈ શકી નથી.");
             return;
         }
 
-        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response received.";
+        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "કોઈ જવાબ મળ્યો નથી.";
         document.getElementById(loadingId).innerText = reply;
     } catch (err) {
         console.error("Network Error:", err);
-        document.getElementById(loadingId).innerText = "Connection error. Please check your network and try again.";
+        document.getElementById(loadingId).innerText = "કનેક્શન એરર. ઇન્ટરનેટ તપાસી ફરી પ્રયત્ન કરો.";
     }
     chatBody.scrollTop = chatBody.scrollHeight;
 }
