@@ -1,11 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
 :root {
-    --primary-orange: #ff6b35;
-    --primary-dark: #d94a14;
-    --bg-white: #fdfaf7;
-    --pure-white: #ffffff;
-    --text-dark: #2d3748;
-    --text-light: #718096;
-    --shadow-3d: 0 10px 25px -5px rgba(255, 107, 53, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    --ios-glass-bg: rgba(255, 255, 255, 0.5);
+    --ios-glass-border: rgba(255, 255, 255, 0.7);
+    --ios-glass-highlight: rgba(255, 255, 255, 0.85);
+    --ios-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+    --ios-accent: #007aff;
+    --ios-accent-hover: #0062cc;
+    --text-primary: #1c1c1e;
+    --text-secondary: #636366;
+    --danger-red: #ff3b30;
+    --success-green: #34c759;
 }
 
 * {
@@ -15,62 +20,104 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: var(--bg-white);
-    color: var(--text-dark);
-    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Plus Jakarta Sans', sans-serif;
+    min-height: 100vh;
+    color: var(--text-primary);
+    background: radial-gradient(circle at 10% 20%, #e0c3fc 0%, #8ec5fc 90%);
+    background-attachment: fixed;
+    padding: 30px 16px;
+    -webkit-font-smoothing: antialiased;
 }
 
+/* iOS Glass Unfold Effect Card */
 .card-3d {
-    background: var(--pure-white);
-    border-radius: 14px;
-    box-shadow: var(--shadow-3d);
-    border-bottom: 5px solid #ffccba;
-    padding: 25px;
-    margin-bottom: 25px;
+    background: var(--ios-glass-bg);
+    backdrop-filter: blur(25px) saturate(180%);
+    -webkit-backdrop-filter: blur(25px) saturate(180%);
+    border: 1px solid var(--ios-glass-border);
+    box-shadow: var(--ios-shadow), inset 0 1px 1px var(--ios-glass-highlight);
+    border-radius: 24px;
+    padding: 28px;
+    margin-bottom: 24px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: unfoldCard 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+@keyframes unfoldCard {
+    0% {
+        opacity: 0;
+        transform: scale(0.92) translateY(20px);
+        filter: blur(8px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0px);
+    }
+}
+
+/* 3D Glass Buttons */
 .btn-3d {
     border: none;
-    border-radius: 8px;
-    font-weight: bold;
+    border-radius: 14px;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 14px;
     cursor: pointer;
-    padding: 11px 18px;
-    transition: 0.1s ease;
-}
-
-.btn-block {
-    width: 100%;
-    margin-top: 10px;
+    padding: 13px 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .btn-primary {
-    background: var(--primary-orange);
-    color: white;
-    border-bottom: 4px solid var(--primary-dark);
+    background: linear-gradient(135deg, #007aff, #0051ba);
+    color: #ffffff;
+    box-shadow: 0 8px 20px rgba(0, 122, 255, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(0, 122, 255, 0.4);
 }
 
 .btn-secondary {
-    background: #2b3a4a;
-    color: white;
-    border-bottom: 4px solid #1a2530;
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    color: var(--text-primary);
+    border: 1px solid rgba(255, 255, 255, 0.7);
 }
 
-.btn-accent {
-    background: #28a745;
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.75);
+    transform: translateY(-2px);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #34c759, #248a3d);
     color: white;
-    border-bottom: 4px solid #1e7e34;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ff3b30, #c41c14);
+    color: white;
 }
 
 .btn-google {
-    background: #ffffff;
-    color: #444;
-    border: 2px solid #ddd;
-    border-bottom: 4px solid #bbb;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    color: #1c1c1e;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.btn-google:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
 }
 
 .btn-google img {
@@ -79,196 +126,366 @@ body {
 }
 
 .btn-3d:active {
-    transform: translateY(2px);
-    border-bottom-width: 1px;
+    transform: scale(0.97);
 }
 
-.modal-overlay {
+.btn-full {
+    width: 100%;
+}
+
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 13px;
+    border-radius: 10px;
+}
+
+/* Glass Inputs */
+.input-field {
+    width: 100%;
+    padding: 13px 18px;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 14px;
+    margin-top: 6px;
+    outline: none;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+    transition: all 0.2s ease;
+}
+
+.input-field:focus {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: var(--ios-accent);
+    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.2);
+}
+
+.field-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-secondary);
+}
+
+/* Modal Overlay sathe Backdrop Blur */
+.modal-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.65);
+    background: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     z-index: 1000;
+    padding: 20px;
 }
 
-.login-card {
+.auth-card {
     width: 100%;
-    max-width: 420px;
+    max-width: 440px;
+    padding: 40px 32px;
     text-align: center;
+    animation: unfoldCard 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.login-card h2 {
-    color: var(--primary-orange);
-    margin-bottom: 5px;
+.school-brand .brand-badge {
+    display: inline-block;
+    background: rgba(0, 122, 255, 0.12);
+    color: var(--ios-accent);
+    font-weight: 800;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(0, 122, 255, 0.2);
 }
 
-.role-selector {
+.school-brand h2 {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.brand-subtitle {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    margin-bottom: 24px;
+}
+
+/* iOS Segmented Pill Controller */
+.role-segmented-control {
     display: flex;
-    gap: 10px;
-    margin: 15px 0 10px 0;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 4px;
+    border-radius: 14px;
+    margin-bottom: 20px;
 }
 
-.role-selector button {
+.role-tab {
     flex: 1;
+    border: none;
+    background: none;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-secondary);
     padding: 10px;
-    border: 2px solid var(--primary-orange);
-    background: white;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
-    font-weight: bold;
+    transition: all 0.2s ease;
 }
 
-.role-selector button.active {
-    background: var(--primary-orange);
-    color: white;
+.role-tab.active {
+    background: rgba(255, 255, 255, 0.85);
+    color: var(--text-primary);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
-input {
-    width: 100%;
-    padding: 11px;
-    border: 2px solid #e2e8f0;
-    border-radius: 8px;
-    margin-top: 8px;
-    font-size: 14px;
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
-input:focus {
-    outline: none;
-    border-color: var(--primary-orange);
-}
-
-.divider {
-    margin: 16px 0;
+.auth-divider {
+    margin: 22px 0;
     position: relative;
     text-align: center;
 }
 
-.divider span {
-    background: #fff;
-    padding: 0 10px;
-    color: var(--text-light);
-    font-size: 13px;
+.auth-divider::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-.container {
-    max-width: 850px;
+.auth-divider span {
+    background: transparent;
+    padding: 0 12px;
+    position: relative;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    color: var(--text-secondary);
+}
+
+.sso-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.otp-verification-panel {
+    margin-top: 18px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.otp-entry-box {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Dashboard App Layout */
+.app-layout {
+    max-width: 960px;
     margin: 0 auto;
 }
 
-.header-top {
+.app-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 22px 30px;
 }
 
-.header-top h1 {
-    color: var(--primary-orange);
-}
-
-.btn-logout {
-    background: #e53e3e;
-    color: white;
-    border: none;
-    padding: 7px 15px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-.form-container {
+.header-left {
     display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-top: 15px;
+    align-items: center;
+    gap: 16px;
 }
 
-.form-container input {
-    flex: 1;
-    min-width: 140px;
-    margin-top: 0;
+.brand-icon-sm {
+    background: linear-gradient(135deg, #007aff, #5856d6);
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 14px;
+    padding: 12px 16px;
+    border-radius: 14px;
+    box-shadow: 0 8px 16px rgba(0, 122, 255, 0.25);
 }
 
-table {
+.app-header h1 {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.4px;
+}
+
+.active-session-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.badge-pill {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 12px;
+    border-radius: 20px;
+    background: rgba(0, 122, 255, 0.12);
+    color: var(--ios-accent);
+    margin-left: 6px;
+}
+
+.badge-ai {
+    background: rgba(88, 86, 214, 0.12);
+    color: #5856d6;
+}
+
+.card-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.card-title-row h3 {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.card-meta {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.btn-align-bottom {
+    display: flex;
+    align-items: flex-end;
+}
+
+/* Glass Table */
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.data-table {
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-}
-
-th, td {
-    padding: 12px;
-    border: 1px solid #fed7c2;
-    text-align: left;
-}
-
-th {
-    background-color: #fff4ed;
-    color: var(--primary-dark);
-}
-
-.btn-delete {
-    background: #ff4d4f;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-/* AI Chatbot Styles */
-.chatbot-section h3 {
-    color: var(--primary-orange);
-    margin-bottom: 12px;
-}
-
-.chat-box {
-    height: 220px;
-    overflow-y: auto;
-    border: 2px solid #ffe1d4;
-    border-radius: 10px;
-    padding: 12px;
-    background: #fffaf8;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.msg {
-    padding: 8px 12px;
-    border-radius: 8px;
-    max-width: 80%;
-    line-height: 1.4;
+    border-collapse: separate;
+    border-spacing: 0;
     font-size: 14px;
 }
 
-.user-msg {
-    background: var(--primary-orange);
-    color: white;
-    align-self: flex-end;
+.data-table th {
+    background: rgba(255, 255, 255, 0.3);
+    color: var(--text-secondary);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.6px;
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    text-align: left;
 }
 
-.ai-msg {
-    background: #edf2f7;
-    color: var(--text-dark);
-    align-self: flex-start;
+.data-table td {
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
 }
 
-.chat-input-row {
+.data-table tr:hover td {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* Glass AI Assistant */
+.chat-viewport {
+    height: 250px;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 16px;
+    padding: 18px;
     display: flex;
-    gap: 10px;
-    margin-top: 10px;
+    flex-direction: column;
+    gap: 12px;
 }
 
-.chat-input-row input {
+.chat-bubble {
+    max-width: 80%;
+    padding: 12px 18px;
+    border-radius: 18px;
+    font-size: 14px;
+    line-height: 1.5;
+    animation: unfoldCard 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.user-bubble {
+    background: linear-gradient(135deg, #007aff, #0051ba);
+    color: #ffffff;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2);
+}
+
+.ai-bubble {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: var(--text-primary);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.chat-input-bar {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.chat-input-bar input {
     margin-top: 0;
-    flex: 1;
 }
 
-.credits-footer {
+/* App Footer */
+.app-footer {
     text-align: center;
+    padding: 24px;
 }
 
-.team-members {
-    margin-top: 6px;
-    color: var(--text-light);
+.footer-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 8px;
+}
+
+.team-grid {
+    font-size: 14px;
+    font-weight: 600;
 }
