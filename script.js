@@ -1,4 +1,4 @@
-// 1. Firebase Initialization
+// 1. Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAPsW-Yn9hLqF8arfRlcdT3gWmNuDlIFAQ",
   authDomain: "shree-ambica-vidhyalaya.firebaseapp.com",
@@ -8,8 +8,8 @@ const firebaseConfig = {
   appId: "1:347039718162:web:645fe9b67afbd4e5da31cb"
 };
 
-// 2. Gemini AI Integration Key
-const GEMINI_API_KEY = "AQ.Ab8RN6JJrVX-v86uLT8fq7R24JEcAYFXZTbZi1yfjLTMAeQ";
+// 2. Gemini AI Integration Key (New Auth Key)
+const GEMINI_API_KEY = "AQ.Ab8RN6IShk7fnFCRpaO3WXEUQs3kTzLiSdVWWu89JEU8Ut6_Jw";
 
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
@@ -180,7 +180,7 @@ function deleteStudent(index) {
     }
 }
 
-// 8. Gemini Flash AI Assistant Engine
+// 8. Gemini Flash AI Assistant Engine (x-goog-api-key Header Support)
 function handleKey(e) {
     if (e.key === 'Enter') sendChatMessage();
 }
@@ -200,9 +200,12 @@ async function sendChatMessage() {
     chatBody.scrollTop = chatBody.scrollHeight;
 
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+        const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent", {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'x-goog-api-key': GEMINI_API_KEY
+            },
             body: JSON.stringify({
                 system_instruction: {
                     parts: [{ text: "You are the official academic AI assistant of Shree Ambica Vidhyalaya. Deliver structured, articulate, professional, and clear answers regarding academics, curriculum, sciences, mathematics, and institutional queries." }]
@@ -212,9 +215,17 @@ async function sendChatMessage() {
         });
 
         const data = await response.json();
-        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "We are unable to process your request at this moment.";
+
+        if (!response.ok) {
+            console.error("Gemini API Error:", data);
+            document.getElementById(loadingId).innerText = "API Error: " + (data.error?.message || "Invalid Key");
+            return;
+        }
+
+        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response received.";
         document.getElementById(loadingId).innerText = reply;
     } catch (err) {
+        console.error("Network Error:", err);
         document.getElementById(loadingId).innerText = "Connection error. Please check your network and try again.";
     }
     chatBody.scrollTop = chatBody.scrollHeight;
