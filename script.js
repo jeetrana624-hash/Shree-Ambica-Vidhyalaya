@@ -8,8 +8,8 @@ const firebaseConfig = {
   appId: "1:347039718162:web:645fe9b67afbd4e5da31cb"
 };
 
-// 2. Google AI Auth Key (નવા ફોર્મેટ વાળી કી ફિટ કરી દીધી છે)
-const GEMINI_API_KEY = "AQ.Ab8RN6J1l5xSXJgdIWpiN3pt28TrQ0Li0CxHxEOW3s1ZyKBdBg";
+// 2. Gemini Public API Key (Original AIzaSy Key)
+const GEMINI_API_KEY = firebaseConfig.apiKey;
 
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
@@ -19,14 +19,14 @@ const auth = firebase.auth();
 let currentRole = 'school';
 
 // Role Switcher
-function setRole(role) {
+window.setRole = function(role) {
     currentRole = role;
     document.getElementById('role-school').classList.toggle('active', role === 'school');
     document.getElementById('role-student').classList.toggle('active', role === 'student');
-}
+};
 
 // 3. Manual Login
-function manualLogin() {
+window.manualLogin = function() {
     const user = document.getElementById('login-username').value.trim();
     const pass = document.getElementById('login-password').value.trim();
     
@@ -35,10 +35,10 @@ function manualLogin() {
         return;
     }
     openPortal(user);
-}
+};
 
 // 4. Google Account Popup Authentication
-function googleLogin() {
+window.googleLogin = function() {
     const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider)
         .then((result) => {
@@ -48,7 +48,7 @@ function googleLogin() {
         .catch((error) => {
             alert('Google લૉગિન એરર: ' + error.message);
         });
-}
+};
 
 // 5. Session Control
 function openPortal(name) {
@@ -67,11 +67,11 @@ function openPortal(name) {
     loadStudents();
 }
 
-function logout() {
+window.logout = function() {
     auth.signOut().then(() => {
         location.reload();
     });
-}
+};
 
 // 6. Student Registry Persistence (LocalStorage Engine)
 function getStudents() {
@@ -91,7 +91,7 @@ function loadStudents() {
 
     list.forEach((st, idx) => {
         const actionCol = currentRole === 'school' 
-            ? `<td><button class="btn-3d btn-danger btn-sm" onclick="deleteStudent(${idx})">Delete</button></td>` 
+            ? `<td><button class="btn-3d btn-danger btn-sm" onclick="window.deleteStudent(${idx})">Delete</button></td>` 
             : '';
 
         tbody.innerHTML += `<tr>
@@ -104,7 +104,7 @@ function loadStudents() {
     });
 }
 
-function addStudent() {
+window.addStudent = function() {
     const name = document.getElementById('name').value.trim();
     const roll_no = document.getElementById('roll_no').value.trim();
     const standard = document.getElementById('standard').value.trim();
@@ -122,23 +122,23 @@ function addStudent() {
     document.getElementById('roll_no').value = '';
     document.getElementById('standard').value = '';
     loadStudents();
-}
+};
 
-function deleteStudent(index) {
+window.deleteStudent = function(index) {
     if (confirm('શું તમે ખરેખર આ વિદ્યાર્થીનો રેકોર્ડ કાઢી નાખવા માંગો છો?')) {
         const list = getStudents();
         list.splice(index, 1);
         localStorage.setItem('ambica_students', JSON.stringify(list));
         loadStudents();
     }
-}
+};
 
-// 7. Gemini AI Assistant Engine (AQ. કી માટેનું એડવાન્સ ડ્યુઅલ એન્ડપોઇન્ટ હેન્ડલર)
-function handleKey(e) {
-    if (e.key === 'Enter') sendChatMessage();
-}
+// 7. Gemini AI Assistant Engine (Standard v1beta REST)
+window.handleKey = function(e) {
+    if (e.key === 'Enter') window.sendChatMessage();
+};
 
-async function sendChatMessage() {
+window.sendChatMessage = async function() {
     const input = document.getElementById('chat-input');
     const msg = input.value.trim();
     if (!msg) return;
@@ -152,31 +152,19 @@ async function sendChatMessage() {
     chatBody.innerHTML += `<div class="chat-bubble ai-bubble" id="${loadingId}">વિચારી રહ્યું છે...</div>`;
     chatBody.scrollTop = chatBody.scrollHeight;
 
-    const requestPayload = {
-        contents: [{ parts: [{ text: msg }] }]
-    };
-
     try {
-        // First try: Express REST endpoint with Auth Bearer
-        let response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent", {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${GEMINI_API_KEY}`
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify(requestPayload)
-        });
-
-        // Second try fallback: Standard key header if Bearer requires token mapping
-        if (!response.ok) {
-            response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
+            body: JSON.stringify({
+                system_instruction: {
+                    parts: [{ text: "You are the official academic AI assistant of Shree Ambica Vidhyalaya. Deliver structured, articulate, professional, and clear answers regarding academics, curriculum, sciences, mathematics, and institutional queries." }]
                 },
-                body: JSON.stringify(requestPayload)
-            });
-        }
+                contents: [{ parts: [{ text: msg }] }]
+            })
+        });
 
         const data = await response.json();
 
@@ -190,7 +178,7 @@ async function sendChatMessage() {
         document.getElementById(loadingId).innerText = reply;
     } catch (err) {
         console.error("Network Error:", err);
-        document.getElementById(loadingId).innerText = "કનેક્શન એરર. ઇન્ટરનેટ તપાસી ફરી પ્રયત્ન કરો.";
+        document.getElementById(loadingId).innerText = "કનેક્શન એરર. કૃપા કરીને ઇન્ટરનેટ તપાસો.";
     }
     chatBody.scrollTop = chatBody.scrollHeight;
-}
+};
