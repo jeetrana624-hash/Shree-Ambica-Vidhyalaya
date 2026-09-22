@@ -8,8 +8,8 @@ const firebaseConfig = {
   appId: "1:347039718162:web:645fe9b67afbd4e5da31cb"
 };
 
-// 2. Gemini Public API Key (Original AIzaSy Key)
-const GEMINI_API_KEY = firebaseConfig.apiKey;
+// 2. Gemini Official Auth Key
+const GEMINI_API_KEY = "AQ.Ab8RN6J1l5xSXJgdIWpiN3pt28TrQ0Li0CxHxEOW3s1ZyKBdBg";
 
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
@@ -37,7 +37,7 @@ window.manualLogin = function() {
     openPortal(user);
 };
 
-// 4. Google Account Popup Authentication
+// 4. Real Google Account Popup Authentication
 window.googleLogin = function() {
     const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider)
@@ -133,7 +133,7 @@ window.deleteStudent = function(index) {
     }
 };
 
-// 7. Gemini AI Assistant Engine (Standard v1beta REST)
+// 7. Gemini AI Assistant Engine (Direct REST with Query Key Support)
 window.handleKey = function(e) {
     if (e.key === 'Enter') window.sendChatMessage();
 };
@@ -153,24 +153,24 @@ window.sendChatMessage = async function() {
     chatBody.scrollTop = chatBody.scrollHeight;
 
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                system_instruction: {
-                    parts: [{ text: "You are the official academic AI assistant of Shree Ambica Vidhyalaya. Deliver structured, articulate, professional, and clear answers regarding academics, curriculum, sciences, mathematics, and institutional queries." }]
-                },
-                contents: [{ parts: [{ text: msg }] }]
+                contents: [{
+                    role: "user",
+                    parts: [{ text: msg }]
+                }]
             })
         });
 
         const data = await response.json();
 
         if (!response.ok) {
-            console.error("Gemini API Error:", data);
-            document.getElementById(loadingId).innerText = "API Error: " + (data.error?.message || "પ્રક્રિયા પૂર્ણ થઈ શકી નથી.");
+            console.error("Gemini API Error Details:", data);
+            document.getElementById(loadingId).innerText = "API Error: " + (data.error?.message || "કૃપા કરીને થોડી વાર પછી પ્રયત્ન કરો.");
             return;
         }
 
@@ -178,7 +178,7 @@ window.sendChatMessage = async function() {
         document.getElementById(loadingId).innerText = reply;
     } catch (err) {
         console.error("Network Error:", err);
-        document.getElementById(loadingId).innerText = "કનેક્શન એરર. કૃપા કરીને ઇન્ટરનેટ તપાસો.";
+        document.getElementById(loadingId).innerText = "કનેક્શન એરર. કૃપા કરીને નેટવર્ક તપાસો.";
     }
     chatBody.scrollTop = chatBody.scrollHeight;
 };
