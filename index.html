@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shree Ambica Vidhyalaya - Enterprise ERP Portal</title>
-    <link rel="stylesheet" href="style.css?v=12">
+    <link rel="stylesheet" href="style.css?v=15">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+Gujarati:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
@@ -47,7 +47,7 @@
                 <button type="button" class="btn-3d btn-primary btn-full" onclick="window.manualLogin()" data-i18n="loginBtn">Secure Enterprise Login</button>
             </div>
 
-            <!-- Student Only Google Authentication (Upgraded Ultra-Premium Design) -->
+            <!-- Student Only Google Authentication -->
             <div id="student-oauth-container" style="display: none;">
                 <div class="auth-divider">
                     <span data-i18n="orGoogle">OFFICIAL GOOGLE WORKSPACE SSO</span>
@@ -63,7 +63,6 @@
                             </svg>
                         </div>
                         <span class="google-btn-text">Authenticate via Registered Student Google ID</span>
-                        <div class="google-btn-glow"></div>
                     </button>
                 </div>
             </div>
@@ -79,7 +78,7 @@
                 <div class="brand-mini-badge">SAV</div>
                 <div class="brand-titles">
                     <h3>Ambica Portal</h3>
-                    <span class="version-tag">ERP v4.4</span>
+                    <span class="version-tag">ERP v5.0</span>
                 </div>
             </div>
 
@@ -110,9 +109,6 @@
                 </button>
                 <button class="nav-item" id="menu-settings-link" onclick="window.navigateTo('view-admin-settings')">
                     <span class="nav-icon">⚙️</span> <span data-i18n="menuSettings">Admin Security Settings</span>
-                </button>
-                <button class="nav-item" onclick="window.navigateTo('view-ai-bot')">
-                    <span class="nav-icon">🤖</span> <span data-i18n="menuAI">Ambica AI Bot</span>
                 </button>
             </nav>
 
@@ -151,7 +147,7 @@
                     <div class="hero-left">
                         <span class="hero-tag" data-i18n="heroWelcomeTag">OFFICIAL ACADEMIC REPOSITORY</span>
                         <h1 data-i18n="heroWelcomeTitle">Welcome to Shree Ambica Vidhyalaya</h1>
-                        <p data-i18n="heroWelcomeDesc">An integrated institutional management platform supporting advanced student records, statutory compliance, real-time daily roll checks, and academic digital assistance.</p>
+                        <p data-i18n="heroWelcomeDesc">An integrated institutional management platform supporting advanced student records, statutory compliance, and real-time daily roll checks.</p>
                         <div class="hero-quick-actions" id="admin-quick-actions">
                             <button class="btn-3d btn-primary" onclick="window.navigateTo('view-student-mgmt')" data-i18n="quickNewAdmission">+ Enroll Student</button>
                             <button class="btn-3d btn-secondary" onclick="window.navigateTo('view-attendance')" data-i18n="quickAttendance">Mark Attendance</button>
@@ -259,7 +255,7 @@
                             </select>
                         </div>
                         <div class="input-wrapper">
-                            <label class="field-label" data-i18n="fldAadhaar">Student Aadhaar Number *</label>
+                            <label class="field-label" data-i18n="fldAadhaar">Student Govt ID Number *</label>
                             <input type="text" id="st_aadhaar" class="input-field-3d" placeholder="12-digit Identification" maxlength="12">
                         </div>
                         <div class="input-wrapper">
@@ -267,7 +263,7 @@
                             <input type="text" id="st_father" class="input-field-3d" placeholder="Father's Full Name">
                         </div>
                         <div class="input-wrapper">
-                            <label class="field-label" data-i18n="fldFatherAadhaar">Father Aadhaar Number</label>
+                            <label class="field-label" data-i18n="fldFatherAadhaar">Father Govt ID Number</label>
                             <input type="text" id="st_fa_aadhaar" class="input-field-3d" placeholder="Father Identification" maxlength="12">
                         </div>
                         <div class="input-wrapper">
@@ -275,7 +271,7 @@
                             <input type="text" id="st_mother" class="input-field-3d" placeholder="Mother's Full Name">
                         </div>
                         <div class="input-wrapper">
-                            <label class="field-label" data-i18n="fldMotherAadhaar">Mother Aadhaar Number</label>
+                            <label class="field-label" data-i18n="fldMotherAadhaar">Mother Govt ID Number</label>
                             <input type="text" id="st_mo_aadhaar" class="input-field-3d" placeholder="Mother Identification" maxlength="12">
                         </div>
                         <div class="input-wrapper">
@@ -316,7 +312,7 @@
                                     <th data-i18n="colRoll">Roll</th>
                                     <th data-i18n="colDob">DOB</th>
                                     <th data-i18n="colPhysical">Ht / Wt</th>
-                                    <th data-i18n="colAadhaar">Aadhaar</th>
+                                    <th data-i18n="colAadhaar">Govt ID</th>
                                     <th data-i18n="colParent">Parents</th>
                                     <th data-i18n="colPhone">Contact</th>
                                     <th data-i18n="colAddress">Address</th>
@@ -329,7 +325,7 @@
                 </div>
             </section>
 
-            <!-- SECTION 3: STUDENT-SPECIFIC DOCUMENT VAULT (Individual Student Archive) -->
+            <!-- SECTION 3: STUDENT-SPECIFIC DOCUMENT VAULT -->
             <section id="view-docs-vault" class="view-panel">
                 <div class="card-3d content-card">
                     <div class="card-title-row">
@@ -385,10 +381,10 @@
                             </div>
                         </div>
 
-                        <!-- 3. Aadhaar Card -->
+                        <!-- 3. Govt ID Card -->
                         <div class="upload-box-3d" id="tile-aadhaar">
                             <div class="upload-icon">🆔</div>
-                            <h4 data-i18n="docAadhaar">Student Aadhaar Card</h4>
+                            <h4 data-i18n="docAadhaar">Student Govt ID Card</h4>
                             <div class="doc-status-badge" id="status-aadhaar">Not Uploaded</div>
                             <input type="file" id="file-aadhaar" class="file-input-hidden" onchange="window.handleVaultUpload(this, 'aadhaar')">
                             <div class="vault-btn-cluster">
@@ -657,28 +653,6 @@
                 </div>
             </section>
 
-            <!-- SECTION 10: AMBICA AI ASSISTANT -->
-            <section id="view-ai-bot" class="view-panel">
-                <div class="card-3d content-card ai-assistant-card">
-                    <div class="card-title-row">
-                        <div>
-                            <h3>Ambica AI Academic Assistant</h3>
-                            <p class="text-muted" data-i18n="aiDesc">State-of-the-art academic intelligence powered by ChatGPT-4o Gateway</p>
-                        </div>
-                        <span class="badge-pill badge-ai">ChatGPT-4o</span>
-                    </div>
-                    <div id="chat-messages" class="chat-viewport">
-                        <div class="chat-bubble ai-bubble" id="ai-init-msg">
-                            Hello! I am the Shree Ambica Vidhyalaya AI Assistant. How can I assist you with your academics, syllabus, or administrative inquiries today?
-                        </div>
-                    </div>
-                    <div class="chat-input-bar">
-                        <input type="text" id="chat-input" class="input-field-3d" placeholder="Ask any academic or institutional question..." onkeypress="window.handleKey(event)">
-                        <button class="btn-3d btn-primary" onclick="window.sendChatMessage()">Send Query</button>
-                    </div>
-                </div>
-            </section>
-
         </main>
     </div>
 
@@ -693,7 +667,7 @@
         </div>
     </div>
 
-    <!-- Application Script -->
-    <script src="script.js?v=12"></script>
+    <!-- Main Logic Script -->
+    <script src="script.js?v=15"></script>
 </body>
 </html>
