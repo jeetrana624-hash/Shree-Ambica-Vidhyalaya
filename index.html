@@ -4,16 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shree Ambica Vidhyalaya - School Management Portal</title>
-    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="stylesheet" href="style.css?v=8">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 </head>
 <body>
 
+    <!-- iOS Glass Authentication Modal -->
     <div id="login-modal" class="modal-backdrop">
         <div class="card-3d auth-card">
             <div class="school-brand">
@@ -22,17 +24,20 @@
                 <p class="brand-subtitle">School Information & Management System</p>
             </div>
 
+            <!-- Role Selector -->
             <div class="role-segmented-control">
                 <button type="button" id="role-school" class="role-tab active" onclick="window.setRole('school')">Administrator</button>
                 <button type="button" id="role-student" class="role-tab" onclick="window.setRole('student')">Student Portal</button>
             </div>
 
+            <!-- Administrator / Manual ID & Password Form -->
             <div id="credentials-box" class="form-group">
                 <input type="text" id="login-username" class="input-field" placeholder="Administrator ID">
                 <input type="password" id="login-password" class="input-field" placeholder="Password">
                 <button type="button" class="btn-3d btn-primary btn-full" onclick="window.manualLogin()">Secure Login</button>
             </div>
 
+            <!-- Student Only Google Authentication -->
             <div id="student-oauth-container" style="display: none;">
                 <div class="auth-divider">
                     <span>STUDENT SIGN IN</span>
@@ -46,7 +51,9 @@
         </div>
     </div>
 
+    <!-- Main Dashboard Application -->
     <div class="app-layout" id="main-content" style="display: none;">
+        <!-- Top App Bar -->
         <header class="card-3d app-header">
             <div class="header-left">
                 <div class="brand-icon-sm">SAV</div>
@@ -61,6 +68,7 @@
             <button class="btn-3d btn-danger btn-sm" onclick="window.logout()">Terminate Session</button>
         </header>
 
+        <!-- Admin Management Panel -->
         <section id="admin-panel" class="card-3d content-card">
             <div class="card-title-row">
                 <h3>Enroll New Student</h3>
@@ -97,6 +105,7 @@
             </div>
         </section>
 
+        <!-- Student Database Table -->
         <section class="card-3d content-card">
             <div class="card-title-row">
                 <h3>Student Registry</h3>
@@ -121,10 +130,11 @@
             </div>
         </section>
 
+        <!-- Ambica AI Academic Assistant -->
         <section class="card-3d content-card ai-assistant-card">
             <div class="card-title-row">
                 <h3>Ambica AI Academic Assistant</h3>
-                <span class="badge-pill badge-ai">Smart AI</span>
+                <span class="badge-pill badge-ai">ChatGPT-4o</span>
             </div>
             <div id="chat-messages" class="chat-viewport">
                 <div class="chat-bubble ai-bubble">
@@ -137,6 +147,7 @@
             </div>
         </section>
 
+        <!-- Credits Footer -->
         <footer class="card-3d app-footer">
             <p class="footer-title">Engineering & Development Team</p>
             <div class="team-grid">
@@ -148,7 +159,7 @@
         </footer>
     </div>
 
-    <script src="https://js.puter.com/v2/"></script>
-    <script src="script.js?v=5"></script>
+    <!-- Application JavaScript -->
+    <script src="script.js?v=8"></script>
 </body>
 </html>
