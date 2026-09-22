@@ -19,8 +19,9 @@ const auth = firebase.auth();
 
 let currentRole = 'school';
 let currentLanguage = 'en';
+let activeVaultStudentUID = null;
 
-// Admin Default Credentials in LocalStorage
+// Admin Default Credentials
 function getAdminCredentials() {
     const saved = localStorage.getItem('sav_admin_credentials');
     return saved ? JSON.parse(saved) : { id: "admin", pass: "admin123" };
@@ -34,7 +35,7 @@ const translations = {
         adminRole: "Administrator",
         studentRole: "Student Portal",
         loginBtn: "Secure Enterprise Login",
-        orGoogle: "REGISTERED STUDENT GOOGLE SSO",
+        orGoogle: "OFFICIAL GOOGLE WORKSPACE SSO",
         menuHome: "Dashboard Home",
         menuStudents: "Student Admission & Registry",
         menuVault: "Document Vault",
@@ -92,15 +93,15 @@ const translations = {
         colPhone: "Contact",
         colAddress: "Address",
         colActions: "Actions",
-        vaultTitle: "Google Cloud 5TB Institutional Document Repository",
-        vaultDesc: "Statutory Certificates, Identity Proofs, and High-Resolution Student Photographs",
+        vaultTitle: "Student Individual Document Archive (5TB Cloud Vault)",
+        vaultDesc: "Manage and audit identity, photographs, and statutory certifications on a per-student basis",
         docPassport: "Student Passport Photo",
         docBirth: "Birth Certificate",
         docAadhaar: "Student Aadhaar Card",
         docIncome: "Income Certificate",
         docCaste: "Caste Certificate",
-        docParentsAadhaar: "Parents Aadhaar Documents",
-        btnUpload: "Choose File",
+        docParentsAadhaar: "Parents Proofs",
+        btnUpload: "Upload",
         attTitle: "Daily Digital Attendance Register",
         attDesc: "Record real-time student presence and generate daily roll calls",
         colAttendanceStatus: "Status",
@@ -135,7 +136,7 @@ const translations = {
         adminRole: "વહીવટકર્તા (Admin)",
         studentRole: "વિદ્યાર્થી પોર્ટલ",
         loginBtn: "સુરક્ષિત લૉગિન",
-        orGoogle: "નોંધાયેલા વિદ્યાર્થીનું ગૂગલ લૉગિન",
+        orGoogle: "સત્તાવાર ગૂગલ SSO લૉગિન",
         menuHome: "ડેશબોર્ડ મુખ્ય પૃષ્ઠ",
         menuStudents: "વિદ્યાર્થી પ્રવેશ / રજિસ્ટર",
         menuVault: "દસ્તાવેજ સંગ્રહાલય",
@@ -193,15 +194,15 @@ const translations = {
         colPhone: "સંપર્ક",
         colAddress: "સરનામું",
         colActions: "કાર્યવાહી",
-        vaultTitle: "ગૂગલ ક્લાઉડ 5TB દસ્તાવેજ સંગ્રહાગાર",
-        vaultDesc: "પ્રમાણપત્રો, આધાર કાર્ડ અને પાસપોર્ટ સાઇઝ ફોટાઓનું ડિજિટલ આર્કાઇવ",
+        vaultTitle: "વિદ્યાર્થી દસ્તાવેજ સંગ્રહાગાર (5TB Cloud Vault)",
+        vaultDesc: "દરેક વિદ્યાર્થીવાર ઓળખ પુરાવા, ફોટો અને પ્રમાણપત્રોનું સંચાલન",
         docPassport: "પાસપોર્ટ સાઇઝ ફોટો",
         docBirth: "જન્મ પ્રમાણપત્ર",
         docAadhaar: "વિદ્યાર્થી આધાર કાર્ડ",
         docIncome: "આવકનો દાખલો",
         docCaste: "જાતિનો દાખલો",
-        docParentsAadhaar: "માતા-પિતાનું આધાર કાર્ડ",
-        btnUpload: "ફાઇલ પસંદ કરો",
+        docParentsAadhaar: "માતા-પિતાના પુરાવા",
+        btnUpload: "અપલોડ",
         attTitle: "દૈનિક ઓનલાઇન હાજરી રજિસ્ટર",
         attDesc: "દરેક વર્ગની તારીખવાર ડિજિટલ હાજરી ભરો",
         colAttendanceStatus: "સ્થિતિ",
@@ -236,7 +237,7 @@ const translations = {
         adminRole: "प्रशासक (Admin)",
         studentRole: "छात्र पोर्टल",
         loginBtn: "सुरक्षित लॉगिन",
-        orGoogle: "पंजीकृत छात्र गूगल लॉगिन",
+        orGoogle: "आधिकारिक गूगल SSO लॉगिन",
         menuHome: "डैशबोर्ड मुख्य पृष्ठ",
         menuStudents: "छात्र प्रवेश / रजिस्टर",
         menuVault: "दस्तावेज़ संग्रह",
@@ -294,15 +295,15 @@ const translations = {
         colPhone: "संपर्क",
         colAddress: "पता",
         colActions: "कार्यवाही",
-        vaultTitle: "गूगल क्लाउड 5TB दस्तावेज़ संग्रह",
-        vaultDesc: "प्रमाण पत्र, आधार कार्ड और पासपोर्ट फ़ोटो का डिजिटल संग्रह",
+        vaultTitle: "छात्र दस्तावेज़ संग्रह (5TB Cloud Vault)",
+        vaultDesc: "छात्र वार पहचान पत्र, फोटो और प्रमाण पत्रों का प्रबंधन",
         docPassport: "पासपोर्ट साइज फोटो",
         docBirth: "जन्म प्रमाण पत्र",
         docAadhaar: "छात्र आधार कार्ड",
         docIncome: "आय प्रमाण पत्र",
         docCaste: "जाति प्रमाण पत्र",
-        docParentsAadhaar: "माता-पिता का आधार",
-        btnUpload: "फ़ाइल चुनें",
+        docParentsAadhaar: "माता-पिता के दस्तावेज",
+        btnUpload: "अपलोड",
         attTitle: "दैनिक डिजिटल उपस्थिति रजिस्टर",
         attDesc: "प्रत्येक कक्षा की दैनिक उपस्थिति दर्ज करें",
         colAttendanceStatus: "स्थिति",
@@ -408,11 +409,11 @@ window.manualLogin = function() {
             alert(currentLanguage === 'gu' ? "અમાન્ય Administrator ઓળખ!" : "Invalid Administrator credentials!");
         }
     } else {
-        // Student UID & Password Check against registered students
         const students = getStudents();
         const matched = students.find(s => (s.uid === user || s.gr === user) && s.password === pass);
 
         if (matched) {
+            activeVaultStudentUID = matched.uid;
             openPortal(matched.name);
         } else {
             alert(currentLanguage === 'gu' 
@@ -434,11 +435,11 @@ window.googleLogin = function() {
             const user = result.user;
             const userEmail = (user.email || "").toLowerCase();
 
-            // Check if this email exists in registered students
             const students = getStudents();
             const matched = students.find(s => (s.email || "").toLowerCase() === userEmail);
 
             if (matched) {
+                activeVaultStudentUID = matched.uid;
                 openPortal(matched.name);
             } else {
                 auth.signOut();
@@ -458,7 +459,7 @@ function openPortal(name) {
     document.getElementById('user-display-name').innerText = name;
     document.getElementById('user-badge').innerText = currentRole === 'school' ? 'Principal' : 'Student';
 
-    // Strict Student Read-Only Restrictions
+    // Role-based restrictions
     if (currentRole === 'student') {
         document.getElementById('admin-quick-actions').style.display = 'none';
         document.getElementById('admin-enrollment-card').style.display = 'none';
@@ -469,7 +470,8 @@ function openPortal(name) {
         document.getElementById('att-mark-header').style.display = 'none';
         document.getElementById('menu-settings-link').style.display = 'none';
         
-        // Hide upload buttons in Document Vault for students
+        // Lock Document selector for student to own UID
+        document.getElementById('vault-student-selector').style.display = 'none';
         document.querySelectorAll('.admin-only-btn').forEach(b => b.style.display = 'none');
     } else {
         document.getElementById('admin-quick-actions').style.display = 'flex';
@@ -480,10 +482,12 @@ function openPortal(name) {
         document.getElementById('att-submit-container').style.display = 'flex';
         document.getElementById('att-mark-header').style.display = 'table-cell';
         document.getElementById('menu-settings-link').style.display = 'flex';
+        document.getElementById('vault-student-selector').style.display = 'inline-block';
         document.querySelectorAll('.admin-only-btn').forEach(b => b.style.display = 'inline-flex');
     }
 
     loadStudents();
+    populateVaultStudentDropdown();
     loadHomeData();
     loadAttendanceRoster();
     loadNotices();
@@ -499,12 +503,8 @@ window.logout = function() {
 
 // 5. Sidebar Navigation Controller
 window.navigateTo = function(viewId) {
-    document.querySelectorAll('.view-panel').forEach(panel => {
-        panel.classList.remove('active');
-    });
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.classList.remove('active');
-    });
+    document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
 
     const target = document.getElementById(viewId);
     if (target) target.classList.add('active');
@@ -598,12 +598,14 @@ window.addStudentRecord = function() {
     const list = getStudents();
     list.push({
         gr, uid, password, email, name, standard, roll, dob, gender, weight, height,
-        blood, aadhaar, father, fa_aadhaar, mother, mo_aadhaar, phone, address
+        blood, aadhaar, father, fa_aadhaar, mother, mo_aadhaar, phone, address,
+        documents: {} // Dedicated individual storage for this student
     });
     saveStudents(list);
 
     document.querySelectorAll('#admin-enrollment-card input, #admin-enrollment-card textarea').forEach(inp => inp.value = '');
     loadStudents();
+    populateVaultStudentDropdown();
     alert(currentLanguage === 'gu' ? 'વિદ્યાર્થીનો રેકોર્ડ સફળતાપૂર્વક ઉમેરાઈ ગયો!' : 'Student record registered successfully!');
 };
 
@@ -613,6 +615,7 @@ window.deleteStudent = function(index) {
         list.splice(index, 1);
         saveStudents(list);
         loadStudents();
+        populateVaultStudentDropdown();
     }
 };
 
@@ -624,17 +627,186 @@ window.filterStudents = function() {
     });
 };
 
-// 7. Document Vault Preview
-window.previewDocUpload = function(input, targetId) {
+// ==========================================================================
+// 7. STUDENT-SPECIFIC DOCUMENT VAULT LOGIC (Upload, Preview, Download, N/A)
+// ==========================================================================
+function populateVaultStudentDropdown() {
+    const sel = document.getElementById('vault-student-selector');
+    const students = getStudents();
+    sel.innerHTML = '<option value="">-- Choose Enrolled Student --</option>';
+
+    students.forEach(st => {
+        sel.innerHTML += `<option value="${st.uid}">${st.name} (UID: ${st.uid} | Std: ${st.standard})</option>`;
+    });
+
+    // Auto-select if logged in as student
+    if (currentRole === 'student' && activeVaultStudentUID) {
+        sel.value = activeVaultStudentUID;
+        window.loadStudentVaultDocs();
+    }
+}
+
+window.loadStudentVaultDocs = function() {
+    const uid = currentRole === 'student' ? activeVaultStudentUID : document.getElementById('vault-student-selector').value;
+    const banner = document.getElementById('vault-student-banner');
+
+    if (!uid) {
+        banner.style.display = 'none';
+        resetVaultTiles();
+        return;
+    }
+
+    const students = getStudents();
+    const st = students.find(s => s.uid === uid);
+    if (!st) return;
+
+    // Display Dossier Banner
+    banner.style.display = 'flex';
+    document.getElementById('vault-dossier-avatar').innerText = st.name.substring(0, 2).toUpperCase();
+    document.getElementById('vault-dossier-name').innerText = st.name;
+    document.getElementById('vault-dossier-gr').innerText = `GR: ${st.gr}`;
+    document.getElementById('vault-dossier-uid').innerText = `UID: ${st.uid}`;
+    document.getElementById('vault-dossier-std').innerText = `Std: ${st.standard}`;
+
+    const docs = st.documents || {};
+    const docTypes = ['photo', 'birth', 'aadhaar', 'income', 'caste', 'parents'];
+
+    docTypes.forEach(type => {
+        const statusBadge = document.getElementById(`status-${type}`);
+        const prevBtn = document.getElementById(`prev-${type}`);
+        const downBtn = document.getElementById(`down-${type}`);
+
+        if (docs[type] && docs[type].status === 'na') {
+            statusBadge.innerText = "Not Applicable (N/A)";
+            statusBadge.className = "doc-status-badge status-na";
+            prevBtn.style.display = 'none';
+            downBtn.style.display = 'none';
+        } else if (docs[type] && docs[type].data) {
+            statusBadge.innerText = `Verified (${docs[type].name || 'Document'})`;
+            statusBadge.className = "doc-status-badge status-ready";
+            prevBtn.style.display = 'inline-flex';
+            downBtn.style.display = 'inline-flex';
+        } else {
+            statusBadge.innerText = "Pending / Missing";
+            statusBadge.className = "doc-status-badge";
+            prevBtn.style.display = 'none';
+            downBtn.style.display = 'none';
+        }
+    });
+};
+
+function resetVaultTiles() {
+    const docTypes = ['photo', 'birth', 'aadhaar', 'income', 'caste', 'parents'];
+    docTypes.forEach(type => {
+        const statusBadge = document.getElementById(`status-${type}`);
+        statusBadge.innerText = "Pending / Missing";
+        statusBadge.className = "doc-status-badge";
+        document.getElementById(`prev-${type}`).style.display = 'none';
+        document.getElementById(`down-${type}`).style.display = 'none';
+    });
+}
+
+// Upload Handler (Stores Base64 into student's individual dossier)
+window.handleVaultUpload = function(input, docType) {
+    const uid = currentRole === 'student' ? activeVaultStudentUID : document.getElementById('vault-student-selector').value;
+    if (!uid) {
+        alert(currentLanguage === 'gu' ? 'કૃપા કરીને પહેલા વિદ્યાર્થી પસંદ કરો!' : 'Please select a student first!');
+        input.value = '';
+        return;
+    }
+
     if (input.files && input.files[0]) {
         const file = input.files[0];
-        const statusPill = document.getElementById(targetId);
-        statusPill.innerText = `✓ Synchronized (${(file.size / 1024).toFixed(1)} KB)`;
-        statusPill.style.color = '#10b981';
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            const base64Data = e.target.result;
+            const students = getStudents();
+            const idx = students.findIndex(s => s.uid === uid);
+
+            if (idx !== -1) {
+                if (!students[idx].documents) students[idx].documents = {};
+                students[idx].documents[docType] = {
+                    status: 'uploaded',
+                    name: file.name,
+                    size: (file.size / 1024).toFixed(1) + " KB",
+                    type: file.type,
+                    data: base64Data
+                };
+                saveStudents(students);
+                window.loadStudentVaultDocs();
+                alert(currentLanguage === 'gu' ? 'દસ્તાવેજ સફળતાપૂર્વક અપલોડ થઈ ગયો છે!' : 'Document uploaded successfully!');
+            }
+        };
+        reader.readAsDataURL(file);
     }
 };
 
-// 8. Digital Attendance Register (Admin can edit, Student only views)
+// Mark as Not Applicable (N/A)
+window.markDocNA = function(docType) {
+    const uid = currentRole === 'student' ? activeVaultStudentUID : document.getElementById('vault-student-selector').value;
+    if (!uid) {
+        alert(currentLanguage === 'gu' ? 'કૃપા કરીને પહેલા વિદ્યાર્થી પસંદ કરો!' : 'Please select a student first!');
+        return;
+    }
+
+    const students = getStudents();
+    const idx = students.findIndex(s => s.uid === uid);
+
+    if (idx !== -1) {
+        if (!students[idx].documents) students[idx].documents = {};
+        students[idx].documents[docType] = {
+            status: 'na',
+            name: 'Not Applicable'
+        };
+        saveStudents(students);
+        window.loadStudentVaultDocs();
+    }
+};
+
+// Preview Document Modal
+window.previewDoc = function(docType) {
+    const uid = currentRole === 'student' ? activeVaultStudentUID : document.getElementById('vault-student-selector').value;
+    const students = getStudents();
+    const st = students.find(s => s.uid === uid);
+
+    if (st && st.documents && st.documents[docType] && st.documents[docType].data) {
+        const doc = st.documents[docType];
+        document.getElementById('modal-doc-title').innerText = `${st.name} - ${docType.toUpperCase()}`;
+        const body = document.getElementById('modal-doc-body');
+
+        if (doc.data.startsWith('data:image')) {
+            body.innerHTML = `<img src="${doc.data}" alt="Preview" style="max-height: 480px;">`;
+        } else {
+            body.innerHTML = `<embed src="${doc.data}" type="${doc.type}" width="100%" height="450px" />`;
+        }
+
+        document.getElementById('doc-modal').style.display = 'flex';
+    }
+};
+
+window.closeDocModal = function() {
+    document.getElementById('doc-modal').style.display = 'none';
+};
+
+// Download Document
+window.downloadDoc = function(docType) {
+    const uid = currentRole === 'student' ? activeVaultStudentUID : document.getElementById('vault-student-selector').value;
+    const students = getStudents();
+    const st = students.find(s => s.uid === uid);
+
+    if (st && st.documents && st.documents[docType] && st.documents[docType].data) {
+        const doc = st.documents[docType];
+        const a = document.createElement('a');
+        a.href = doc.data;
+        a.download = `${st.uid}_${docType}_${doc.name || 'document'}`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+};
+
+// 8. Digital Attendance Register
 window.loadAttendanceRoster = function() {
     const std = document.getElementById('att-standard-filter').value;
     const dateInput = document.getElementById('att-date');
@@ -846,7 +1018,7 @@ window.updateAdminCredentials = function() {
     document.getElementById('cfg-new-pass').value = '';
 };
 
-// 13. Ambica AI ChatGPT-4o Engine (Unbroken & Working Gateway)
+// 13. Ambica AI ChatGPT-4o Engine
 window.handleKey = function(e) {
     if (e.key === 'Enter') window.sendChatMessage();
 };
