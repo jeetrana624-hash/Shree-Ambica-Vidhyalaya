@@ -27,7 +27,7 @@ function getAdminCredentials() {
     return saved ? JSON.parse(saved) : { id: "admin", pass: "admin123" };
 }
 
-// 2. Multilingual Translations
+// 2. Multilingual Translations Dictionary
 const translations = {
     en: {
         appSubtitle: "Enterprise Academic & Management Portal",
@@ -71,11 +71,11 @@ const translations = {
         fldWeight: "Weight (KG)",
         fldHeight: "Height (CM)",
         fldBlood: "Blood Group",
-        fldAadhaar: "Student Aadhaar Number *",
+        fldAadhaar: "Student Identification Number *",
         fldFatherName: "Father / Guardian Name",
-        fldFatherAadhaar: "Father Aadhaar Number",
+        fldFatherAadhaar: "Father Identification Number",
         fldMotherName: "Mother Name",
-        fldMotherAadhaar: "Mother Aadhaar Number",
+        fldMotherAadhaar: "Mother Identification Number",
         fldPhone: "Emergency Contact Number *",
         fldAddress: "Residential Address *",
         btnSaveStudent: "Register & Save Student Data",
@@ -88,7 +88,7 @@ const translations = {
         colRoll: "Roll",
         colDob: "DOB",
         colPhysical: "Ht / Wt",
-        colAadhaar: "Aadhaar",
+        colAadhaar: "Govt ID",
         colParent: "Parents",
         colPhone: "Contact",
         colAddress: "Address",
@@ -97,7 +97,7 @@ const translations = {
         vaultDesc: "Manage and audit identity, photographs, and statutory certifications on a per-student basis",
         docPassport: "Student Passport Photo",
         docBirth: "Birth Certificate",
-        docAadhaar: "Student Aadhaar Card",
+        docAadhaar: "Student Govt ID Card",
         docIncome: "Income Certificate",
         docCaste: "Caste Certificate",
         docParentsAadhaar: "Parents Proofs",
@@ -151,7 +151,7 @@ const translations = {
         institutionalPortal: "શાળા સંચાલન પ્રણાલી",
         heroWelcomeTag: "સત્તાવાર શૈક્ષણિક પોર્ટલ",
         heroWelcomeTitle: "શ્રી અંબિકા વિદ્યાલયમાં આપનું સ્વાગત છે",
-        heroWelcomeDesc: "વિદ્યાર્થી પ્રવેશ, આધાર અને પ્રમાણપત્રો, દૈનિક હાજરી, સરકારી પરિપત્રો અને AI સહાયક માટેનું સંપૂર્ણ ડિજિટલ પ્લેટફોર્મ.",
+        heroWelcomeDesc: "વિદ્યાર્થી પ્રવેશ, ઓળખ પુરાવા અને પ્રમાણપત્રો, દૈનિક હાજરી, સરકારી પરિપત્રો અને AI સહાયક માટેનું સંપૂર્ણ ડિજિટલ પ્લેટફોર્મ.",
         quickNewAdmission: "+ નવો પ્રવેશ",
         quickAttendance: "હાજરી પૂરો",
         statEnrolled: "કુલ વિદ્યાર્થીઓ",
@@ -172,11 +172,11 @@ const translations = {
         fldWeight: "વજન (કિલો)",
         fldHeight: "ઊંચાઈ (સેમી)",
         fldBlood: "બ્લડ ગ્રુપ",
-        fldAadhaar: "વિદ્યાર્થી આધાર નંબર *",
+        fldAadhaar: "વિદ્યાર્થી ઓળખ નંબર *",
         fldFatherName: "પિતા / વાલીનું નામ",
-        fldFatherAadhaar: "પિતાનો આધાર નંબર",
+        fldFatherAadhaar: "પિતાનો ઓળખ નંબર",
         fldMotherName: "માતાનું નામ",
-        fldMotherAadhaar: "માતાનો આધાર નંબર",
+        fldMotherAadhaar: "માતાનો ઓળખ નંબર",
         fldPhone: "મોબાઈલ નંબર *",
         fldAddress: "રહેઠાણનું સરનામું *",
         btnSaveStudent: "વિદ્યાર્થી માહિતી સાચવો",
@@ -189,7 +189,7 @@ const translations = {
         colRoll: "રોલ",
         colDob: "જન્મ તારીખ",
         colPhysical: "ઊંચાઈ/વજન",
-        colAadhaar: "આધાર",
+        colAadhaar: "ઓળખ ક્રમાંક",
         colParent: "માતા-પિતા",
         colPhone: "સંપર્ક",
         colAddress: "સરનામું",
@@ -198,7 +198,7 @@ const translations = {
         vaultDesc: "દરેક વિદ્યાર્થીવાર ઓળખ પુરાવા, ફોટો અને પ્રમાણપત્રોનું સંચાલન",
         docPassport: "પાસપોર્ટ સાઇઝ ફોટો",
         docBirth: "જન્મ પ્રમાણપત્ર",
-        docAadhaar: "વિદ્યાર્થી આધાર કાર્ડ",
+        docAadhaar: "વિદ્યાર્થી ઓળખ કાર્ડ",
         docIncome: "આવકનો દાખલો",
         docCaste: "જાતિનો દાખલો",
         docParentsAadhaar: "માતા-પિતાના પુરાવા",
@@ -273,11 +273,11 @@ const translations = {
         fldWeight: "वजन (किग्रा)",
         fldHeight: "ऊंचाई (सेमी)",
         fldBlood: "रक्त समूह",
-        fldAadhaar: "छात्र आधार संख्या *",
+        fldAadhaar: "छात्र पहचान संख्या *",
         fldFatherName: "पिता / अभिभावक का नाम",
-        fldFatherAadhaar: "पिता का आधार नंबर",
+        fldFatherAadhaar: "पिता का पहचान नंबर",
         fldMotherName: "माता का नाम",
-        fldMotherAadhaar: "माता का आधार नंबर",
+        fldMotherAadhaar: "माता का पहचान नंबर",
         fldPhone: "मोबाइल नंबर *",
         fldAddress: "स्थायी पता *",
         btnSaveStudent: "छात्र डेटा सुरक्षित करें",
@@ -290,7 +290,7 @@ const translations = {
         colRoll: "रोल",
         colDob: "जन्म तिथि",
         colPhysical: "ऊंचाई/वजन",
-        colAadhaar: "आधार",
+        colAadhaar: "पहचान पत्र",
         colParent: "माता-पिता",
         colPhone: "संपर्क",
         colAddress: "पता",
@@ -299,7 +299,7 @@ const translations = {
         vaultDesc: "छात्र वार पहचान पत्र, फोटो और प्रमाण पत्रों का प्रबंधन",
         docPassport: "पासपोर्ट साइज फोटो",
         docBirth: "जन्म प्रमाण पत्र",
-        docAadhaar: "छात्र आधार कार्ड",
+        docAadhaar: "छात्र पहचान कार्ड",
         docIncome: "आय प्रमाण पत्र",
         docCaste: "जाति प्रमाण पत्र",
         docParentsAadhaar: "माता-पिता के दस्तावेज",
@@ -459,7 +459,7 @@ function openPortal(name) {
     document.getElementById('user-display-name').innerText = name;
     document.getElementById('user-badge').innerText = currentRole === 'school' ? 'Principal' : 'Student';
 
-    // Role-based restrictions
+    // Strict Student Read-Only Restrictions
     if (currentRole === 'student') {
         document.getElementById('admin-quick-actions').style.display = 'none';
         document.getElementById('admin-enrollment-card').style.display = 'none';
@@ -469,8 +469,6 @@ function openPortal(name) {
         document.getElementById('att-submit-container').style.display = 'none';
         document.getElementById('att-mark-header').style.display = 'none';
         document.getElementById('menu-settings-link').style.display = 'none';
-        
-        // Lock Document selector for student to own UID
         document.getElementById('vault-student-selector').style.display = 'none';
         document.querySelectorAll('.admin-only-btn').forEach(b => b.style.display = 'none');
     } else {
@@ -558,7 +556,7 @@ function loadStudents() {
             <td><code>${st.roll}</code></td>
             <td>${st.dob || '-'}</td>
             <td>${st.height ? st.height + 'cm' : '-'} / ${st.weight ? st.weight + 'kg' : '-'}</td>
-            <td><code>${st.aadhaar || '-'}</code></td>
+            <td><code>${st.aadhaar ? 'Verified' : '-'}</code></td>
             <td>${st.father || '-'} / ${st.mother || '-'}</td>
             <td><code>${st.phone || '-'}</code></td>
             <td><small>${st.address || '-'}</small></td>
@@ -599,7 +597,7 @@ window.addStudentRecord = function() {
     list.push({
         gr, uid, password, email, name, standard, roll, dob, gender, weight, height,
         blood, aadhaar, father, fa_aadhaar, mother, mo_aadhaar, phone, address,
-        documents: {} // Dedicated individual storage for this student
+        documents: {}
     });
     saveStudents(list);
 
@@ -627,9 +625,7 @@ window.filterStudents = function() {
     });
 };
 
-// ==========================================================================
-// 7. STUDENT-SPECIFIC DOCUMENT VAULT LOGIC (Upload, Preview, Download, N/A)
-// ==========================================================================
+// 7. Student-Specific Document Vault Logic
 function populateVaultStudentDropdown() {
     const sel = document.getElementById('vault-student-selector');
     const students = getStudents();
@@ -639,7 +635,6 @@ function populateVaultStudentDropdown() {
         sel.innerHTML += `<option value="${st.uid}">${st.name} (UID: ${st.uid} | Std: ${st.standard})</option>`;
     });
 
-    // Auto-select if logged in as student
     if (currentRole === 'student' && activeVaultStudentUID) {
         sel.value = activeVaultStudentUID;
         window.loadStudentVaultDocs();
@@ -660,7 +655,6 @@ window.loadStudentVaultDocs = function() {
     const st = students.find(s => s.uid === uid);
     if (!st) return;
 
-    // Display Dossier Banner
     banner.style.display = 'flex';
     document.getElementById('vault-dossier-avatar').innerText = st.name.substring(0, 2).toUpperCase();
     document.getElementById('vault-dossier-name').innerText = st.name;
@@ -706,7 +700,6 @@ function resetVaultTiles() {
     });
 }
 
-// Upload Handler (Stores Base64 into student's individual dossier)
 window.handleVaultUpload = function(input, docType) {
     const uid = currentRole === 'student' ? activeVaultStudentUID : document.getElementById('vault-student-selector').value;
     if (!uid) {
@@ -742,7 +735,6 @@ window.handleVaultUpload = function(input, docType) {
     }
 };
 
-// Mark as Not Applicable (N/A)
 window.markDocNA = function(docType) {
     const uid = currentRole === 'student' ? activeVaultStudentUID : document.getElementById('vault-student-selector').value;
     if (!uid) {
@@ -764,7 +756,6 @@ window.markDocNA = function(docType) {
     }
 };
 
-// Preview Document Modal
 window.previewDoc = function(docType) {
     const uid = currentRole === 'student' ? activeVaultStudentUID : document.getElementById('vault-student-selector').value;
     const students = getStudents();
@@ -789,7 +780,6 @@ window.closeDocModal = function() {
     document.getElementById('doc-modal').style.display = 'none';
 };
 
-// Download Document
 window.downloadDoc = function(docType) {
     const uid = currentRole === 'student' ? activeVaultStudentUID : document.getElementById('vault-student-selector').value;
     const students = getStudents();
@@ -1018,7 +1008,7 @@ window.updateAdminCredentials = function() {
     document.getElementById('cfg-new-pass').value = '';
 };
 
-// 13. Ambica AI ChatGPT-4o Engine
+// 13. Ambica AI Clean Engine
 window.handleKey = function(e) {
     if (e.key === 'Enter') window.sendChatMessage();
 };
@@ -1038,31 +1028,65 @@ window.sendChatMessage = async function() {
     chatBody.innerHTML += `<div class="chat-bubble ai-bubble" id="${loadingId}">${loadingText}</div>`;
     chatBody.scrollTop = chatBody.scrollHeight;
 
-    const langDirective = currentLanguage === 'gu' ? 'Respond purely in Gujarati.' : (currentLanguage === 'hi' ? 'Respond purely in Hindi.' : 'Respond purely in professional English.');
-    const systemPrompt = `You are the official smart academic AI assistant of Shree Ambica Vidhyalaya. Deliver structured, articulate, professional, and clear answers. ${langDirective}`;
+    const langInstruction = currentLanguage === 'gu' 
+        ? "તમારે સંપૂર્ણ જવાબ શુદ્ધ ગુજરાતીમાં જ આપવાનો છે. કોઈપણ પ્રકારનું કોડિંગ, JSON કે આંતરિક ટેકનિકલ લખાણ બતાવવું નહીં, માત્ર સીધો અને સાચો જવાબ આપવો." 
+        : (currentLanguage === 'hi' 
+            ? "आपको पूरा उत्तर शुद्ध हिंदी में देना है। कोई भी JSON या तकनीकी कोड न दिखाएं, केवल सीधा उत्तर दें।" 
+            : "Answer clearly and directly in professional English. Do not show internal reasoning, JSON, or debug code.");
+
+    const systemPrompt = `You are the official smart academic AI assistant of Shree Ambica Vidhyalaya school. ${langInstruction}`;
 
     try {
-        const targetUrl = "https://text.pollinations.ai/" + encodeURIComponent(systemPrompt + " | User Question: " + msg) + "?model=openai";
-        const response = await fetch(targetUrl);
+        const response = await fetch("https://text.pollinations.ai/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                messages: [
+                    { role: "system", content: systemPrompt },
+                    { role: "user", content: msg }
+                ],
+                model: "openai",
+                jsonMode: false
+            })
+        });
 
         if (response.ok) {
-            const reply = await response.text();
-            document.getElementById(loadingId).innerText = reply.trim() || "No response received.";
+            let text = await response.text();
+            
+            if (text.includes('"reasoning"') || text.includes('{"role"')) {
+                try {
+                    const parsed = JSON.parse(text);
+                    text = parsed.content || parsed.message?.content || parsed.text || text;
+                } catch(e) {
+                    const parts = text.split('"content":');
+                    if (parts.length > 1) {
+                        text = parts[1].replace(/["}]/g, '').trim();
+                    }
+                }
+            }
+            const cleanText = text.trim();
+            if (cleanText && !cleanText.startsWith("{")) {
+                document.getElementById(loadingId).innerText = cleanText;
+            } else {
+                throw new Error("Invalid format");
+            }
         } else {
             throw new Error("HTTP Status " + response.status);
         }
     } catch (err) {
         console.error("AI Error:", err);
         const q = msg.toLowerCase();
-        if (q.includes("time") || q.includes("સમય") || q.includes("समय")) {
+        if (q.includes("science") && (q.includes("10") || q.includes("std"))) {
+            document.getElementById(loadingId).innerText = "ધોરણ ૧૦ વિજ્ઞાનના પ્રકરણો:\n૧. રાસાયણિક પ્રક્રિયાઓ અને સમીકરણો\n૨. ઍસિડ, બેઇઝ અને ક્ષાર\n૩. ધાતુઓ અને અધાતુઓ\n૪. કાર્બન અને તેનાં સંયોજનો\n૫. જૈવિક ક્રિયાઓ\n૬. નિયંત્રણ અને સંકલન\n૭. સજીવો કેવી રીતે પ્રજનન કરે છે?\n૮. આનુવંશિકતા\n૯. પ્રકાશ – પરાવર્તન અને વક્રીભવન\n૧૦. માનવ-આંખ અને રંગબેરંગી દુનિયા\n૧૧. વિદ્યુત\n૧૨. વિદ્યુતપ્રવાહની ચુંબકીય અસરો\n૧૩. આપણું પર્યાવરણ";
+        } else if (q.includes("time") || q.includes("સમય") || q.includes("વાગ્યા")) {
             const now = new Date();
-            document.getElementById(loadingId).innerText = `Current Time: ${now.toLocaleTimeString()}`;
+            document.getElementById(loadingId).innerText = `અત્યારે સમય થયો છે: ${now.toLocaleTimeString('gu-IN')}`;
         } else {
-            document.getElementById(loadingId).innerText = currentLanguage === 'gu' ? "માફ કરજો, સર્વર કનેક્શનમાં ક્ષતિ આવી. ફરી પ્રયત્ન કરો." : "Server connection failure. Please retry.";
+            document.getElementById(loadingId).innerText = "માફ કરજો, સર્વર કનેક્શનમાં ક્ષતિ આવી. ફરી પ્રયત્ન કરો.";
         }
     }
     chatBody.scrollTop = chatBody.scrollHeight;
 };
 
-// Start in default language
+// Start default
 window.switchLanguage('en');
