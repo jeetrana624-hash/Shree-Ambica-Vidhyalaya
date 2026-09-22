@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shree Ambica Vidhyalaya - Enterprise ERP Portal</title>
-    <link rel="stylesheet" href="style.css?v=15">
+    <link rel="stylesheet" href="style.css?v=20">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+Gujarati:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
@@ -24,7 +24,6 @@
                 <p class="brand-subtitle" data-i18n="appSubtitle">Enterprise Academic & Management Portal</p>
             </div>
 
-            <!-- Language Switcher Bar -->
             <div class="lang-selection-group">
                 <label class="field-label-sm" data-i18n="selectLanguage">Portal System Language</label>
                 <div class="lang-pill-selector">
@@ -34,20 +33,17 @@
                 </div>
             </div>
 
-            <!-- Role Selector -->
             <div class="role-segmented-control">
                 <button type="button" id="role-school" class="role-tab active" onclick="window.setRole('school')" data-i18n="adminRole">Administrator</button>
                 <button type="button" id="role-student" class="role-tab" onclick="window.setRole('student')" data-i18n="studentRole">Student Portal</button>
             </div>
 
-            <!-- Secure Credentials Login -->
             <div id="credentials-box" class="form-group">
                 <input type="text" id="login-username" class="input-field-3d" placeholder="Administrator ID">
                 <input type="password" id="login-password" class="input-field-3d" placeholder="Password">
                 <button type="button" class="btn-3d btn-primary btn-full" onclick="window.manualLogin()" data-i18n="loginBtn">Secure Enterprise Login</button>
             </div>
 
-            <!-- Student Only Google Authentication -->
             <div id="student-oauth-container" style="display: none;">
                 <div class="auth-divider">
                     <span data-i18n="orGoogle">OFFICIAL GOOGLE WORKSPACE SSO</span>
@@ -78,7 +74,7 @@
                 <div class="brand-mini-badge">SAV</div>
                 <div class="brand-titles">
                     <h3>Ambica Portal</h3>
-                    <span class="version-tag">ERP v5.0</span>
+                    <span class="version-tag">ERP v5.2</span>
                 </div>
             </div>
 
@@ -225,7 +221,7 @@
                             <input type="number" id="st_roll" class="input-field-3d" placeholder="e.g., 24">
                         </div>
                         <div class="input-wrapper">
-                            <label class="field-label" data-i18n="fldDob">Date of Birth *</label>
+                            <label class="field-label" data-i18n="fldDob">Date of Birth (DD/MM/YYYY) *</label>
                             <input type="date" id="st_dob" class="input-field-3d">
                         </div>
                         <div class="input-wrapper">
@@ -255,7 +251,7 @@
                             </select>
                         </div>
                         <div class="input-wrapper">
-                            <label class="field-label" data-i18n="fldAadhaar">Student Govt ID Number *</label>
+                            <label class="field-label" data-i18n="fldAadhaar">Student Identification Number *</label>
                             <input type="text" id="st_aadhaar" class="input-field-3d" placeholder="12-digit Identification" maxlength="12">
                         </div>
                         <div class="input-wrapper">
@@ -263,7 +259,7 @@
                             <input type="text" id="st_father" class="input-field-3d" placeholder="Father's Full Name">
                         </div>
                         <div class="input-wrapper">
-                            <label class="field-label" data-i18n="fldFatherAadhaar">Father Govt ID Number</label>
+                            <label class="field-label" data-i18n="fldFatherAadhaar">Father Identification Number</label>
                             <input type="text" id="st_fa_aadhaar" class="input-field-3d" placeholder="Father Identification" maxlength="12">
                         </div>
                         <div class="input-wrapper">
@@ -271,7 +267,7 @@
                             <input type="text" id="st_mother" class="input-field-3d" placeholder="Mother's Full Name">
                         </div>
                         <div class="input-wrapper">
-                            <label class="field-label" data-i18n="fldMotherAadhaar">Mother Govt ID Number</label>
+                            <label class="field-label" data-i18n="fldMotherAadhaar">Mother Identification Number</label>
                             <input type="text" id="st_mo_aadhaar" class="input-field-3d" placeholder="Mother Identification" maxlength="12">
                         </div>
                         <div class="input-wrapper">
@@ -310,7 +306,7 @@
                                     <th data-i18n="colName">Student Name</th>
                                     <th data-i18n="colStd">Standard</th>
                                     <th data-i18n="colRoll">Roll</th>
-                                    <th data-i18n="colDob">DOB</th>
+                                    <th data-i18n="colDob">DOB (DD/MM/YYYY)</th>
                                     <th data-i18n="colPhysical">Ht / Wt</th>
                                     <th data-i18n="colAadhaar">Govt ID</th>
                                     <th data-i18n="colParent">Parents</th>
@@ -325,13 +321,13 @@
                 </div>
             </section>
 
-            <!-- SECTION 3: STUDENT-SPECIFIC DOCUMENT VAULT -->
+            <!-- SECTION 3: STUDENT-SPECIFIC DOCUMENT VAULT & GALLERY ARCHIVE -->
             <section id="view-docs-vault" class="view-panel">
                 <div class="card-3d content-card">
                     <div class="card-title-row">
                         <div>
-                            <h3 data-i18n="vaultTitle">Student Individual Document Archive (5TB Cloud Vault)</h3>
-                            <p class="text-muted" data-i18n="vaultDesc">Manage and audit identity, photographs, and statutory certifications on a per-student basis</p>
+                            <h3 data-i18n="vaultTitle">Student Individual Document Archive & Gallery</h3>
+                            <p class="text-muted" data-i18n="vaultDesc">Manage and audit identity proofs, certificates, and student gallery</p>
                         </div>
                         <div class="student-select-toolbar">
                             <label class="field-label-sm">Select Student Dossier:</label>
@@ -341,102 +337,125 @@
                         </div>
                     </div>
 
-                    <!-- Selected Student Dossier Info Banner -->
-                    <div id="vault-student-banner" class="vault-student-dossier" style="display: none;">
-                        <div class="dossier-avatar" id="vault-dossier-avatar">ST</div>
-                        <div class="dossier-details">
-                            <h4 id="vault-dossier-name">Student Full Name</h4>
-                            <p><span id="vault-dossier-gr">GR: -</span> | <span id="vault-dossier-uid">UID: -</span> | <span id="vault-dossier-std">Std: -</span></p>
-                        </div>
-                    </div>
-
-                    <!-- 6 Specific Statutory Document Upload Tiles -->
-                    <div class="doc-upload-grid" id="vault-tiles-grid">
-                        
-                        <!-- 1. Student Photo -->
-                        <div class="upload-box-3d" id="tile-photo">
-                            <div class="upload-icon">📷</div>
-                            <h4 data-i18n="docPassport">Student Passport Photo</h4>
-                            <div class="doc-status-badge" id="status-photo">Not Uploaded</div>
-                            <input type="file" id="file-photo" class="file-input-hidden" onchange="window.handleVaultUpload(this, 'photo')">
-                            <div class="vault-btn-cluster">
-                                <button class="btn-3d btn-primary btn-sm admin-only-btn" onclick="document.getElementById('file-photo').click()">Upload</button>
-                                <button class="btn-3d btn-secondary btn-sm" id="prev-photo" onclick="window.previewDoc('photo')" style="display:none;">View</button>
-                                <button class="btn-3d btn-secondary btn-sm" id="down-photo" onclick="window.downloadDoc('photo')" style="display:none;">Download</button>
-                                <button class="btn-3d btn-na btn-sm admin-only-btn" onclick="window.markDocNA('photo')">N/A</button>
+                    <!-- Split View Gallery Layout -->
+                    <div class="vault-gallery-wrapper">
+                        <!-- Left Student Profile Showcase -->
+                        <div class="student-profile-showcase card-3d">
+                            <div class="showcase-photo-container" id="showcase-photo-box">
+                                <span class="no-photo-placeholder">No Photo</span>
+                            </div>
+                            <h3 id="showcase-st-name">Select a Student</h3>
+                            <p class="showcase-meta"><span id="showcase-st-gr">GR: -</span> • <span id="showcase-st-uid">UID: -</span></p>
+                            <span class="badge-role" id="showcase-st-std">Standard -</span>
+                            <div class="showcase-divider"></div>
+                            <div class="showcase-stats">
+                                <div><small>Verified Docs</small><strong id="showcase-count-verified">0 / 6</strong></div>
+                                <div><small>Status</small><strong id="showcase-status-label" style="color:#60a5fa;">Awaiting</strong></div>
                             </div>
                         </div>
 
-                        <!-- 2. Birth Certificate -->
-                        <div class="upload-box-3d" id="tile-birth">
-                            <div class="upload-icon">📜</div>
-                            <h4 data-i18n="docBirth">Birth Certificate</h4>
-                            <div class="doc-status-badge" id="status-birth">Not Uploaded</div>
-                            <input type="file" id="file-birth" class="file-input-hidden" onchange="window.handleVaultUpload(this, 'birth')">
-                            <div class="vault-btn-cluster">
-                                <button class="btn-3d btn-primary btn-sm admin-only-btn" onclick="document.getElementById('file-birth').click()">Upload</button>
-                                <button class="btn-3d btn-secondary btn-sm" id="prev-birth" onclick="window.previewDoc('birth')" style="display:none;">View</button>
-                                <button class="btn-3d btn-secondary btn-sm" id="down-birth" onclick="window.downloadDoc('birth')" style="display:none;">Download</button>
-                                <button class="btn-3d btn-na btn-sm admin-only-btn" onclick="window.markDocNA('birth')">N/A</button>
+                        <!-- Right Documents Interactive Gallery Grid -->
+                        <div class="gallery-documents-container">
+                            <div class="doc-gallery-grid" id="vault-tiles-grid">
+                                
+                                <!-- 1. Student Passport Photo -->
+                                <div class="gallery-item-card card-3d" id="tile-photo">
+                                    <div class="gallery-thumb-slot" id="thumb-photo" onclick="window.previewDoc('photo')">📷</div>
+                                    <div class="gallery-details">
+                                        <h4 data-i18n="docPassport">Student Passport Photo</h4>
+                                        <div class="doc-status-badge" id="status-photo">Not Uploaded</div>
+                                    </div>
+                                    <input type="file" id="file-photo" class="file-input-hidden" onchange="window.handleVaultUpload(this, 'photo')">
+                                    <div class="gallery-actions">
+                                        <button class="btn-3d btn-primary btn-sm admin-only-btn" onclick="document.getElementById('file-photo').click()">Upload</button>
+                                        <button class="btn-3d btn-secondary btn-sm" id="prev-photo" onclick="window.previewDoc('photo')" style="display:none;">View</button>
+                                        <button class="btn-3d btn-secondary btn-sm" id="down-photo" onclick="window.downloadDoc('photo')" style="display:none;">Download</button>
+                                        <button class="btn-3d btn-na btn-sm admin-only-btn" onclick="window.markDocNA('photo')">N/A</button>
+                                    </div>
+                                </div>
+
+                                <!-- 2. Birth Certificate -->
+                                <div class="gallery-item-card card-3d" id="tile-birth">
+                                    <div class="gallery-thumb-slot" id="thumb-birth" onclick="window.previewDoc('birth')">📜</div>
+                                    <div class="gallery-details">
+                                        <h4 data-i18n="docBirth">Birth Certificate</h4>
+                                        <div class="doc-status-badge" id="status-birth">Not Uploaded</div>
+                                    </div>
+                                    <input type="file" id="file-birth" class="file-input-hidden" onchange="window.handleVaultUpload(this, 'birth')">
+                                    <div class="gallery-actions">
+                                        <button class="btn-3d btn-primary btn-sm admin-only-btn" onclick="document.getElementById('file-birth').click()">Upload</button>
+                                        <button class="btn-3d btn-secondary btn-sm" id="prev-birth" onclick="window.previewDoc('birth')" style="display:none;">View</button>
+                                        <button class="btn-3d btn-secondary btn-sm" id="down-birth" onclick="window.downloadDoc('birth')" style="display:none;">Download</button>
+                                        <button class="btn-3d btn-na btn-sm admin-only-btn" onclick="window.markDocNA('birth')">N/A</button>
+                                    </div>
+                                </div>
+
+                                <!-- 3. Govt ID Card -->
+                                <div class="gallery-item-card card-3d" id="tile-aadhaar">
+                                    <div class="gallery-thumb-slot" id="thumb-aadhaar" onclick="window.previewDoc('aadhaar')">🆔</div>
+                                    <div class="gallery-details">
+                                        <h4 data-i18n="docAadhaar">Student Govt ID Card</h4>
+                                        <div class="doc-status-badge" id="status-aadhaar">Not Uploaded</div>
+                                    </div>
+                                    <input type="file" id="file-aadhaar" class="file-input-hidden" onchange="window.handleVaultUpload(this, 'aadhaar')">
+                                    <div class="gallery-actions">
+                                        <button class="btn-3d btn-primary btn-sm admin-only-btn" onclick="document.getElementById('file-aadhaar').click()">Upload</button>
+                                        <button class="btn-3d btn-secondary btn-sm" id="prev-aadhaar" onclick="window.previewDoc('aadhaar')" style="display:none;">View</button>
+                                        <button class="btn-3d btn-secondary btn-sm" id="down-aadhaar" onclick="window.downloadDoc('aadhaar')" style="display:none;">Download</button>
+                                        <button class="btn-3d btn-na btn-sm admin-only-btn" onclick="window.markDocNA('aadhaar')">N/A</button>
+                                    </div>
+                                </div>
+
+                                <!-- 4. Income Certificate -->
+                                <div class="gallery-item-card card-3d" id="tile-income">
+                                    <div class="gallery-thumb-slot" id="thumb-income" onclick="window.previewDoc('income')">💼</div>
+                                    <div class="gallery-details">
+                                        <h4 data-i18n="docIncome">Income Certificate</h4>
+                                        <div class="doc-status-badge" id="status-income">Not Uploaded</div>
+                                    </div>
+                                    <input type="file" id="file-income" class="file-input-hidden" onchange="window.handleVaultUpload(this, 'income')">
+                                    <div class="gallery-actions">
+                                        <button class="btn-3d btn-primary btn-sm admin-only-btn" onclick="document.getElementById('file-income').click()">Upload</button>
+                                        <button class="btn-3d btn-secondary btn-sm" id="prev-income" onclick="window.previewDoc('income')" style="display:none;">View</button>
+                                        <button class="btn-3d btn-secondary btn-sm" id="down-income" onclick="window.downloadDoc('income')" style="display:none;">Download</button>
+                                        <button class="btn-3d btn-na btn-sm admin-only-btn" onclick="window.markDocNA('income')">N/A</button>
+                                    </div>
+                                </div>
+
+                                <!-- 5. Caste Certificate -->
+                                <div class="gallery-item-card card-3d" id="tile-caste">
+                                    <div class="gallery-thumb-slot" id="thumb-caste" onclick="window.previewDoc('caste')">🏷️</div>
+                                    <div class="gallery-details">
+                                        <h4 data-i18n="docCaste">Caste Certificate</h4>
+                                        <div class="doc-status-badge" id="status-caste">Not Uploaded</div>
+                                    </div>
+                                    <input type="file" id="file-caste" class="file-input-hidden" onchange="window.handleVaultUpload(this, 'caste')">
+                                    <div class="gallery-actions">
+                                        <button class="btn-3d btn-primary btn-sm admin-only-btn" onclick="document.getElementById('file-caste').click()">Upload</button>
+                                        <button class="btn-3d btn-secondary btn-sm" id="prev-caste" onclick="window.previewDoc('caste')" style="display:none;">View</button>
+                                        <button class="btn-3d btn-secondary btn-sm" id="down-caste" onclick="window.downloadDoc('caste')" style="display:none;">Download</button>
+                                        <button class="btn-3d btn-na btn-sm admin-only-btn" onclick="window.markDocNA('caste')">N/A</button>
+                                    </div>
+                                </div>
+
+                                <!-- 6. Parents Proof -->
+                                <div class="gallery-item-card card-3d" id="tile-parents">
+                                    <div class="gallery-thumb-slot" id="thumb-parents" onclick="window.previewDoc('parents')">👨‍👩‍👧</div>
+                                    <div class="gallery-details">
+                                        <h4 data-i18n="docParentsAadhaar">Parents Proofs</h4>
+                                        <div class="doc-status-badge" id="status-parents">Not Uploaded</div>
+                                    </div>
+                                    <input type="file" id="file-parents" class="file-input-hidden" onchange="window.handleVaultUpload(this, 'parents')">
+                                    <div class="gallery-actions">
+                                        <button class="btn-3d btn-primary btn-sm admin-only-btn" onclick="document.getElementById('file-parents').click()">Upload</button>
+                                        <button class="btn-3d btn-secondary btn-sm" id="prev-parents" onclick="window.previewDoc('parents')" style="display:none;">View</button>
+                                        <button class="btn-3d btn-secondary btn-sm" id="down-parents" onclick="window.downloadDoc('parents')" style="display:none;">Download</button>
+                                        <button class="btn-3d btn-na btn-sm admin-only-btn" onclick="window.markDocNA('parents')">N/A</button>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
-
-                        <!-- 3. Govt ID Card -->
-                        <div class="upload-box-3d" id="tile-aadhaar">
-                            <div class="upload-icon">🆔</div>
-                            <h4 data-i18n="docAadhaar">Student Govt ID Card</h4>
-                            <div class="doc-status-badge" id="status-aadhaar">Not Uploaded</div>
-                            <input type="file" id="file-aadhaar" class="file-input-hidden" onchange="window.handleVaultUpload(this, 'aadhaar')">
-                            <div class="vault-btn-cluster">
-                                <button class="btn-3d btn-primary btn-sm admin-only-btn" onclick="document.getElementById('file-aadhaar').click()">Upload</button>
-                                <button class="btn-3d btn-secondary btn-sm" id="prev-aadhaar" onclick="window.previewDoc('aadhaar')" style="display:none;">View</button>
-                                <button class="btn-3d btn-secondary btn-sm" id="down-aadhaar" onclick="window.downloadDoc('aadhaar')" style="display:none;">Download</button>
-                                <button class="btn-3d btn-na btn-sm admin-only-btn" onclick="window.markDocNA('aadhaar')">N/A</button>
-                            </div>
-                        </div>
-
-                        <!-- 4. Income Certificate -->
-                        <div class="upload-box-3d" id="tile-income">
-                            <div class="upload-icon">💼</div>
-                            <h4 data-i18n="docIncome">Income Certificate</h4>
-                            <div class="doc-status-badge" id="status-income">Not Uploaded</div>
-                            <input type="file" id="file-income" class="file-input-hidden" onchange="window.handleVaultUpload(this, 'income')">
-                            <div class="vault-btn-cluster">
-                                <button class="btn-3d btn-primary btn-sm admin-only-btn" onclick="document.getElementById('file-income').click()">Upload</button>
-                                <button class="btn-3d btn-secondary btn-sm" id="prev-income" onclick="window.previewDoc('income')" style="display:none;">View</button>
-                                <button class="btn-3d btn-secondary btn-sm" id="down-income" onclick="window.downloadDoc('income')" style="display:none;">Download</button>
-                                <button class="btn-3d btn-na btn-sm admin-only-btn" onclick="window.markDocNA('income')">N/A</button>
-                            </div>
-                        </div>
-
-                        <!-- 5. Caste Certificate -->
-                        <div class="upload-box-3d" id="tile-caste">
-                            <div class="upload-icon">🏷️</div>
-                            <h4 data-i18n="docCaste">Caste Certificate</h4>
-                            <div class="doc-status-badge" id="status-caste">Not Uploaded</div>
-                            <input type="file" id="file-caste" class="file-input-hidden" onchange="window.handleVaultUpload(this, 'caste')">
-                            <div class="vault-btn-cluster">
-                                <button class="btn-3d btn-primary btn-sm admin-only-btn" onclick="document.getElementById('file-caste').click()">Upload</button>
-                                <button class="btn-3d btn-secondary btn-sm" id="prev-caste" onclick="window.previewDoc('caste')" style="display:none;">View</button>
-                                <button class="btn-3d btn-secondary btn-sm" id="down-caste" onclick="window.downloadDoc('caste')" style="display:none;">Download</button>
-                                <button class="btn-3d btn-na btn-sm admin-only-btn" onclick="window.markDocNA('caste')">N/A</button>
-                            </div>
-                        </div>
-
-                        <!-- 6. Parents Proof -->
-                        <div class="upload-box-3d" id="tile-parents">
-                            <div class="upload-icon">👨‍👩‍👧</div>
-                            <h4 data-i18n="docParentsAadhaar">Parents Proofs</h4>
-                            <div class="doc-status-badge" id="status-parents">Not Uploaded</div>
-                            <input type="file" id="file-parents" class="file-input-hidden" onchange="window.handleVaultUpload(this, 'parents')">
-                            <div class="vault-btn-cluster">
-                                <button class="btn-3d btn-primary btn-sm admin-only-btn" onclick="document.getElementById('file-parents').click()">Upload</button>
-                                <button class="btn-3d btn-secondary btn-sm" id="prev-parents" onclick="window.previewDoc('parents')" style="display:none;">View</button>
-                                <button class="btn-3d btn-secondary btn-sm" id="down-parents" onclick="window.downloadDoc('parents')" style="display:none;">Download</button>
-                                <button class="btn-3d btn-na btn-sm admin-only-btn" onclick="window.markDocNA('parents')">N/A</button>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
             </section>
@@ -507,7 +526,7 @@
                 </div>
             </section>
 
-            <!-- SECTION 6: GOVERNMENT CIRCULARS -->
+            <!-- SECTION 6: GOVERNMENT CIRCULARS (WITH ADD & DELETE) -->
             <section id="view-circulars" class="view-panel">
                 <div class="card-3d content-card">
                     <div class="card-title-row">
@@ -533,85 +552,47 @@
                 </div>
             </section>
 
-            <!-- SECTION 7: TIMETABLE -->
+            <!-- SECTION 7: EDITABLE TIMETABLE (Std 9A, 9B, 10A, 10B, 11-Com, 12-Com) -->
             <section id="view-timetable" class="view-panel">
                 <div class="card-3d content-card">
                     <div class="card-title-row">
                         <div>
                             <h3 data-i18n="ttTitle">Master Academic Schedule & Timetable</h3>
-                            <p class="text-muted" data-i18n="ttDesc">Weekly departmental class timetable (9, 10 & Commerce)</p>
+                            <p class="text-muted" data-i18n="ttDesc">Interactive departmental timetable editor</p>
+                        </div>
+                        <div class="attendance-controls">
+                            <select id="tt-standard-selector" class="input-field-3d input-sm" onchange="window.loadTimetable()">
+                                <option value="Grade 9-A">Grade 9-A</option>
+                                <option value="Grade 9-B">Grade 9-B</option>
+                                <option value="Grade 10-A">Grade 10-A</option>
+                                <option value="Grade 10-B">Grade 10-B</option>
+                                <option value="Grade 11-Commerce">Grade 11-Commerce</option>
+                                <option value="Grade 12-Commerce">Grade 12-Commerce</option>
+                            </select>
+                            <button class="btn-3d btn-primary btn-sm admin-only-btn" id="btn-edit-tt" onclick="window.toggleTimetableEdit()">Edit Timetable</button>
                         </div>
                     </div>
 
                     <div class="table-container-3d">
-                        <table class="data-table-3d text-center">
+                        <table class="data-table-3d text-center" id="timetable-table">
                             <thead>
                                 <tr>
                                     <th>Day</th>
-                                    <th>08:00 - 08:45</th>
-                                    <th>08:45 - 09:30</th>
-                                    <th>09:30 - 10:15</th>
-                                    <th>10:15 - 10:45</th>
-                                    <th>10:45 - 11:30</th>
-                                    <th>11:30 - 12:15</th>
+                                    <th>Period 1<br><small>08:00 - 08:45</small></th>
+                                    <th>Period 2<br><small>08:45 - 09:30</small></th>
+                                    <th>Period 3<br><small>09:30 - 10:15</small></th>
+                                    <th>Break<br><small>10:15 - 10:45</small></th>
+                                    <th>Period 4<br><small>10:45 - 11:30</small></th>
+                                    <th>Period 5<br><small>11:30 - 12:15</small></th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>Monday</strong></td>
-                                    <td>Accountancy / Maths</td>
-                                    <td>Commerce Org (B.A)</td>
-                                    <td>English</td>
-                                    <td rowspan="6" class="break-cell">RECESS BREAK</td>
-                                    <td>Economics</td>
-                                    <td>Gujarati</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Tuesday</strong></td>
-                                    <td>Statistics</td>
-                                    <td>Accountancy</td>
-                                    <td>Economics</td>
-                                    <td>English</td>
-                                    <td>Computer Lab</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Wednesday</strong></td>
-                                    <td>English</td>
-                                    <td>Commerce Org (B.A)</td>
-                                    <td>Accountancy</td>
-                                    <td>Statistics</td>
-                                    <td>Library Hour</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Thursday</strong></td>
-                                    <td>Accountancy</td>
-                                    <td>Statistics</td>
-                                    <td>Gujarati</td>
-                                    <td>English</td>
-                                    <td>Sports / Drill</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Friday</strong></td>
-                                    <td>Economics</td>
-                                    <td>Commerce Org (B.A)</td>
-                                    <td>Accountancy</td>
-                                    <td>Hindi</td>
-                                    <td>Career Guidance</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Saturday</strong></td>
-                                    <td>Unit Evaluation</td>
-                                    <td>Weekly Test</td>
-                                    <td>Account Practice</td>
-                                    <td colspan="2">Assembly & Moral Edu</td>
-                                </tr>
-                            </tbody>
+                            <tbody id="timetable-body"></tbody>
                         </table>
                     </div>
                 </div>
             </section>
 
-            <!-- SECTION 8: HOLIDAY CALENDAR -->
+            <!-- SECTION 8: HOLIDAY CALENDAR (WITH ADD & DELETE) -->
             <section id="view-holidays" class="view-panel">
                 <div class="card-3d content-card">
                     <div class="card-title-row">
@@ -619,7 +600,25 @@
                             <h3 data-i18n="hldTitle">Annual & Local Holiday Schedule</h3>
                             <p class="text-muted" data-i18n="hldDesc">Statutory academic calendar and institutional holiday notifications</p>
                         </div>
+                        <button class="btn-3d btn-secondary btn-sm admin-only-btn" onclick="window.toggleHolidayForm()">+ Add Holiday</button>
                     </div>
+
+                    <div id="holiday-add-form" class="hidden-panel card-3d inner-form-card">
+                        <h4>Add School / Local Holiday</h4>
+                        <input type="text" id="hld-name" class="input-field-3d" placeholder="Holiday Name / Occasion">
+                        <input type="date" id="hld-date" class="input-field-3d">
+                        <select id="hld-type" class="input-field-3d">
+                            <option value="National Holiday">National Holiday</option>
+                            <option value="State Festival">State Festival</option>
+                            <option value="Institutional Vacation">Institutional Vacation</option>
+                            <option value="Local School Holiday">Local School Holiday</option>
+                        </select>
+                        <div class="form-row-btns">
+                            <button class="btn-3d btn-primary" onclick="window.addHolidayRecord()">Save Holiday</button>
+                            <button class="btn-3d btn-secondary" onclick="window.toggleHolidayForm()">Cancel</button>
+                        </div>
+                    </div>
+
                     <div class="holiday-roster-grid" id="holiday-roster"></div>
                 </div>
             </section>
@@ -667,7 +666,6 @@
         </div>
     </div>
 
-    <!-- Main Logic Script -->
-    <script src="script.js?v=15"></script>
+    <script src="script.js?v=20"></script>
 </body>
 </html>
