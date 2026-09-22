@@ -20,7 +20,13 @@ const auth = firebase.auth();
 let currentRole = 'school';
 let currentLanguage = 'en';
 
-// 2. Multilingual Dictionary (English / Gujarati / Hindi)
+// Admin Default Credentials in LocalStorage
+function getAdminCredentials() {
+    const saved = localStorage.getItem('sav_admin_credentials');
+    return saved ? JSON.parse(saved) : { id: "admin", pass: "admin123" };
+}
+
+// 2. Multilingual Translations
 const translations = {
     en: {
         appSubtitle: "Enterprise Academic & Management Portal",
@@ -28,15 +34,16 @@ const translations = {
         adminRole: "Administrator",
         studentRole: "Student Portal",
         loginBtn: "Secure Enterprise Login",
-        orGoogle: "STUDENT GOOGLE SSO",
+        orGoogle: "REGISTERED STUDENT GOOGLE SSO",
         menuHome: "Dashboard Home",
-        menuStudents: "Student Admission",
+        menuStudents: "Student Admission & Registry",
         menuVault: "Document Vault",
         menuAttendance: "Attendance Register",
         menuNotices: "Notice Board",
         menuCirculars: "Govt Circulars",
         menuTimetable: "Timetable",
         menuHolidays: "Holiday Calendar",
+        menuSettings: "Admin Security Settings",
         menuAI: "Ambica AI Bot",
         logoutBtn: "Log Out",
         institutionalPortal: "Institutional Portal",
@@ -52,7 +59,9 @@ const translations = {
         formTitleEnroll: "Comprehensive Student Admission",
         formDescEnroll: "Complete student demographic and academic registry",
         fldGrNo: "G.R. Number *",
-        fldUid: "UID Number *",
+        fldUid: "UID Number (Username) *",
+        fldPassword: "Student Login Password *",
+        fldEmail: "Registered Student Email (for Google Login)",
         fldName: "Full Student Name *",
         fldStandard: "Standard / Division *",
         fldRoll: "Roll Number *",
@@ -72,7 +81,7 @@ const translations = {
         tblTitleRegistry: "Institutional Student Registry",
         tblDescRegistry: "Complete record directory with statutory particulars",
         colGr: "GR No",
-        colUid: "UID No",
+        colUid: "UID (User)",
         colName: "Student Name",
         colStd: "Standard",
         colRoll: "Roll",
@@ -109,9 +118,15 @@ const translations = {
         lblArchiveOrder: "Archive Statutory Circular",
         btnSaveCircular: "Archive Circular",
         ttTitle: "Master Academic Schedule & Timetable",
-        ttDesc: "Weekly departmental class timetable",
+        ttDesc: "Weekly departmental class timetable (9, 10 & Commerce)",
         hldTitle: "Annual & Local Holiday Schedule",
         hldDesc: "Statutory academic calendar and institutional holiday notifications",
+        adminSettingsTitle: "Administrator Credentials Configuration",
+        adminSettingsDesc: "Update master administrator ID and secure access password",
+        lblCurrentPass: "Current Password *",
+        lblNewAdminId: "New Administrator ID *",
+        lblNewAdminPass: "New Administrator Password *",
+        btnUpdateAdmin: "Update Admin Credentials",
         aiDesc: "State-of-the-art academic intelligence powered by ChatGPT-4o Gateway"
     },
     gu: {
@@ -120,7 +135,7 @@ const translations = {
         adminRole: "વહીવટકર્તા (Admin)",
         studentRole: "વિદ્યાર્થી પોર્ટલ",
         loginBtn: "સુરક્ષિત લૉગિન",
-        orGoogle: "વિદ્યાર્થી ગૂગલ લૉગિન",
+        orGoogle: "નોંધાયેલા વિદ્યાર્થીનું ગૂગલ લૉગિન",
         menuHome: "ડેશબોર્ડ મુખ્ય પૃષ્ઠ",
         menuStudents: "વિદ્યાર્થી પ્રવેશ / રજિસ્ટર",
         menuVault: "દસ્તાવેજ સંગ્રહાલય",
@@ -129,6 +144,7 @@ const translations = {
         menuCirculars: "સરકારી પરિપત્રો",
         menuTimetable: "સમયપત્રક (ટાઇમટેબલ)",
         menuHolidays: "રજાઓનું કેલેન્ડર",
+        menuSettings: "એડમિન પાસવર્ડ સેટિંગ્સ",
         menuAI: "અંબિકા AI સહાયક",
         logoutBtn: "લૉગ આઉટ",
         institutionalPortal: "શાળા સંચાલન પ્રણાલી",
@@ -144,7 +160,9 @@ const translations = {
         formTitleEnroll: "વિદ્યાર્થી પ્રવેશ ફોર્મ",
         formDescEnroll: "વિદ્યાર્થીની સંપૂર્ણ માહિતી અને વહીવટી રજિસ્ટર",
         fldGrNo: "જી.આર. નંબર (G.R. No) *",
-        fldUid: "યુ.આઈ.ડી. નંબર (UID) *",
+        fldUid: "યુ.આઈ.ડી. નંબર (યુઝરનેમ) *",
+        fldPassword: "વિદ્યાર્થી લૉગિન પાસવર્ડ *",
+        fldEmail: "નોંધાયેલ ઈમેઈલ (ગૂગલ લૉગિન માટે)",
         fldName: "વિદ્યાર્થીનું પૂરું નામ *",
         fldStandard: "ધોરણ / વર્ગ *",
         fldRoll: "રોલ નંબર *",
@@ -164,7 +182,7 @@ const translations = {
         tblTitleRegistry: "વિદ્યાર્થી જનરલ રજિસ્ટર",
         tblDescRegistry: "સંપૂર્ણ શૈક્ષણિક અને ઓળખ વિગતોની ડિરેક્ટરી",
         colGr: "જી.આર.",
-        colUid: "યુ.આઈ.ડી.",
+        colUid: "UID (User)",
         colName: "વિદ્યાર્થી નામ",
         colStd: "ધોરણ",
         colRoll: "રોલ",
@@ -201,9 +219,15 @@ const translations = {
         lblArchiveOrder: "સરકારી પરિપત્ર સાચવો",
         btnSaveCircular: "સાચવો",
         ttTitle: "સાપ્તાહિક શૈક્ષણિક સમયપત્રક",
-        ttDesc: "વર્ગ અને વિષયવાર તાસ આયોજન",
+        ttDesc: "વર્ગ અને વિષયવાર તાસ આયોજન (9, 10 અને કોમર્સ)",
         hldTitle: "શાળા શૈક્ષણિક અને સ્થાનિક રજાઓ",
         hldDesc: "વાર્ષિક કેલેન્ડર અને તહેવારોની યાદી",
+        adminSettingsTitle: "એડમિનિસ્ટ્રેટર આઈડી અને પાસવર્ડ બદલો",
+        adminSettingsDesc: "મુખ્ય એડમિન યુઝરનેમ અને સિક્યોરિટી પાસવર્ડ અપડેટ કરો",
+        lblCurrentPass: "હાલનો પાસવર્ડ *",
+        lblNewAdminId: "નવો Administrator ID *",
+        lblNewAdminPass: "નવો પાસવર્ડ *",
+        btnUpdateAdmin: "માહિતી અપડેટ કરો",
         aiDesc: "ChatGPT-4o આધારિત અદ્યતન શૈક્ષણિક AI સહાયક"
     },
     hi: {
@@ -212,7 +236,7 @@ const translations = {
         adminRole: "प्रशासक (Admin)",
         studentRole: "छात्र पोर्टल",
         loginBtn: "सुरक्षित लॉगिन",
-        orGoogle: "छात्र गूगल लॉगिन",
+        orGoogle: "पंजीकृत छात्र गूगल लॉगिन",
         menuHome: "डैशबोर्ड मुख्य पृष्ठ",
         menuStudents: "छात्र प्रवेश / रजिस्टर",
         menuVault: "दस्तावेज़ संग्रह",
@@ -221,6 +245,7 @@ const translations = {
         menuCirculars: "सरकारी परिपत्र",
         menuTimetable: "समय सारिणी",
         menuHolidays: "अवकाश कैलेंडर",
+        menuSettings: "एडमिन सुरक्षा सेटिंग्स",
         menuAI: "अंबिका AI सहायक",
         logoutBtn: "लॉग आउट",
         institutionalPortal: "संस्थागत प्रबंधन प्रणाली",
@@ -236,7 +261,9 @@ const translations = {
         formTitleEnroll: "छात्र प्रवेश फॉर्म",
         formDescEnroll: "छात्र की विस्तृत जानकारी एवं रजिस्टर",
         fldGrNo: "जी.आर. नंबर (G.R. No) *",
-        fldUid: "यू.आई.डी. नंबर (UID) *",
+        fldUid: "यू.आई.डी. नंबर (यूज़रनेम) *",
+        fldPassword: "छात्र लॉगिन पासवर्ड *",
+        fldEmail: "पंजीकृत ईमेल (गूगल लॉगिन हेतु)",
         fldName: "छात्र का पूरा नाम *",
         fldStandard: "कक्षा / वर्ग *",
         fldRoll: "रोल नंबर *",
@@ -256,7 +283,7 @@ const translations = {
         tblTitleRegistry: "छात्र जनरल रजिस्टर",
         tblDescRegistry: "संपूर्ण शैक्षणिक एवं पहचान विवरण डायरेक्टरी",
         colGr: "जी.आर.",
-        colUid: "यू.आई.डी.",
+        colUid: "UID (User)",
         colName: "छात्र का नाम",
         colStd: "कक्षा",
         colRoll: "रोल",
@@ -293,9 +320,15 @@ const translations = {
         lblArchiveOrder: "सरकारी परिपत्र सुरक्षित करें",
         btnSaveCircular: "सुरक्षित करें",
         ttTitle: "मास्टर शैक्षणिक समय सारिणी",
-        ttDesc: "साप्ताहिक कक्षा समय सारिणी",
+        ttDesc: "साप्ताहिक कक्षा समय सारिणी (9, 10 एवं कॉमर्स)",
         hldTitle: "वार्षिक एवं स्थानीय अवकाश सूची",
         hldDesc: "वार्षिक कैलेंडर और त्योहारों की सूची",
+        adminSettingsTitle: "व्यवस्थापक आईडी एवं पासवर्ड बदलें",
+        adminSettingsDesc: "मुख्य व्यवस्थापक यूज़रनेम एवं पासवर्ड अपडेट करें",
+        lblCurrentPass: "वर्तमान पासवर्ड *",
+        lblNewAdminId: "नया Admin ID *",
+        lblNewAdminPass: "नया पासवर्ड *",
+        btnUpdateAdmin: "डेटा अपडेट करें",
         aiDesc: "ChatGPT-4o संचालित आधुनिक शैक्षणिक AI सहायक"
     }
 };
@@ -305,7 +338,6 @@ window.switchLanguage = function(lang) {
     currentLanguage = lang;
     document.body.className = `lang-${lang} theme-dark-enterprise`;
     
-    // Update language buttons in login modal
     document.querySelectorAll('.lang-pill-selector .lang-tab').forEach((btn, idx) => {
         const langs = ['en', 'gu', 'hi'];
         btn.classList.toggle('active', langs[idx] === lang);
@@ -314,7 +346,6 @@ window.switchLanguage = function(lang) {
     const tagEl = document.getElementById('current-lang-tag');
     if (tagEl) tagEl.innerText = lang.toUpperCase();
 
-    // Translate DOM elements
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (translations[lang] && translations[lang][key]) {
@@ -322,7 +353,6 @@ window.switchLanguage = function(lang) {
         }
     });
 
-    // Update Initial Chatbot greeting based on language
     const aiInit = document.getElementById('ai-init-msg');
     if (aiInit) {
         if (lang === 'gu') {
@@ -341,7 +371,7 @@ window.cycleLanguage = function() {
     window.switchLanguage(next);
 };
 
-// 4. Role & Authentication
+// 4. Role & Secure Authentication
 window.setRole = function(role) {
     currentRole = role;
     document.getElementById('role-school').classList.toggle('active', role === 'school');
@@ -357,7 +387,7 @@ window.setRole = function(role) {
     } else {
         oauthBox.style.display = 'block';
         credBox.style.display = 'block';
-        document.getElementById('login-username').placeholder = "Student Enrollment / Username";
+        document.getElementById('login-username').placeholder = "Student UID Number (Username)";
     }
 };
 
@@ -366,24 +396,35 @@ window.manualLogin = function() {
     const pass = document.getElementById('login-password').value.trim();
 
     if (!user || !pass) {
-        alert(currentLanguage === 'gu' ? 'કૃપા કરીને ID અને પાસવર્ડ દાખલ કરો.' : 'Please enter ID and Password.');
+        alert(currentLanguage === 'gu' ? 'કૃપા કરીને ID/UID અને પાસવર્ડ દાખલ કરો.' : 'Please enter ID/UID and Password.');
         return;
     }
 
     if (currentRole === 'school') {
-        if (user === "admin" && pass === "admin123") {
+        const adminCreds = getAdminCredentials();
+        if (user === adminCreds.id && pass === adminCreds.pass) {
             openPortal("Principal / Administrator");
         } else {
-            alert(currentLanguage === 'gu' ? "અમાન્ય Administrator ઓળખ! (ID: admin / Pass: admin123)" : "Invalid Administrator credentials!");
+            alert(currentLanguage === 'gu' ? "અમાન્ય Administrator ઓળખ!" : "Invalid Administrator credentials!");
         }
     } else {
-        openPortal(user);
+        // Student UID & Password Check against registered students
+        const students = getStudents();
+        const matched = students.find(s => (s.uid === user || s.gr === user) && s.password === pass);
+
+        if (matched) {
+            openPortal(matched.name);
+        } else {
+            alert(currentLanguage === 'gu' 
+                ? "નોંધાયેલ વિદ્યાર્થી મળ્યો નથી અથવા પાસવર્ડ ખોટો છે! ફક્ત રજિસ્ટર્ડ વિદ્યાર્થી જ લૉગિન કરી શકે છે." 
+                : "Unregistered student or invalid password! Only registered students can log in.");
+        }
     }
 };
 
 window.googleLogin = function() {
     if (currentRole === 'school') {
-        alert('Administrator access is restricted to official credentials.');
+        alert('Administrator access is restricted to official ID and Password.');
         return;
     }
 
@@ -391,7 +432,20 @@ window.googleLogin = function() {
     auth.signInWithPopup(provider)
         .then((result) => {
             const user = result.user;
-            openPortal(user.displayName || user.email);
+            const userEmail = (user.email || "").toLowerCase();
+
+            // Check if this email exists in registered students
+            const students = getStudents();
+            const matched = students.find(s => (s.email || "").toLowerCase() === userEmail);
+
+            if (matched) {
+                openPortal(matched.name);
+            } else {
+                auth.signOut();
+                alert(currentLanguage === 'gu' 
+                    ? `આ ઈમેઈલ (${userEmail}) શાળાના રેકોર્ડમાં રજિસ્ટર્ડ નથી! પ્રવેશ અસ્વીકાર્ય.` 
+                    : `This email (${userEmail}) is not registered in school records! Access denied.`);
+            }
         })
         .catch((error) => {
             alert('Google Login Error: ' + error.message);
@@ -404,20 +458,31 @@ function openPortal(name) {
     document.getElementById('user-display-name').innerText = name;
     document.getElementById('user-badge').innerText = currentRole === 'school' ? 'Principal' : 'Student';
 
-    // Role-based UI visibility
+    // Strict Student Read-Only Restrictions
     if (currentRole === 'student') {
+        document.getElementById('admin-quick-actions').style.display = 'none';
         document.getElementById('admin-enrollment-card').style.display = 'none';
         document.getElementById('col-action-header').style.display = 'none';
         document.getElementById('btn-create-notice').style.display = 'none';
         document.getElementById('btn-create-circ').style.display = 'none';
+        document.getElementById('att-submit-container').style.display = 'none';
+        document.getElementById('att-mark-header').style.display = 'none';
+        document.getElementById('menu-settings-link').style.display = 'none';
+        
+        // Hide upload buttons in Document Vault for students
+        document.querySelectorAll('.admin-only-btn').forEach(b => b.style.display = 'none');
     } else {
+        document.getElementById('admin-quick-actions').style.display = 'flex';
         document.getElementById('admin-enrollment-card').style.display = 'block';
         document.getElementById('col-action-header').style.display = 'table-cell';
         document.getElementById('btn-create-notice').style.display = 'inline-block';
         document.getElementById('btn-create-circ').style.display = 'inline-block';
+        document.getElementById('att-submit-container').style.display = 'flex';
+        document.getElementById('att-mark-header').style.display = 'table-cell';
+        document.getElementById('menu-settings-link').style.display = 'flex';
+        document.querySelectorAll('.admin-only-btn').forEach(b => b.style.display = 'inline-flex');
     }
 
-    // Initial data hydration
     loadStudents();
     loadHomeData();
     loadAttendanceRoster();
@@ -444,21 +509,19 @@ window.navigateTo = function(viewId) {
     const target = document.getElementById(viewId);
     if (target) target.classList.add('active');
 
-    // Update active nav button
     const activeNav = Array.from(document.querySelectorAll('.nav-item')).find(btn => {
         const oc = btn.getAttribute('onclick') || '';
         return oc.includes(viewId);
     });
     if (activeNav) activeNav.classList.add('active');
 
-    // Update Breadcrumb
     const bc = document.getElementById('active-breadcrumb');
     if (bc && activeNav) {
         bc.innerText = activeNav.innerText.trim();
     }
 };
 
-// 6. Comprehensive Student Storage (GR, UID, Physical, Parents, Aadhaar)
+// 6. Comprehensive Student Storage (LocalStorage Engine)
 function getStudents() {
     const data = localStorage.getItem('sav_enterprise_students');
     return data ? JSON.parse(data) : [];
@@ -507,6 +570,8 @@ function loadStudents() {
 window.addStudentRecord = function() {
     const gr = document.getElementById('gr_no').value.trim();
     const uid = document.getElementById('uid_no').value.trim();
+    const password = document.getElementById('st_password').value.trim();
+    const email = document.getElementById('st_email').value.trim();
     const name = document.getElementById('st_name').value.trim();
     const standard = document.getElementById('st_standard').value;
     const roll = document.getElementById('st_roll').value.trim();
@@ -523,19 +588,20 @@ window.addStudentRecord = function() {
     const phone = document.getElementById('st_phone').value.trim();
     const address = document.getElementById('st_address').value.trim();
 
-    if (!gr || !uid || !name || !roll || !phone) {
-        alert(currentLanguage === 'gu' ? 'કૃપા કરીને જરૂરી વિગતો (GR, UID, નામ, રોલ નંબર, ફોન) દાખલ કરો.' : 'Please fill all mandatory fields (GR, UID, Name, Roll, Phone).');
+    if (!gr || !uid || !password || !name || !roll || !phone) {
+        alert(currentLanguage === 'gu' 
+            ? 'કૃપા કરીને જરૂરી વિગતો (GR, UID, પાસવર્ડ, નામ, રોલ નંબર, ફોન) દાખલ કરો.' 
+            : 'Please fill all mandatory fields (GR, UID, Password, Name, Roll, Phone).');
         return;
     }
 
     const list = getStudents();
     list.push({
-        gr, uid, name, standard, roll, dob, gender, weight, height,
+        gr, uid, password, email, name, standard, roll, dob, gender, weight, height,
         blood, aadhaar, father, fa_aadhaar, mother, mo_aadhaar, phone, address
     });
     saveStudents(list);
 
-    // Form Reset
     document.querySelectorAll('#admin-enrollment-card input, #admin-enrollment-card textarea').forEach(inp => inp.value = '');
     loadStudents();
     alert(currentLanguage === 'gu' ? 'વિદ્યાર્થીનો રેકોર્ડ સફળતાપૂર્વક ઉમેરાઈ ગયો!' : 'Student record registered successfully!');
@@ -558,7 +624,7 @@ window.filterStudents = function() {
     });
 };
 
-// 7. Document Vault (Google Cloud 5TB Base64 Preview Architecture)
+// 7. Document Vault Preview
 window.previewDocUpload = function(input, targetId) {
     if (input.files && input.files[0]) {
         const file = input.files[0];
@@ -568,7 +634,7 @@ window.previewDocUpload = function(input, targetId) {
     }
 };
 
-// 8. Digital Attendance Register
+// 8. Digital Attendance Register (Admin can edit, Student only views)
 window.loadAttendanceRoster = function() {
     const std = document.getElementById('att-standard-filter').value;
     const dateInput = document.getElementById('att-date');
@@ -586,19 +652,22 @@ window.loadAttendanceRoster = function() {
     }
 
     list.forEach((st, idx) => {
+        const markCol = currentRole === 'school'
+            ? `<td><button class="btn-3d btn-secondary btn-sm" onclick="window.togglePresence(${idx})">Toggle Present/Absent</button></td>`
+            : '';
+
         tbody.innerHTML += `<tr>
             <td><code>${st.roll}</code></td>
             <td><strong>${st.name}</strong></td>
             <td><code>${st.gr || '-'}</code></td>
             <td><span class="status-badge-present" id="att-status-${idx}">Present</span></td>
-            <td>
-                <button class="btn-3d btn-secondary btn-sm" onclick="window.togglePresence(${idx})">Toggle Present/Absent</button>
-            </td>
+            ${markCol}
         </tr>`;
     });
 };
 
 window.togglePresence = function(idx) {
+    if (currentRole !== 'school') return;
     const pill = document.getElementById(`att-status-${idx}`);
     if (pill.innerText === "Present") {
         pill.innerText = "Absent";
@@ -610,13 +679,14 @@ window.togglePresence = function(idx) {
 };
 
 window.saveAttendanceRoster = function() {
+    if (currentRole !== 'school') return;
     alert(currentLanguage === 'gu' ? 'આજની હાજરી સફળતાપૂર્વક સેવ થઈ ગઈ છે.' : 'Attendance roster submitted successfully.');
 };
 
-// 9. Institutional Notices & Communication
+// 9. Institutional Notices
 const defaultNotices = [
     { title: "Quarterly Examination Schedule Published", date: "2026-09-20", body: "Detailed subject timetables have been pinned to the board. Students must clear library dues." },
-    { title: "Parent-Teacher Institutional Conference", date: "2026-09-18", body: "The mandatory PTM for Standards 9 to 12 is scheduled for Saturday at 09:30 AM in the auditorium." }
+    { title: "Parent-Teacher Institutional Conference", date: "2026-09-18", body: "The mandatory PTM for Standards 9, 10 and Commerce is scheduled for Saturday at 09:30 AM." }
 ];
 
 function getNotices() {
@@ -647,11 +717,12 @@ function loadNotices() {
 }
 
 window.toggleNoticeForm = function() {
-    const form = document.getElementById('notice-publish-form');
-    form.classList.toggle('hidden-panel');
+    if (currentRole !== 'school') return;
+    document.getElementById('notice-publish-form').classList.toggle('hidden-panel');
 };
 
 window.publishNotice = function() {
+    if (currentRole !== 'school') return;
     const title = document.getElementById('notice-title').value.trim();
     const body = document.getElementById('notice-body').value.trim();
     if (!title || !body) return;
@@ -666,9 +737,9 @@ window.publishNotice = function() {
     loadNotices();
 };
 
-// 10. Government Circulars (Sarkari Paripatro)
+// 10. Government Circulars
 const defaultCircs = [
-    { num: "GSEB/PARI/2026/842", title: "Implementation of Revised Science Practical Assessment Guidelines", date: "2026-09-15" },
+    { num: "GSEB/PARI/2026/842", title: "Commerce Assessment and Accountancy Examination Norms", date: "2026-09-15" },
     { num: "EDU-GUJ/STAT/1048", title: "Mandatory Digital Enrollment of Secondary Students on State Portal", date: "2026-09-10" }
 ];
 
@@ -693,11 +764,12 @@ function loadCirculars() {
 }
 
 window.toggleCircForm = function() {
-    const form = document.getElementById('circ-publish-form');
-    form.classList.toggle('hidden-panel');
+    if (currentRole !== 'school') return;
+    document.getElementById('circ-publish-form').classList.toggle('hidden-panel');
 };
 
 window.publishCircular = function() {
+    if (currentRole !== 'school') return;
     const num = document.getElementById('circ-num').value.trim();
     const title = document.getElementById('circ-title').value.trim();
     const date = document.getElementById('circ-date').value;
@@ -713,7 +785,7 @@ window.publishCircular = function() {
     loadCirculars();
 };
 
-// 11. Academic Holiday Calendar
+// 11. Holiday Calendar
 const holidays = [
     { name: "Gandhi Jayanti", date: "October 02, 2026", type: "National Holiday" },
     { name: "Navratri & Dussehra Vacation", date: "October 18 - 22, 2026", type: "State Festival" },
@@ -746,7 +818,35 @@ function loadHomeData() {
     loadHolidays();
 }
 
-// 12. Ambica AI ChatGPT-4o Engine (Unbroken & CORS Free)
+// 12. Admin Security Settings (Change ID & Password)
+window.updateAdminCredentials = function() {
+    const currPass = document.getElementById('cfg-curr-pass').value.trim();
+    const newId = document.getElementById('cfg-new-id').value.trim();
+    const newPass = document.getElementById('cfg-new-pass').value.trim();
+
+    const currentCreds = getAdminCredentials();
+
+    if (currPass !== currentCreds.pass) {
+        alert(currentLanguage === 'gu' ? "હાલનો પાસવર્ડ ખોટો છે!" : "Current password is incorrect!");
+        return;
+    }
+
+    if (!newId || !newPass) {
+        alert(currentLanguage === 'gu' ? "નવો ID અને નવો Password દાખલ કરવો ફરજિયાત છે." : "New ID and Password are required.");
+        return;
+    }
+
+    localStorage.setItem('sav_admin_credentials', JSON.stringify({ id: newId, pass: newPass }));
+    alert(currentLanguage === 'gu' 
+        ? `Administrator ID અને Password સફળતાપૂર્વક બદલાઈ ગયા છે!\nનવો ID: ${newId}` 
+        : `Administrator credentials successfully updated!\nNew ID: ${newId}`);
+    
+    document.getElementById('cfg-curr-pass').value = '';
+    document.getElementById('cfg-new-id').value = '';
+    document.getElementById('cfg-new-pass').value = '';
+};
+
+// 13. Ambica AI ChatGPT-4o Engine (Unbroken & Working Gateway)
 window.handleKey = function(e) {
     if (e.key === 'Enter') window.sendChatMessage();
 };
@@ -792,5 +892,5 @@ window.sendChatMessage = async function() {
     chatBody.scrollTop = chatBody.scrollHeight;
 };
 
-// Initial state
+// Start in default language
 window.switchLanguage('en');
