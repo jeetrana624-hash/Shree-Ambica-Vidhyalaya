@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shree Ambica Vidhyalaya - School Management Portal</title>
-    <link rel="stylesheet" href="style.css?v=3">
+    <link rel="stylesheet" href="style.css?v=4">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -26,26 +26,27 @@
 
             <!-- Role Selector -->
             <div class="role-segmented-control">
-                <button type="button" id="role-school" class="role-tab active" onclick="setRole('school')">Administrator</button>
-                <button type="button" id="role-student" class="role-tab" onclick="setRole('student')">Student Portal</button>
+                <button type="button" id="role-school" class="role-tab active" onclick="window.setRole('school')">Administrator</button>
+                <button type="button" id="role-student" class="role-tab" onclick="window.setRole('student')">Student Portal</button>
             </div>
 
-            <!-- Standard Credentials Form -->
+            <!-- Administrator / Manual ID & Password Form -->
             <div id="credentials-box" class="form-group">
-                <input type="text" id="login-username" class="input-field" placeholder="Username, Enrollment, or Email">
+                <input type="text" id="login-username" class="input-field" placeholder="Admin ID or Username">
                 <input type="password" id="login-password" class="input-field" placeholder="Password">
-                <button type="button" class="btn-3d btn-primary btn-full" onclick="manualLogin()">Access Dashboard</button>
+                <button type="button" class="btn-3d btn-primary btn-full" onclick="window.manualLogin()">Secure Login</button>
             </div>
 
-            <div class="auth-divider">
-                <span>OR SIGN IN WITH</span>
-            </div>
-
-            <!-- Google Single Sign-On Only -->
-            <div class="sso-actions">
-                <button type="button" class="btn-3d btn-google btn-full" onclick="googleLogin()">
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> Continue with Google
-                </button>
+            <!-- Student Only Google Authentication -->
+            <div id="student-oauth-container" style="display: none;">
+                <div class="auth-divider">
+                    <span>STUDENT SIGN IN</span>
+                </div>
+                <div class="sso-actions">
+                    <button type="button" class="btn-3d btn-google btn-full" onclick="window.googleLogin()">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> Continue with Google
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -64,7 +65,7 @@
                     </p>
                 </div>
             </div>
-            <button class="btn-3d btn-danger btn-sm" onclick="logout()">Terminate Session</button>
+            <button class="btn-3d btn-danger btn-sm" onclick="window.logout()">Terminate Session</button>
         </header>
 
         <!-- Admin Management Panel -->
@@ -86,8 +87,20 @@
                     <label class="field-label">Standard / Grade</label>
                     <input type="text" id="standard" class="input-field" placeholder="e.g., Grade 10-A">
                 </div>
-                <div class="input-wrapper btn-align-bottom">
-                    <button class="btn-3d btn-primary btn-full" onclick="addStudent()">Save Record</button>
+                <div class="input-wrapper">
+                    <label class="field-label">Aadhaar Number</label>
+                    <input type="text" id="aadhaar" class="input-field" placeholder="12-digit Aadhaar" maxlength="12">
+                </div>
+                <div class="input-wrapper">
+                    <label class="field-label">Guardian Phone</label>
+                    <input type="tel" id="phone" class="input-field" placeholder="10-digit Mobile" maxlength="10">
+                </div>
+                <div class="input-wrapper">
+                    <label class="field-label">Date of Birth</label>
+                    <input type="date" id="dob" class="input-field">
+                </div>
+                <div class="input-wrapper btn-align-bottom" style="grid-column: 1 / -1;">
+                    <button class="btn-3d btn-primary btn-full" onclick="window.addStudent()">Save Student Record</button>
                 </div>
             </div>
         </section>
@@ -106,6 +119,9 @@
                             <th>Student Name</th>
                             <th>Roll Number</th>
                             <th>Standard</th>
+                            <th>Aadhaar Number</th>
+                            <th>Phone</th>
+                            <th>DOB</th>
                             <th id="action-header">Action</th>
                         </tr>
                     </thead>
@@ -114,20 +130,20 @@
             </div>
         </section>
 
-        <!-- Gemini AI Assistant -->
+        <!-- Ambica AI Academic Assistant -->
         <section class="card-3d content-card ai-assistant-card">
             <div class="card-title-row">
                 <h3>Ambica AI Academic Assistant</h3>
-                <span class="badge-pill badge-ai">Gemini Flash</span>
+                <span class="badge-pill badge-ai">Live AI</span>
             </div>
             <div id="chat-messages" class="chat-viewport">
                 <div class="chat-bubble ai-bubble">
-                    Hello! I am the Shree Ambica Vidhyalaya AI Assistant. How can I assist you with your academics, syllabus, or administrative inquiries today?
+                    નમસ્તે! હું શ્રી અંબિકા વિદ્યાલયનો શૈક્ષણિક AI સહાયક છું. અભ્યાસક્રમ, સમયપત્રક, વિજ્ઞાન, ગણિત કે શાળા સંબંધિત કોઈ પણ પ્રશ્ન પૂછી શકો છો.
                 </div>
             </div>
             <div class="chat-input-bar">
-                <input type="text" id="chat-input" class="input-field" placeholder="Ask any academic or institutional question..." onkeypress="handleKey(event)">
-                <button class="btn-3d btn-primary" onclick="sendChatMessage()">Send Query</button>
+                <input type="text" id="chat-input" class="input-field" placeholder="Ask any academic or institutional question..." onkeypress="window.handleKey(event)">
+                <button class="btn-3d btn-primary" onclick="window.sendChatMessage()">Send Query</button>
             </div>
         </section>
 
@@ -143,6 +159,8 @@
         </footer>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Live AI Engine Script -->
+    <script src="https://js.puter.com/v2/"></script>
+    <script src="script.js?v=4"></script>
 </body>
 </html>
