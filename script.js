@@ -130,12 +130,12 @@ window.deleteStudent = function(index) {
     }
 };
 
-// 6. Ambica AI Academic Assistant (Reliable Client Engine)
+// 6. Live AI Academic Engine
 window.handleKey = function(e) {
     if (e.key === 'Enter') window.sendChatMessage();
 };
 
-window.sendChatMessage = function() {
+window.sendChatMessage = async function() {
     const input = document.getElementById('chat-input');
     const msg = input.value.trim();
     if (!msg) return;
@@ -149,29 +149,25 @@ window.sendChatMessage = function() {
     chatBody.innerHTML += `<div class="chat-bubble ai-bubble" id="${loadingId}">વિચારી રહ્યું છે...</div>`;
     chatBody.scrollTop = chatBody.scrollHeight;
 
-    // Simulate instant AI synthesis without blocking network errors
-    setTimeout(() => {
-        const q = msg.toLowerCase();
-        let reply = "";
-
-        if (q.includes("hi") || q.includes("hello") || q.includes("હેલો") || q.includes("કેમ છો")) {
-            reply = "નમસ્તે! હું શ્રી અંબિકા વિદ્યાલયનો શૈક્ષણિક AI સહાયક છું. અભ્યાસક્રમ, પરીક્ષા કે શાળા સંબંધિત પ્રશ્નો પૂછી શકો છો.";
-        } else if (q.includes("admission") || q.includes("પ્રવેશ")) {
-            reply = "શ્રી અંબિકા વિદ્યાલયમાં નવા શૈક્ષણિક સત્ર માટે પ્રવેશ પ્રક્રિયા ચાલુ છે. જરૂરી દસ્તાવેજો: જન્મ પ્રમાણપત્ર, પાછલા ધોરણની માર્કશીટ અને LC.";
-        } else if (q.includes("fee") || q.includes("ફી")) {
-            reply = "શાળા ફી સંબંધિત વિગતો ઓફિસ કાઉન્ટર પર સવારે ૮:૦૦ થી બપોરે ૧૨:૦૦ વાગ્યા સુધી ઉપલબ્ધ છે.";
-        } else if (q.includes("exam") || q.includes("પરીક્ષા") || q.includes("તારીખ")) {
-            reply = "વાર્ષિક અને એકમ કસોટીઓનું સમયપત્રક નોટિસ બોર્ડ તેમજ પોર્ટલના સ્ટુડન્ટ ડેશબોર્ડ પર પ્રકાશિત કરવામાં આવે છે.";
-        } else if (q.includes("science") || q.includes("વિજ્ઞાન") || q.includes("maths") || q.includes("ગણિત")) {
-            reply = "ધોરણ ૧ થી ૧૨ ના વિજ્ઞાન અને ગણિત વિષય માટે લેબોરેટરી પ્રેક્ટિકલ અને વિશેષ માર્ગદર્શન વર્ગોનું આયોજન કરવામાં આવેલું છે.";
+    try {
+        if (window.puter && window.puter.ai) {
+            const prompt = `You are the official smart AI assistant of Shree Ambica Vidhyalaya school. Answer student and academic questions accurately, intelligently, and clearly in Gujarati or English as asked.\nUser question: ${msg}`;
+            const res = await puter.ai.chat(prompt);
+            const reply = typeof res === 'string' ? res : (res.message?.content || res.text || JSON.stringify(res));
+            document.getElementById(loadingId).innerText = reply;
         } else {
-            reply = `તમારા પ્રશ્ન ("${msg}") માટે: શ્રી અંબિકા વિદ્યાલયના શૈક્ષણિક નિયમો અને અભ્યાસક્રમ મુજબ આ વિષયે જરૂરી માર્ગદર્શન વિદ્યાર્થી ડેશબોર્ડ તેમજ શાળા કાર્યાલય દ્વારા પૂરી પાડવામાં આવે છે.`;
+            // Local fallback logic
+            const q = msg.toLowerCase();
+            if (q.includes("time") || q.includes("સમય") || q.includes("વાગ્યા")) {
+                const now = new Date();
+                document.getElementById(loadingId).innerText = `અત્યારે સમય થયો છે: ${now.toLocaleTimeString('gu-IN')}`;
+            } else {
+                document.getElementById(loadingId).innerText = `શ્રી અંબિકા વિદ્યાલય AI: તમારા પ્રશ્ન "${msg}" નો જવાબ મેળવવા કૃપા કરીને પેજ રીફ્રેશ કરો.`;
+            }
         }
-
-        const bubble = document.getElementById(loadingId);
-        if (bubble) {
-            bubble.innerText = reply;
-        }
-        chatBody.scrollTop = chatBody.scrollHeight;
-    }, 450);
+    } catch (err) {
+        console.error("AI Error:", err);
+        document.getElementById(loadingId).innerText = "માફ કરજો, જવાબ મેળવવામાં ભૂલ થઈ. ફરી પ્રયત્ન કરો.";
+    }
+    chatBody.scrollTop = chatBody.scrollHeight;
 };
