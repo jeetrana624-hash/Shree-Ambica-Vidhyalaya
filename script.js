@@ -8,8 +8,8 @@ const firebaseConfig = {
   appId: "1:347039718162:web:645fe9b67afbd4e5da31cb"
 };
 
-// 2. OpenAI ChatGPT Key (Optional - direct key hoy to paste kari shako chho)
-const OPENAI_API_KEY = "";
+// 2. Live OpenAI ChatGPT Key
+const OPENAI_API_KEY = "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";
 
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
@@ -18,7 +18,7 @@ const auth = firebase.auth();
 
 let currentRole = 'school';
 
-// Role Switcher: Administrator gets only ID & Password, Student gets Google Login
+// Role Switcher: Administrator gets ID & Password only, Student gets Google Login
 window.setRole = function(role) {
     currentRole = role;
     document.getElementById('role-school').classList.toggle('active', role === 'school');
@@ -49,14 +49,12 @@ window.manualLogin = function() {
     }
 
     if (currentRole === 'school') {
-        // Administrator strict credentials check
         if (user === "admin" && pass === "admin123") {
             openPortal("Principal / Administrator");
         } else {
             alert("Aamanyo Administrator ID athva Password! Krupya saacho ID ane Password nakho.");
         }
     } else {
-        // Student login
         openPortal(user);
     }
 };
@@ -153,7 +151,6 @@ window.addStudent = function() {
     list.push({ name, roll_no, standard, aadhaar, phone, dob });
     localStorage.setItem('ambica_students', JSON.stringify(list));
 
-    // Reset Input Fields
     document.getElementById('name').value = '';
     document.getElementById('roll_no').value = '';
     document.getElementById('standard').value = '';
@@ -173,7 +170,7 @@ window.deleteStudent = function(index) {
     }
 };
 
-// 7. Ambica AI Smart Academic Engine (ChatGPT / Puter AI Integration)
+// 7. Direct ChatGPT API Engine (No Puter.js Popups)
 window.handleKey = function(e) {
     if (e.key === 'Enter') window.sendChatMessage();
 };
@@ -189,61 +186,41 @@ window.sendChatMessage = async function() {
     chatBody.scrollTop = chatBody.scrollHeight;
 
     const loadingId = "loading-" + Date.now();
-    chatBody.innerHTML += `<div class="chat-bubble ai-bubble" id="${loadingId}">Vichari rahyu chhe...</div>`;
+    chatBody.innerHTML += `<div class="chat-bubble ai-bubble" id="${loadingId}">ChatGPT vichari rahyu chhe...</div>`;
     chatBody.scrollTop = chatBody.scrollHeight;
 
-    const systemPrompt = "You are the official smart academic AI assistant of Shree Ambica Vidhyalaya. Today is Tuesday, September 22, 2026. Give smart, direct, and helpful answers in Gujarati or English as asked.";
-
     try {
-        // Option A: Direct OpenAI API Key
-        if (OPENAI_API_KEY && OPENAI_API_KEY.startsWith("sk-")) {
-            const response = await fetch("https://api.openai.com/v1/chat/completions", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${OPENAI_API_KEY}`
-                },
-                body: JSON.stringify({
-                    model: "gpt-4o-mini",
-                    messages: [
-                        { role: "system", content: systemPrompt },
-                        { role: "user", content: msg }
-                    ]
-                })
-            });
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${OPENAI_API_KEY}`
+            },
+            body: JSON.stringify({
+                model: "gpt-4o-mini",
+                messages: [
+                    { 
+                        role: "system", 
+                        content: "You are the official smart academic AI assistant of Shree Ambica Vidhyalaya. Today is Tuesday, September 22, 2026. Give smart, direct, and helpful answers in Gujarati or English as asked." 
+                    },
+                    { role: "user", content: msg }
+                ],
+                temperature: 0.7
+            })
+        });
 
-            const data = await response.json();
-            if (response.ok) {
-                const reply = data.choices?.[0]?.message?.content || "Koi javab malyo nathi.";
-                document.getElementById(loadingId).innerText = reply;
-                chatBody.scrollTop = chatBody.scrollHeight;
-                return;
-            }
-        }
+        const data = await response.json();
 
-        // Option B: Puter.js Live Multi-Engine (ChatGPT / Claude backend)
-        if (window.puter && window.puter.ai) {
-            const res = await puter.ai.chat(`${systemPrompt}\nStudent Question: ${msg}`);
-            const replyText = typeof res === 'string' ? res : (res.message?.content || res.text || JSON.stringify(res));
-            document.getElementById(loadingId).innerText = replyText;
+        if (response.ok && data.choices && data.choices[0]) {
+            const reply = data.choices[0].message.content;
+            document.getElementById(loadingId).innerText = reply;
         } else {
-            // Local fallback logic
-            const q = msg.toLowerCase();
-            if (q.includes("time") || q.includes("samay") || q.includes("vagya")) {
-                const now = new Date();
-                document.getElementById(loadingId).innerText = `Atyare samay thayo chhe: ${now.toLocaleTimeString('gu-IN')} (${now.toLocaleDateString('gu-IN')})`;
-            } else {
-                document.getElementById(loadingId).innerText = "AI sathe jodai rahyu chhe. Krupya page refresh kari fari lakho.";
-            }
+            console.error("OpenAI Error:", data);
+            document.getElementById(loadingId).innerText = "ChatGPT Error: " + (data.error?.message || "Krupya OpenAI billing ane quota check karo.");
         }
     } catch (err) {
-        console.error("AI Assistant Error:", err);
-        const now = new Date();
-        if (msg.toLowerCase().includes("time") || msg.includes("samay") || msg.includes("vagya")) {
-            document.getElementById(loadingId).innerText = `Atyare samay thayo chhe: ${now.toLocaleTimeString('gu-IN')}`;
-        } else {
-            document.getElementById(loadingId).innerText = "Maff karjo, javab lavva ma samasya aavi. Krupya network check karo.";
-        }
+        console.error("Connection Error:", err);
+        document.getElementById(loadingId).innerText = "ChatGPT sathe connect na thai shakyu. Network connection check karo.";
     }
     chatBody.scrollTop = chatBody.scrollHeight;
 };
