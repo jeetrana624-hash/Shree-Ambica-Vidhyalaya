@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SHREE AMBICA VIDHYALAYA - NEXT-GEN 3D EXECUTIVE ENTERPRISE STYLESHEET
+   SHREE AMBICA VIDHYALAYA - ENTERPRISE 3D EXECUTIVE PORTAL STYLESHEET
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+Gujarati:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap');
@@ -59,7 +59,7 @@ body {
     min-height: 100vh;
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbars */
 ::-webkit-scrollbar { width: 7px; height: 7px; }
 ::-webkit-scrollbar-track { background: var(--bg-base); }
 ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
@@ -82,7 +82,7 @@ body {
     box-shadow: var(--shadow-3d-floating);
 }
 
-/* Modal */
+/* Modals */
 .modal-backdrop {
     position: fixed;
     inset: 0;
@@ -213,7 +213,6 @@ body {
 }
 
 .btn-secondary:hover { background: rgba(255, 255, 255, 0.1); }
-
 .btn-danger { background: linear-gradient(135deg, #ef4444, #b91c1c); color: #ffffff; }
 
 .btn-na {
@@ -221,14 +220,10 @@ body {
     border: 1px solid rgba(245, 158, 11, 0.35);
     color: #fbbf24;
 }
-
 .btn-na:hover { background: rgba(245, 158, 11, 0.25); }
-
 .btn-logout { background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.28); color: #fca5a5; }
 
-/* ==========================================================================
-   ULTRA-PREMIUM GOOGLE LOGIN BUTTON LOOK
-   ========================================================================== */
+/* Google Button */
 .auth-divider {
     position: relative;
     text-align: center;
@@ -255,7 +250,6 @@ body {
 
 .btn-google-premium {
     width: 100%;
-    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -265,9 +259,8 @@ body {
     border-radius: 14px;
     padding: 13px 20px;
     cursor: pointer;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
     transition: var(--transition-snappy);
-    overflow: hidden;
 }
 
 .btn-google-premium:hover {
@@ -276,23 +269,16 @@ body {
     border-color: #4285f4;
 }
 
-.google-icon-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .google-btn-text {
     color: #0f172a;
     font-size: 13px;
     font-weight: 700;
-    letter-spacing: 0.2px;
 }
 
 .btn-full { width: 100%; }
 .btn-sm { padding: 7px 12px; font-size: 12px; border-radius: 8px; }
 
-/* Dashboard Framework */
+/* Dashboard Shell */
 .enterprise-app { display: flex; min-height: 100vh; }
 
 .sidebar-3d {
@@ -356,9 +342,7 @@ body {
 .data-table-3d th { background: #080d1a; padding: 15px 18px; text-align: left; color: var(--text-secondary); font-weight: 700; white-space: nowrap; border-bottom: 1px solid var(--border-glass); }
 .data-table-3d td { padding: 14px 18px; border-bottom: 1px solid var(--border-glass); white-space: nowrap; }
 
-/* ==========================================================================
-   STUDENT-SPECIFIC DOCUMENT VAULT STYLES
-   ========================================================================== */
+/* Student-Specific Vault */
 .student-select-toolbar { display: flex; flex-direction: column; gap: 6px; }
 .vault-student-dossier {
     display: flex;
@@ -411,24 +395,15 @@ body {
 .doc-status-badge.status-ready { background: rgba(16, 185, 129, 0.15); color: #34d399; }
 .doc-status-badge.status-na { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
 
-.vault-btn-cluster {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: center;
-}
+.vault-btn-cluster { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
 
-/* Modal Preview Card */
-.modal-preview-card {
-    width: 100%;
-    max-width: 680px;
-    padding: 24px;
-}
+/* Modal Preview */
+.modal-preview-card { width: 100%; max-width: 680px; padding: 24px; }
 .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
 .modal-body { max-height: 520px; overflow-y: auto; text-align: center; }
 .modal-body img { max-width: 100%; border-radius: 10px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); }
 
-/* Attendance, Feeds, & Bot */
+/* Attendance, Feeds */
 .status-badge-present { color: var(--accent-emerald); font-weight: 700; }
 .status-badge-absent { color: var(--accent-rose); font-weight: 700; }
 .att-action-bar { margin-top: 22px; display: flex; justify-content: flex-end; }
@@ -439,14 +414,6 @@ body {
 .notice-meta, .circular-meta { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; }
 .inner-form-card { padding: 22px; margin-bottom: 22px; background: #080d1a; border-radius: var(--radius-lg); }
 .hidden-panel { display: none; }
-
-.ai-assistant-card { max-width: 900px; margin: 0 auto; }
-.chat-viewport { height: 440px; overflow-y: auto; background: rgba(6, 9, 17, 0.85); border-radius: var(--radius-lg); padding: 24px; border: 1px solid var(--border-glass); display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px; }
-.chat-bubble { max-width: 78%; padding: 14px 20px; border-radius: 16px; font-size: 14px; line-height: 1.6; }
-.user-bubble { align-self: flex-end; background: var(--primary-gradient); color: #ffffff; border-bottom-right-radius: 3px; }
-.ai-bubble { align-self: flex-start; background: #131d31; color: var(--text-primary); border-bottom-left-radius: 3px; border: 1px solid var(--border-glass); }
-.chat-input-bar { display: flex; gap: 12px; }
-.badge-ai { background: rgba(37, 99, 235, 0.22); border: 1px solid rgba(37, 99, 235, 0.4); color: #93c5fd; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; }
 .break-cell { background: rgba(255, 255, 255, 0.02); color: var(--text-muted); font-weight: 800; vertical-align: middle; }
 
 @media (max-width: 950px) {
