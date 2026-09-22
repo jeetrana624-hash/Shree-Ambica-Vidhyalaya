@@ -1,5 +1,6 @@
 // ==========================================================================
-// SHREE AMBICA VIDHYALAYA - ENTERPRISE LOGIC ENGINE
+// SHREE AMBICA VIDHYALAYA - ENTERPRISE MANAGEMENT SYSTEM
+// Clean Enterprise ERP Logic (Zero External AI Overhead)
 // ==========================================================================
 
 // 1. Firebase Configuration
@@ -45,12 +46,11 @@ const translations = {
         menuTimetable: "Timetable",
         menuHolidays: "Holiday Calendar",
         menuSettings: "Admin Security Settings",
-        menuAI: "Ambica AI Bot",
         logoutBtn: "Log Out",
         institutionalPortal: "Institutional Portal",
         heroWelcomeTag: "OFFICIAL ACADEMIC REPOSITORY",
         heroWelcomeTitle: "Welcome to Shree Ambica Vidhyalaya",
-        heroWelcomeDesc: "An integrated institutional management platform supporting advanced student records, statutory compliance, real-time daily roll checks, and academic digital assistance.",
+        heroWelcomeDesc: "An integrated institutional management platform supporting advanced student records, statutory compliance, and real-time daily roll checks.",
         quickNewAdmission: "+ Enroll Student",
         quickAttendance: "Mark Attendance",
         statEnrolled: "Total Students",
@@ -71,11 +71,11 @@ const translations = {
         fldWeight: "Weight (KG)",
         fldHeight: "Height (CM)",
         fldBlood: "Blood Group",
-        fldAadhaar: "Student Identification Number *",
+        fldAadhaar: "Student Govt ID Number *",
         fldFatherName: "Father / Guardian Name",
-        fldFatherAadhaar: "Father Identification Number",
+        fldFatherAadhaar: "Father Govt ID Number",
         fldMotherName: "Mother Name",
-        fldMotherAadhaar: "Mother Identification Number",
+        fldMotherAadhaar: "Mother Govt ID Number",
         fldPhone: "Emergency Contact Number *",
         fldAddress: "Residential Address *",
         btnSaveStudent: "Register & Save Student Data",
@@ -127,8 +127,7 @@ const translations = {
         lblCurrentPass: "Current Password *",
         lblNewAdminId: "New Administrator ID *",
         lblNewAdminPass: "New Administrator Password *",
-        btnUpdateAdmin: "Update Admin Credentials",
-        aiDesc: "State-of-the-art academic intelligence powered by ChatGPT-4o Gateway"
+        btnUpdateAdmin: "Update Admin Credentials"
     },
     gu: {
         appSubtitle: "શિક્ષણ અને વહીવટી સંચાલન પોર્ટલ",
@@ -146,12 +145,11 @@ const translations = {
         menuTimetable: "સમયપત્રક (ટાઇમટેબલ)",
         menuHolidays: "રજાઓનું કેલેન્ડર",
         menuSettings: "એડમિન પાસવર્ડ સેટિંગ્સ",
-        menuAI: "અંબિકા AI સહાયક",
         logoutBtn: "લૉગ આઉટ",
         institutionalPortal: "શાળા સંચાલન પ્રણાલી",
         heroWelcomeTag: "સત્તાવાર શૈક્ષણિક પોર્ટલ",
         heroWelcomeTitle: "શ્રી અંબિકા વિદ્યાલયમાં આપનું સ્વાગત છે",
-        heroWelcomeDesc: "વિદ્યાર્થી પ્રવેશ, ઓળખ પુરાવા અને પ્રમાણપત્રો, દૈનિક હાજરી, સરકારી પરિપત્રો અને AI સહાયક માટેનું સંપૂર્ણ ડિજિટલ પ્લેટફોર્મ.",
+        heroWelcomeDesc: "વિદ્યાર્થી પ્રવેશ, ઓળખ પુરાવા અને પ્રમાણપત્રો, દૈનિક હાજરી અને સરકારી પરિપત્રો માટેનું સંપૂર્ણ ડિજિટલ પ્લેટફોર્મ.",
         quickNewAdmission: "+ નવો પ્રવેશ",
         quickAttendance: "હાજરી પૂરો",
         statEnrolled: "કુલ વિદ્યાર્થીઓ",
@@ -228,8 +226,7 @@ const translations = {
         lblCurrentPass: "હાલનો પાસવર્ડ *",
         lblNewAdminId: "નવો Administrator ID *",
         lblNewAdminPass: "નવો પાસવર્ડ *",
-        btnUpdateAdmin: "માહિતી અપડેટ કરો",
-        aiDesc: "ChatGPT-4o આધારિત અદ્યતન શૈક્ષણિક AI સહાયક"
+        btnUpdateAdmin: "માહિતી અપડેટ કરો"
     },
     hi: {
         appSubtitle: "संस्थागत शैक्षणिक एवं प्रबंधन पोर्टल",
@@ -247,12 +244,11 @@ const translations = {
         menuTimetable: "समय सारिणी",
         menuHolidays: "अवकाश कैलेंडर",
         menuSettings: "एडमिन सुरक्षा सेटिंग्स",
-        menuAI: "अंबिका AI सहायक",
         logoutBtn: "लॉग आउट",
         institutionalPortal: "संस्थागत प्रबंधन प्रणाली",
         heroWelcomeTag: "आधिकारिक शैक्षणिक पोर्टल",
         heroWelcomeTitle: "श्री अंबिका विद्यालय में आपका स्वागत है",
-        heroWelcomeDesc: "छात्र प्रवेश, दस्तावेज़, ऑनलाइन उपस्थिति, सरकारी परिपत्र और AI सहायता हेतु एकीकृत डिजिटल मंच।",
+        heroWelcomeDesc: "छात्र प्रवेश, दस्तावेज़, ऑनलाइन उपस्थिति और सरकारी परिपत्र हेतु एकीकृत डिजिटल मंच।",
         quickNewAdmission: "+ नया प्रवेश",
         quickAttendance: "उपस्थिति दर्ज करें",
         statEnrolled: "कुल छात्र",
@@ -262,7 +258,7 @@ const translations = {
         formTitleEnroll: "छात्र प्रवेश फॉर्म",
         formDescEnroll: "छात्र की विस्तृत जानकारी एवं रजिस्टर",
         fldGrNo: "जी.आर. नंबर (G.R. No) *",
-        fldUid: "यू.आई.डी. नंबर (यूज़रनेम) *",
+        fldUid: "यू.આઈ.ડી. નંબર (યુઝરનેમ) *",
         fldPassword: "छात्र लॉगिन पासवर्ड *",
         fldEmail: "पंजीकृत ईमेल (गूगल लॉगिन हेतु)",
         fldName: "छात्र का पूरा नाम *",
@@ -329,8 +325,7 @@ const translations = {
         lblCurrentPass: "वर्तमान पासवर्ड *",
         lblNewAdminId: "नया Admin ID *",
         lblNewAdminPass: "नया पासवर्ड *",
-        btnUpdateAdmin: "डेटा अपडेट करें",
-        aiDesc: "ChatGPT-4o संचालित आधुनिक शैक्षणिक AI सहायक"
+        btnUpdateAdmin: "डेटा अपडेट करें"
     }
 };
 
@@ -353,17 +348,6 @@ window.switchLanguage = function(lang) {
             el.innerText = translations[lang][key];
         }
     });
-
-    const aiInit = document.getElementById('ai-init-msg');
-    if (aiInit) {
-        if (lang === 'gu') {
-            aiInit.innerText = "નમસ્તે! હું શ્રી અંબિકા વિદ્યાલયનો સત્તાવાર AI શૈક્ષણિક સહાયક છું. અભ્યાસ, પરિપત્રો કે શાળા સંબંધિત કોઈ પણ પ્રશ્ન પૂછી શકો છો.";
-        } else if (lang === 'hi') {
-            aiInit.innerText = "नमस्ते! मैं श्री अंबिका विद्यालय का आधिकारिक AI शैक्षणिक सहायक हूँ। आप मुझसे अध्ययन, पाठ्यक्रम या विद्यालय संबंधित कोई भी प्रश्न पूछ सकते हैं।";
-        } else {
-            aiInit.innerText = "Hello! I am the Shree Ambica Vidhyalaya AI Assistant. How can I assist you with your academics, syllabus, or administrative inquiries today?";
-        }
-    }
 };
 
 window.cycleLanguage = function() {
@@ -1006,86 +990,6 @@ window.updateAdminCredentials = function() {
     document.getElementById('cfg-curr-pass').value = '';
     document.getElementById('cfg-new-id').value = '';
     document.getElementById('cfg-new-pass').value = '';
-};
-
-// 13. Ambica AI Clean Engine
-window.handleKey = function(e) {
-    if (e.key === 'Enter') window.sendChatMessage();
-};
-
-window.sendChatMessage = async function() {
-    const input = document.getElementById('chat-input');
-    const msg = input.value.trim();
-    if (!msg) return;
-
-    const chatBody = document.getElementById('chat-messages');
-    chatBody.innerHTML += `<div class="chat-bubble user-bubble">${msg}</div>`;
-    input.value = '';
-    chatBody.scrollTop = chatBody.scrollHeight;
-
-    const loadingId = "loading-" + Date.now();
-    const loadingText = currentLanguage === 'gu' ? 'ChatGPT વિચારી રહ્યું છે...' : (currentLanguage === 'hi' ? 'ChatGPT विचार कर रहा है...' : 'ChatGPT is analyzing...');
-    chatBody.innerHTML += `<div class="chat-bubble ai-bubble" id="${loadingId}">${loadingText}</div>`;
-    chatBody.scrollTop = chatBody.scrollHeight;
-
-    const langInstruction = currentLanguage === 'gu' 
-        ? "તમારે સંપૂર્ણ જવાબ શુદ્ધ ગુજરાતીમાં જ આપવાનો છે. કોઈપણ પ્રકારનું કોડિંગ, JSON કે આંતરિક ટેકનિકલ લખાણ બતાવવું નહીં, માત્ર સીધો અને સાચો જવાબ આપવો." 
-        : (currentLanguage === 'hi' 
-            ? "आपको पूरा उत्तर शुद्ध हिंदी में देना है। कोई भी JSON या तकनीकी कोड न दिखाएं, केवल सीधा उत्तर दें।" 
-            : "Answer clearly and directly in professional English. Do not show internal reasoning, JSON, or debug code.");
-
-    const systemPrompt = `You are the official smart academic AI assistant of Shree Ambica Vidhyalaya school. ${langInstruction}`;
-
-    try {
-        const response = await fetch("https://text.pollinations.ai/", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                messages: [
-                    { role: "system", content: systemPrompt },
-                    { role: "user", content: msg }
-                ],
-                model: "openai",
-                jsonMode: false
-            })
-        });
-
-        if (response.ok) {
-            let text = await response.text();
-            
-            if (text.includes('"reasoning"') || text.includes('{"role"')) {
-                try {
-                    const parsed = JSON.parse(text);
-                    text = parsed.content || parsed.message?.content || parsed.text || text;
-                } catch(e) {
-                    const parts = text.split('"content":');
-                    if (parts.length > 1) {
-                        text = parts[1].replace(/["}]/g, '').trim();
-                    }
-                }
-            }
-            const cleanText = text.trim();
-            if (cleanText && !cleanText.startsWith("{")) {
-                document.getElementById(loadingId).innerText = cleanText;
-            } else {
-                throw new Error("Invalid format");
-            }
-        } else {
-            throw new Error("HTTP Status " + response.status);
-        }
-    } catch (err) {
-        console.error("AI Error:", err);
-        const q = msg.toLowerCase();
-        if (q.includes("science") && (q.includes("10") || q.includes("std"))) {
-            document.getElementById(loadingId).innerText = "ધોરણ ૧૦ વિજ્ઞાનના પ્રકરણો:\n૧. રાસાયણિક પ્રક્રિયાઓ અને સમીકરણો\n૨. ઍસિડ, બેઇઝ અને ક્ષાર\n૩. ધાતુઓ અને અધાતુઓ\n૪. કાર્બન અને તેનાં સંયોજનો\n૫. જૈવિક ક્રિયાઓ\n૬. નિયંત્રણ અને સંકલન\n૭. સજીવો કેવી રીતે પ્રજનન કરે છે?\n૮. આનુવંશિકતા\n૯. પ્રકાશ – પરાવર્તન અને વક્રીભવન\n૧૦. માનવ-આંખ અને રંગબેરંગી દુનિયા\n૧૧. વિદ્યુત\n૧૨. વિદ્યુતપ્રવાહની ચુંબકીય અસરો\n૧૩. આપણું પર્યાવરણ";
-        } else if (q.includes("time") || q.includes("સમય") || q.includes("વાગ્યા")) {
-            const now = new Date();
-            document.getElementById(loadingId).innerText = `અત્યારે સમય થયો છે: ${now.toLocaleTimeString('gu-IN')}`;
-        } else {
-            document.getElementById(loadingId).innerText = "માફ કરજો, સર્વર કનેક્શનમાં ક્ષતિ આવી. ફરી પ્રયત્ન કરો.";
-        }
-    }
-    chatBody.scrollTop = chatBody.scrollHeight;
 };
 
 // Start default
