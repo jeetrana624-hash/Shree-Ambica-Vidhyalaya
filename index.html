@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shree Ambica Vidhyalaya - Enterprise ERP & Institutional System</title>
-    <link rel="stylesheet" href="style.css?v=10">
+    <title>Shree Ambica Vidhyalaya - Enterprise ERP Portal</title>
+    <link rel="stylesheet" href="style.css?v=11">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+Gujarati:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
@@ -15,7 +15,7 @@
 </head>
 <body class="lang-en theme-dark-enterprise">
 
-    <!-- Pre-Login Language & Credentials Modal -->
+    <!-- Pre-Login Modal -->
     <div id="login-modal" class="modal-backdrop">
         <div class="card-3d auth-card">
             <div class="school-brand">
@@ -40,21 +40,21 @@
                 <button type="button" id="role-student" class="role-tab" onclick="window.setRole('student')" data-i18n="studentRole">Student Portal</button>
             </div>
 
-            <!-- Administrator Secure Form -->
+            <!-- Secure Credentials Login (Admin or Registered Student UID) -->
             <div id="credentials-box" class="form-group">
                 <input type="text" id="login-username" class="input-field-3d" placeholder="Administrator ID">
                 <input type="password" id="login-password" class="input-field-3d" placeholder="Password">
                 <button type="button" class="btn-3d btn-primary btn-full" onclick="window.manualLogin()" data-i18n="loginBtn">Secure Enterprise Login</button>
             </div>
 
-            <!-- Student Only Google Authentication -->
+            <!-- Student Only Google Authentication (Registered email only) -->
             <div id="student-oauth-container" style="display: none;">
                 <div class="auth-divider">
-                    <span data-i18n="orGoogle">STUDENT GOOGLE SSO</span>
+                    <span data-i18n="orGoogle">REGISTERED STUDENT GOOGLE SSO</span>
                 </div>
                 <div class="sso-actions">
                     <button type="button" class="btn-3d btn-google btn-full" onclick="window.googleLogin()">
-                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> Continue with Google
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> Continue with Registered Google ID
                     </button>
                 </div>
             </div>
@@ -70,7 +70,7 @@
                 <div class="brand-mini-badge">SAV</div>
                 <div class="brand-titles">
                     <h3>Ambica Portal</h3>
-                    <span class="version-tag">ERP v4.2</span>
+                    <span class="version-tag">ERP v4.3</span>
                 </div>
             </div>
 
@@ -79,9 +79,9 @@
                     <span class="nav-icon">📊</span> <span data-i18n="menuHome">Dashboard Home</span>
                 </button>
                 <button class="nav-item" id="menu-student-link" onclick="window.navigateTo('view-student-mgmt')">
-                    <span class="nav-icon">🎓</span> <span data-i18n="menuStudents">Student Admission</span>
+                    <span class="nav-icon">🎓</span> <span data-i18n="menuStudents">Student Admission & Registry</span>
                 </button>
-                <button class="nav-item" onclick="window.navigateTo('view-docs-vault')">
+                <button class="nav-item" id="menu-vault-link" onclick="window.navigateTo('view-docs-vault')">
                     <span class="nav-icon">☁️</span> <span data-i18n="menuVault">Document Vault</span>
                 </button>
                 <button class="nav-item" id="menu-attendance-link" onclick="window.navigateTo('view-attendance')">
@@ -98,6 +98,9 @@
                 </button>
                 <button class="nav-item" onclick="window.navigateTo('view-holidays')">
                     <span class="nav-icon">🌴</span> <span data-i18n="menuHolidays">Holiday Calendar</span>
+                </button>
+                <button class="nav-item" id="menu-settings-link" onclick="window.navigateTo('view-admin-settings')">
+                    <span class="nav-icon">⚙️</span> <span data-i18n="menuSettings">Admin Security Settings</span>
                 </button>
                 <button class="nav-item" onclick="window.navigateTo('view-ai-bot')">
                     <span class="nav-icon">🤖</span> <span data-i18n="menuAI">Ambica AI Bot</span>
@@ -140,7 +143,7 @@
                         <span class="hero-tag" data-i18n="heroWelcomeTag">OFFICIAL ACADEMIC REPOSITORY</span>
                         <h1 data-i18n="heroWelcomeTitle">Welcome to Shree Ambica Vidhyalaya</h1>
                         <p data-i18n="heroWelcomeDesc">An integrated institutional management platform supporting advanced student records, statutory compliance, real-time daily roll checks, and academic digital assistance.</p>
-                        <div class="hero-quick-actions">
+                        <div class="hero-quick-actions" id="admin-quick-actions">
                             <button class="btn-3d btn-primary" onclick="window.navigateTo('view-student-mgmt')" data-i18n="quickNewAdmission">+ Enroll Student</button>
                             <button class="btn-3d btn-secondary" onclick="window.navigateTo('view-attendance')" data-i18n="quickAttendance">Mark Attendance</button>
                         </div>
@@ -171,7 +174,7 @@
 
             <!-- SECTION 2: STUDENT MANAGEMENT & REGISTRY -->
             <section id="view-student-mgmt" class="view-panel">
-                <!-- Enrollment Form Card -->
+                <!-- Enrollment Form Card (Admin Only) -->
                 <div id="admin-enrollment-card" class="card-3d content-card">
                     <div class="card-title-row">
                         <div>
@@ -187,8 +190,16 @@
                             <input type="text" id="gr_no" class="input-field-3d" placeholder="e.g., GR-8492">
                         </div>
                         <div class="input-wrapper">
-                            <label class="field-label" data-i18n="fldUid">UID Number *</label>
-                            <input type="text" id="uid_no" class="input-field-3d" placeholder="Unique Student ID">
+                            <label class="field-label" data-i18n="fldUid">UID Number (Username) *</label>
+                            <input type="text" id="uid_no" class="input-field-3d" placeholder="Unique Student ID (Acts as Username)">
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="field-label" data-i18n="fldPassword">Student Login Password *</label>
+                            <input type="text" id="st_password" class="input-field-3d" placeholder="Set Login Password for Student">
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="field-label" data-i18n="fldEmail">Registered Student Email (for Google Login)</label>
+                            <input type="email" id="st_email" class="input-field-3d" placeholder="student@gmail.com">
                         </div>
                         <div class="input-wrapper">
                             <label class="field-label" data-i18n="fldName">Full Student Name *</label>
@@ -197,14 +208,12 @@
                         <div class="input-wrapper">
                             <label class="field-label" data-i18n="fldStandard">Standard / Division *</label>
                             <select id="st_standard" class="input-field-3d">
-                                <option value="Grade 1-A">Grade 1-A</option>
-                                <option value="Grade 5-A">Grade 5-A</option>
                                 <option value="Grade 9-A">Grade 9-A</option>
+                                <option value="Grade 9-B">Grade 9-B</option>
                                 <option value="Grade 10-A">Grade 10-A</option>
-                                <option value="Grade 11-Sci">Grade 11-Science</option>
-                                <option value="Grade 11-Com">Grade 11-Commerce</option>
-                                <option value="Grade 12-Sci">Grade 12-Science</option>
-                                <option value="Grade 12-Com">Grade 12-Commerce</option>
+                                <option value="Grade 10-B">Grade 10-B</option>
+                                <option value="Grade 11-Commerce">Grade 11-Commerce</option>
+                                <option value="Grade 12-Commerce">Grade 12-Commerce</option>
                             </select>
                         </div>
                         <div class="input-wrapper">
@@ -243,7 +252,7 @@
                         </div>
                         <div class="input-wrapper">
                             <label class="field-label" data-i18n="fldAadhaar">Student Aadhaar Number *</label>
-                            <input type="text" id="st_aadhaar" class="input-field-3d" placeholder="12-digit Aadhaar" maxlength="12">
+                            <input type="text" id="st_aadhaar" class="input-field-3d" placeholder="12-digit Identification" maxlength="12">
                         </div>
                         <div class="input-wrapper">
                             <label class="field-label" data-i18n="fldFatherName">Father / Guardian Name</label>
@@ -251,7 +260,7 @@
                         </div>
                         <div class="input-wrapper">
                             <label class="field-label" data-i18n="fldFatherAadhaar">Father Aadhaar Number</label>
-                            <input type="text" id="st_fa_aadhaar" class="input-field-3d" placeholder="Father Aadhaar" maxlength="12">
+                            <input type="text" id="st_fa_aadhaar" class="input-field-3d" placeholder="Father Identification" maxlength="12">
                         </div>
                         <div class="input-wrapper">
                             <label class="field-label" data-i18n="fldMotherName">Mother Name</label>
@@ -259,7 +268,7 @@
                         </div>
                         <div class="input-wrapper">
                             <label class="field-label" data-i18n="fldMotherAadhaar">Mother Aadhaar Number</label>
-                            <input type="text" id="st_mo_aadhaar" class="input-field-3d" placeholder="Mother Aadhaar" maxlength="12">
+                            <input type="text" id="st_mo_aadhaar" class="input-field-3d" placeholder="Mother Identification" maxlength="12">
                         </div>
                         <div class="input-wrapper">
                             <label class="field-label" data-i18n="fldPhone">Emergency Contact Number *</label>
@@ -293,7 +302,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th data-i18n="colGr">GR No</th>
-                                    <th data-i18n="colUid">UID No</th>
+                                    <th data-i18n="colUid">UID (User)</th>
                                     <th data-i18n="colName">Student Name</th>
                                     <th data-i18n="colStd">Standard</th>
                                     <th data-i18n="colRoll">Roll</th>
@@ -312,7 +321,7 @@
                 </div>
             </section>
 
-            <!-- SECTION 3: DOCUMENT VAULT (5TB Storage Ready) -->
+            <!-- SECTION 3: DOCUMENT VAULT -->
             <section id="view-docs-vault" class="view-panel">
                 <div class="card-3d content-card">
                     <div class="card-title-row">
@@ -329,7 +338,7 @@
                             <h4 data-i18n="docPassport">Student Passport Photo</h4>
                             <p class="text-muted">JPG, PNG (Max 5MB)</p>
                             <input type="file" id="file-student-photo" class="file-input-hidden" onchange="window.previewDocUpload(this, 'preview-photo')">
-                            <button class="btn-3d btn-secondary btn-sm" onclick="document.getElementById('file-student-photo').click()" data-i18n="btnUpload">Choose File</button>
+                            <button class="btn-3d btn-secondary btn-sm admin-only-btn" onclick="document.getElementById('file-student-photo').click()" data-i18n="btnUpload">Choose File</button>
                             <div id="preview-photo" class="upload-status-pill">Pending Upload</div>
                         </div>
 
@@ -338,7 +347,7 @@
                             <h4 data-i18n="docBirth">Birth Certificate</h4>
                             <p class="text-muted">PDF, Image verification</p>
                             <input type="file" id="file-birth-cert" class="file-input-hidden" onchange="window.previewDocUpload(this, 'preview-birth')">
-                            <button class="btn-3d btn-secondary btn-sm" onclick="document.getElementById('file-birth-cert').click()" data-i18n="btnUpload">Choose File</button>
+                            <button class="btn-3d btn-secondary btn-sm admin-only-btn" onclick="document.getElementById('file-birth-cert').click()" data-i18n="btnUpload">Choose File</button>
                             <div id="preview-birth" class="upload-status-pill">Pending Upload</div>
                         </div>
 
@@ -347,7 +356,7 @@
                             <h4 data-i18n="docAadhaar">Student Aadhaar Card</h4>
                             <p class="text-muted">Front & Back scan</p>
                             <input type="file" id="file-aadhaar" class="file-input-hidden" onchange="window.previewDocUpload(this, 'preview-aadhaar')">
-                            <button class="btn-3d btn-secondary btn-sm" onclick="document.getElementById('file-aadhaar').click()" data-i18n="btnUpload">Choose File</button>
+                            <button class="btn-3d btn-secondary btn-sm admin-only-btn" onclick="document.getElementById('file-aadhaar').click()" data-i18n="btnUpload">Choose File</button>
                             <div id="preview-aadhaar" class="upload-status-pill">Pending Upload</div>
                         </div>
 
@@ -356,7 +365,7 @@
                             <h4 data-i18n="docIncome">Income Certificate</h4>
                             <p class="text-muted">Taluka / Mamlatdar Approved</p>
                             <input type="file" id="file-income-cert" class="file-input-hidden" onchange="window.previewDocUpload(this, 'preview-income')">
-                            <button class="btn-3d btn-secondary btn-sm" onclick="document.getElementById('file-income-cert').click()" data-i18n="btnUpload">Choose File</button>
+                            <button class="btn-3d btn-secondary btn-sm admin-only-btn" onclick="document.getElementById('file-income-cert').click()" data-i18n="btnUpload">Choose File</button>
                             <div id="preview-income" class="upload-status-pill">Pending Upload</div>
                         </div>
 
@@ -365,7 +374,7 @@
                             <h4 data-i18n="docCaste">Caste Certificate</h4>
                             <p class="text-muted">Govt Social Welfare certified</p>
                             <input type="file" id="file-caste-cert" class="file-input-hidden" onchange="window.previewDocUpload(this, 'preview-caste')">
-                            <button class="btn-3d btn-secondary btn-sm" onclick="document.getElementById('file-caste-cert').click()" data-i18n="btnUpload">Choose File</button>
+                            <button class="btn-3d btn-secondary btn-sm admin-only-btn" onclick="document.getElementById('file-caste-cert').click()" data-i18n="btnUpload">Choose File</button>
                             <div id="preview-caste" class="upload-status-pill">Pending Upload</div>
                         </div>
 
@@ -374,14 +383,14 @@
                             <h4 data-i18n="docParentsAadhaar">Parents Aadhaar Documents</h4>
                             <p class="text-muted">Combined Guardian Identity</p>
                             <input type="file" id="file-parents-aadhaar" class="file-input-hidden" onchange="window.previewDocUpload(this, 'preview-parents-aadhaar')">
-                            <button class="btn-3d btn-secondary btn-sm" onclick="document.getElementById('file-parents-aadhaar').click()" data-i18n="btnUpload">Choose File</button>
+                            <button class="btn-3d btn-secondary btn-sm admin-only-btn" onclick="document.getElementById('file-parents-aadhaar').click()" data-i18n="btnUpload">Choose File</button>
                             <div id="preview-parents-aadhaar" class="upload-status-pill">Pending Upload</div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- SECTION 4: ONLINE ATTENDANCE -->
+            <!-- SECTION 4: ONLINE ATTENDANCE (Admin edits, Student view-only) -->
             <section id="view-attendance" class="view-panel">
                 <div class="card-3d content-card">
                     <div class="card-title-row">
@@ -392,12 +401,12 @@
                         <div class="attendance-controls">
                             <input type="date" id="att-date" class="input-field-3d input-sm">
                             <select id="att-standard-filter" class="input-field-3d input-sm" onchange="window.loadAttendanceRoster()">
-                                <option value="Grade 10-A">Grade 10-A</option>
-                                <option value="Grade 1-A">Grade 1-A</option>
-                                <option value="Grade 5-A">Grade 5-A</option>
                                 <option value="Grade 9-A">Grade 9-A</option>
-                                <option value="Grade 11-Sci">Grade 11-Sci</option>
-                                <option value="Grade 12-Sci">Grade 12-Sci</option>
+                                <option value="Grade 9-B">Grade 9-B</option>
+                                <option value="Grade 10-A">Grade 10-A</option>
+                                <option value="Grade 10-B">Grade 10-B</option>
+                                <option value="Grade 11-Commerce">Grade 11-Commerce</option>
+                                <option value="Grade 12-Commerce">Grade 12-Commerce</option>
                             </select>
                         </div>
                     </div>
@@ -410,13 +419,13 @@
                                     <th data-i18n="colName">Student Name</th>
                                     <th data-i18n="colGr">GR No</th>
                                     <th data-i18n="colAttendanceStatus">Status</th>
-                                    <th data-i18n="colMark">Mark Presence</th>
+                                    <th id="att-mark-header" data-i18n="colMark">Mark Presence</th>
                                 </tr>
                             </thead>
                             <tbody id="attendance-table-body"></tbody>
                         </table>
                     </div>
-                    <div class="att-action-bar">
+                    <div class="att-action-bar" id="att-submit-container">
                         <button class="btn-3d btn-primary" onclick="window.saveAttendanceRoster()" data-i18n="btnSaveAttendance">Submit Attendance Records</button>
                     </div>
                 </div>
@@ -479,7 +488,7 @@
                     <div class="card-title-row">
                         <div>
                             <h3 data-i18n="ttTitle">Master Academic Schedule & Timetable</h3>
-                            <p class="text-muted" data-i18n="ttDesc">Weekly departmental class timetable</p>
+                            <p class="text-muted" data-i18n="ttDesc">Weekly departmental class timetable (9, 10 & Commerce)</p>
                         </div>
                     </div>
 
@@ -499,51 +508,51 @@
                             <tbody>
                                 <tr>
                                     <td><strong>Monday</strong></td>
-                                    <td>Mathematics</td>
-                                    <td>Science Lab</td>
+                                    <td>Accountancy / Maths</td>
+                                    <td>Commerce Org (B.A)</td>
                                     <td>English</td>
                                     <td rowspan="6" class="break-cell">RECESS BREAK</td>
-                                    <td>Social Studies</td>
-                                    <td>Sanskrit</td>
+                                    <td>Economics</td>
+                                    <td>Gujarati</td>
                                 </tr>
                                 <tr>
                                     <td><strong>Tuesday</strong></td>
-                                    <td>Science</td>
-                                    <td>Mathematics</td>
-                                    <td>Gujarati</td>
-                                    <td>Physical Edu</td>
+                                    <td>Statistics</td>
+                                    <td>Accountancy</td>
+                                    <td>Economics</td>
+                                    <td>English</td>
                                     <td>Computer Lab</td>
                                 </tr>
                                 <tr>
                                     <td><strong>Wednesday</strong></td>
                                     <td>English</td>
-                                    <td>Social Studies</td>
-                                    <td>Mathematics</td>
-                                    <td>Science</td>
-                                    <td>Drawing / Art</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Thursday</strong></td>
-                                    <td>Mathematics</td>
-                                    <td>Science</td>
-                                    <td>Gujarati</td>
-                                    <td>English</td>
+                                    <td>Commerce Org (B.A)</td>
+                                    <td>Accountancy</td>
+                                    <td>Statistics</td>
                                     <td>Library Hour</td>
                                 </tr>
                                 <tr>
+                                    <td><strong>Thursday</strong></td>
+                                    <td>Accountancy</td>
+                                    <td>Statistics</td>
+                                    <td>Gujarati</td>
+                                    <td>English</td>
+                                    <td>Sports / Drill</td>
+                                </tr>
+                                <tr>
                                     <td><strong>Friday</strong></td>
-                                    <td>Social Studies</td>
-                                    <td>Science</td>
-                                    <td>Mathematics</td>
+                                    <td>Economics</td>
+                                    <td>Commerce Org (B.A)</td>
+                                    <td>Accountancy</td>
                                     <td>Hindi</td>
-                                    <td>Music / Culture</td>
+                                    <td>Career Guidance</td>
                                 </tr>
                                 <tr>
                                     <td><strong>Saturday</strong></td>
                                     <td>Unit Evaluation</td>
                                     <td>Weekly Test</td>
-                                    <td>Sports / Drill</td>
-                                    <td colspan="2">Assembly & Club Activities</td>
+                                    <td>Account Practice</td>
+                                    <td colspan="2">Assembly & Moral Edu</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -564,7 +573,36 @@
                 </div>
             </section>
 
-            <!-- SECTION 9: AMBICA AI ASSISTANT -->
+            <!-- SECTION 9: ADMIN SECURITY SETTINGS (Change ID & Password) -->
+            <section id="view-admin-settings" class="view-panel">
+                <div class="card-3d content-card" style="max-width: 600px; margin: 0 auto;">
+                    <div class="card-title-row">
+                        <div>
+                            <h3 data-i18n="adminSettingsTitle">Administrator Credentials Configuration</h3>
+                            <p class="text-muted" data-i18n="adminSettingsDesc">Update master administrator ID and secure access password</p>
+                        </div>
+                        <span class="badge-role">Root Security</span>
+                    </div>
+
+                    <div class="form-grid-3d" style="grid-template-columns: 1fr;">
+                        <div class="input-wrapper">
+                            <label class="field-label" data-i18n="lblCurrentPass">Current Password *</label>
+                            <input type="password" id="cfg-curr-pass" class="input-field-3d" placeholder="Enter current password">
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="field-label" data-i18n="lblNewAdminId">New Administrator ID *</label>
+                            <input type="text" id="cfg-new-id" class="input-field-3d" placeholder="New ID (e.g., principal_ambica)">
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="field-label" data-i18n="lblNewAdminPass">New Administrator Password *</label>
+                            <input type="password" id="cfg-new-pass" class="input-field-3d" placeholder="New Secure Password">
+                        </div>
+                        <button class="btn-3d btn-primary btn-full" onclick="window.updateAdminCredentials()" data-i18n="btnUpdateAdmin">Update Admin Credentials</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 10: AMBICA AI ASSISTANT -->
             <section id="view-ai-bot" class="view-panel">
                 <div class="card-3d content-card ai-assistant-card">
                     <div class="card-title-row">
@@ -590,6 +628,6 @@
     </div>
 
     <!-- Application Script -->
-    <script src="script.js?v=10"></script>
+    <script src="script.js?v=11"></script>
 </body>
 </html>
