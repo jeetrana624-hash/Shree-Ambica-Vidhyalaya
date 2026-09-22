@@ -8,9 +8,6 @@ const firebaseConfig = {
   appId: "1:347039718162:web:645fe9b67afbd4e5da31cb"
 };
 
-// 2. Your OpenAI API Key
-const OPENAI_API_KEY = "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";
-
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
@@ -18,7 +15,7 @@ const auth = firebase.auth();
 
 let currentRole = 'school';
 
-// Role Switcher: Administrator gets ID & Password only, Student gets Google Login
+// Role Switcher: Administrator gets only ID & Password, Student gets Google Login
 window.setRole = function(role) {
     currentRole = role;
     document.getElementById('role-school').classList.toggle('active', role === 'school');
@@ -38,7 +35,7 @@ window.setRole = function(role) {
     }
 };
 
-// 3. Strict Administrator ID & Password Login
+// 2. Strict Administrator ID & Password Login
 window.manualLogin = function() {
     const user = document.getElementById('login-username').value.trim();
     const pass = document.getElementById('login-password').value.trim();
@@ -52,14 +49,14 @@ window.manualLogin = function() {
         if (user === "admin" && pass === "admin123") {
             openPortal("Principal / Administrator");
         } else {
-            alert("અમાન્ય Administrator ID અથવા Password! સાચો ID અને Password દાખલ કરો.");
+            alert("અમાન્ય Administrator ID અથવા Password! કૃપા કરીને સાચો ID અને Password દાખલ કરો.");
         }
     } else {
         openPortal(user);
     }
 };
 
-// 4. Student-Only Google Authentication
+// 3. Student-Only Google Authentication
 window.googleLogin = function() {
     if (currentRole === 'school') {
         alert('Administrator લૉગિન ફક્ત ID અને Password દ્વારા જ થઈ શકે છે.');
@@ -77,7 +74,7 @@ window.googleLogin = function() {
         });
 };
 
-// 5. Session Control & Authorization
+// 4. Session Control & Authorization
 function openPortal(name) {
     document.getElementById('login-modal').style.display = 'none';
     document.getElementById('main-content').style.display = 'block';
@@ -100,7 +97,7 @@ window.logout = function() {
     });
 };
 
-// 6. Student Registry Storage
+// 5. Student Registry Storage (Aadhaar, Phone, DOB, Standard, Roll No)
 function getStudents() {
     const data = localStorage.getItem('ambica_students');
     return data ? JSON.parse(data) : [];
@@ -170,7 +167,7 @@ window.deleteStudent = function(index) {
     }
 };
 
-// 7. Pure OpenAI ChatGPT API Integration (Without Puter.js)
+// 6. Ambica AI Academic Assistant Engine (Direct HTTP Gateway)
 window.handleKey = function(e) {
     if (e.key === 'Enter') window.sendChatMessage();
 };
@@ -186,54 +183,29 @@ window.sendChatMessage = async function() {
     chatBody.scrollTop = chatBody.scrollHeight;
 
     const loadingId = "loading-" + Date.now();
-    chatBody.innerHTML += `<div class="chat-bubble ai-bubble" id="${loadingId}">ChatGPT વિચારી રહ્યું છે...</div>`;
+    chatBody.innerHTML += `<div class="chat-bubble ai-bubble" id="${loadingId}">વિચારી રહ્યું છે...</div>`;
     chatBody.scrollTop = chatBody.scrollHeight;
 
-    const systemPrompt = "You are the official smart academic AI assistant of Shree Ambica Vidhyalaya. The current date is Tuesday, September 22, 2026. Give smart, direct, and polite answers to students in Gujarati or English as asked.";
-
-    // Target endpoint using standard CORS proxy bridge to OpenAI
-    const targetUrl = "https://api.openai.com/v1/chat/completions";
-    const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(targetUrl);
+    const systemPrompt = "You are the official smart academic AI assistant of Shree Ambica Vidhyalaya. Deliver structured, articulate, professional, and clear answers in Gujarati or English as asked.";
 
     try {
-        const response = await fetch(proxyUrl, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${OPENAI_API_KEY}`
-            },
-            body: JSON.stringify({
-                model: "gpt-4o-mini",
-                messages: [
-                    { role: "system", content: systemPrompt },
-                    { role: "user", content: msg }
-                ],
-                temperature: 0.7
-            })
-        });
+        const targetUrl = "https://text.pollinations.ai/" + encodeURIComponent(systemPrompt + " | User Question: " + msg) + "?model=openai";
+        const response = await fetch(targetUrl);
 
-        const data = await response.json();
-
-        if (response.ok && data.choices && data.choices[0]) {
-            const reply = data.choices[0].message.content;
-            document.getElementById(loadingId).innerText = reply;
+        if (response.ok) {
+            const reply = await response.text();
+            document.getElementById(loadingId).innerText = reply.trim() || "કોઈ ઉત્તર મળ્યો નથી.";
         } else {
-            console.error("OpenAI Error:", data);
-            // Check for quota issue
-            if (data.error?.code === "insufficient_quota") {
-                document.getElementById(loadingId).innerText = "ChatGPT ક્વોટા એરર: તમારા OpenAI અકાઉન્ટમાં બિલિંગ ક્રેડિટ ઉમેરવી જરૂરી છે (platform.openai.com/billing).";
-            } else {
-                document.getElementById(loadingId).innerText = "ChatGPT Error: " + (data.error?.message || "પ્રક્રિયા પૂર્ણ થઈ શકી નથી.");
-            }
+            throw new Error("HTTP Status " + response.status);
         }
     } catch (err) {
-        console.error("Connection Error:", err);
+        console.error("AI Error:", err);
         const q = msg.toLowerCase();
         if (q.includes("time") || q.includes("સમય") || q.includes("વાગ્યા")) {
             const now = new Date();
             document.getElementById(loadingId).innerText = `અત્યારે સમય થયો છે: ${now.toLocaleTimeString('gu-IN')}`;
         } else {
-            document.getElementById(loadingId).innerText = "કનેક્શન ક્ષતિ. કૃપા કરીને નેટવર્ક અથવા કી ચકાસો.";
+            document.getElementById(loadingId).innerText = "માફ કરજો, સર્વર કનેક્શનમાં ક્ષતિ આવી. ફરી પ્રયત્ન કરો.";
         }
     }
     chatBody.scrollTop = chatBody.scrollHeight;
