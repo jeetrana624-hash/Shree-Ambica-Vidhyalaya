@@ -3,44 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shree Ambica Vidhyalaya - School Management Portal</title>
-    <link rel="stylesheet" href="style.css?v=8">
+    <title>Shree Ambica Vidhyalaya - Enterprise ERP & Institutional System</title>
+    <link rel="stylesheet" href="style.css?v=10">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+Gujarati:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
 
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 </head>
-<body>
+<body class="lang-en theme-dark-enterprise">
 
-    <!-- iOS Glass Authentication Modal -->
+    <!-- Pre-Login Language & Credentials Modal -->
     <div id="login-modal" class="modal-backdrop">
         <div class="card-3d auth-card">
             <div class="school-brand">
-                <div class="brand-badge">SAV</div>
+                <div class="brand-badge-3d">SAV</div>
                 <h2>Shree Ambica Vidhyalaya</h2>
-                <p class="brand-subtitle">School Information & Management System</p>
+                <p class="brand-subtitle" data-i18n="appSubtitle">Enterprise Academic & Management Portal</p>
+            </div>
+
+            <!-- Language Switcher Bar -->
+            <div class="lang-selection-group">
+                <label class="field-label-sm" data-i18n="selectLanguage">Portal System Language</label>
+                <div class="lang-pill-selector">
+                    <button type="button" class="lang-tab active" onclick="window.switchLanguage('en')">English</button>
+                    <button type="button" class="lang-tab" onclick="window.switchLanguage('gu')">ગુજરાતી</button>
+                    <button type="button" class="lang-tab" onclick="window.switchLanguage('hi')">हिन्दी</button>
+                </div>
             </div>
 
             <!-- Role Selector -->
             <div class="role-segmented-control">
-                <button type="button" id="role-school" class="role-tab active" onclick="window.setRole('school')">Administrator</button>
-                <button type="button" id="role-student" class="role-tab" onclick="window.setRole('student')">Student Portal</button>
+                <button type="button" id="role-school" class="role-tab active" onclick="window.setRole('school')" data-i18n="adminRole">Administrator</button>
+                <button type="button" id="role-student" class="role-tab" onclick="window.setRole('student')" data-i18n="studentRole">Student Portal</button>
             </div>
 
-            <!-- Administrator / Manual ID & Password Form -->
+            <!-- Administrator Secure Form -->
             <div id="credentials-box" class="form-group">
-                <input type="text" id="login-username" class="input-field" placeholder="Administrator ID">
-                <input type="password" id="login-password" class="input-field" placeholder="Password">
-                <button type="button" class="btn-3d btn-primary btn-full" onclick="window.manualLogin()">Secure Login</button>
+                <input type="text" id="login-username" class="input-field-3d" placeholder="Administrator ID">
+                <input type="password" id="login-password" class="input-field-3d" placeholder="Password">
+                <button type="button" class="btn-3d btn-primary btn-full" onclick="window.manualLogin()" data-i18n="loginBtn">Secure Enterprise Login</button>
             </div>
 
             <!-- Student Only Google Authentication -->
             <div id="student-oauth-container" style="display: none;">
                 <div class="auth-divider">
-                    <span>STUDENT SIGN IN</span>
+                    <span data-i18n="orGoogle">STUDENT GOOGLE SSO</span>
                 </div>
                 <div class="sso-actions">
                     <button type="button" class="btn-3d btn-google btn-full" onclick="window.googleLogin()">
@@ -51,115 +61,535 @@
         </div>
     </div>
 
-    <!-- Main Dashboard Application -->
-    <div class="app-layout" id="main-content" style="display: none;">
-        <!-- Top App Bar -->
-        <header class="card-3d app-header">
-            <div class="header-left">
-                <div class="brand-icon-sm">SAV</div>
-                <div>
-                    <h1>Shree Ambica Vidhyalaya</h1>
-                    <p class="active-session-text">
-                        Session: <strong id="user-display-name">Active User</strong> 
-                        <span id="user-badge" class="badge-pill">Administrator</span>
-                    </p>
+    <!-- Main Enterprise Layout -->
+    <div class="enterprise-app" id="main-content" style="display: none;">
+        
+        <!-- Left 3D Vertical Sidebar Menu -->
+        <aside class="sidebar-3d">
+            <div class="sidebar-brand">
+                <div class="brand-mini-badge">SAV</div>
+                <div class="brand-titles">
+                    <h3>Ambica Portal</h3>
+                    <span class="version-tag">ERP v4.2</span>
                 </div>
             </div>
-            <button class="btn-3d btn-danger btn-sm" onclick="window.logout()">Terminate Session</button>
-        </header>
 
-        <!-- Admin Management Panel -->
-        <section id="admin-panel" class="card-3d content-card">
-            <div class="card-title-row">
-                <h3>Enroll New Student</h3>
-                <span class="card-meta">Database Management</span>
-            </div>
-            <div class="form-grid">
-                <div class="input-wrapper">
-                    <label class="field-label">Full Name</label>
-                    <input type="text" id="name" class="input-field" placeholder="e.g., Aarav Patel">
-                </div>
-                <div class="input-wrapper">
-                    <label class="field-label">Roll Number</label>
-                    <input type="text" id="roll_no" class="input-field" placeholder="e.g., SAV-1024">
-                </div>
-                <div class="input-wrapper">
-                    <label class="field-label">Standard / Grade</label>
-                    <input type="text" id="standard" class="input-field" placeholder="e.g., Grade 10-A">
-                </div>
-                <div class="input-wrapper">
-                    <label class="field-label">Aadhaar Number</label>
-                    <input type="text" id="aadhaar" class="input-field" placeholder="12-digit Aadhaar" maxlength="12">
-                </div>
-                <div class="input-wrapper">
-                    <label class="field-label">Guardian Phone</label>
-                    <input type="tel" id="phone" class="input-field" placeholder="10-digit Mobile" maxlength="10">
-                </div>
-                <div class="input-wrapper">
-                    <label class="field-label">Date of Birth</label>
-                    <input type="date" id="dob" class="input-field">
-                </div>
-                <div class="input-wrapper btn-align-bottom" style="grid-column: 1 / -1;">
-                    <button class="btn-3d btn-primary btn-full" onclick="window.addStudent()">Save Student Record</button>
-                </div>
-            </div>
-        </section>
+            <nav class="nav-menu">
+                <button class="nav-item active" onclick="window.navigateTo('view-home')">
+                    <span class="nav-icon">📊</span> <span data-i18n="menuHome">Dashboard Home</span>
+                </button>
+                <button class="nav-item" id="menu-student-link" onclick="window.navigateTo('view-student-mgmt')">
+                    <span class="nav-icon">🎓</span> <span data-i18n="menuStudents">Student Admission</span>
+                </button>
+                <button class="nav-item" onclick="window.navigateTo('view-docs-vault')">
+                    <span class="nav-icon">☁️</span> <span data-i18n="menuVault">Document Vault</span>
+                </button>
+                <button class="nav-item" id="menu-attendance-link" onclick="window.navigateTo('view-attendance')">
+                    <span class="nav-icon">📝</span> <span data-i18n="menuAttendance">Attendance Register</span>
+                </button>
+                <button class="nav-item" onclick="window.navigateTo('view-notices')">
+                    <span class="nav-icon">📢</span> <span data-i18n="menuNotices">Notice Board</span>
+                </button>
+                <button class="nav-item" onclick="window.navigateTo('view-circulars')">
+                    <span class="nav-icon">📜</span> <span data-i18n="menuCirculars">Govt Circulars</span>
+                </button>
+                <button class="nav-item" onclick="window.navigateTo('view-timetable')">
+                    <span class="nav-icon">⏰</span> <span data-i18n="menuTimetable">Timetable</span>
+                </button>
+                <button class="nav-item" onclick="window.navigateTo('view-holidays')">
+                    <span class="nav-icon">🌴</span> <span data-i18n="menuHolidays">Holiday Calendar</span>
+                </button>
+                <button class="nav-item" onclick="window.navigateTo('view-ai-bot')">
+                    <span class="nav-icon">🤖</span> <span data-i18n="menuAI">Ambica AI Bot</span>
+                </button>
+            </nav>
 
-        <!-- Student Database Table -->
-        <section class="card-3d content-card">
-            <div class="card-title-row">
-                <h3>Student Registry</h3>
-                <span class="card-meta">Total Active Records</span>
-            </div>
-            <div class="table-wrapper">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Student Name</th>
-                            <th>Roll Number</th>
-                            <th>Standard</th>
-                            <th>Aadhaar Number</th>
-                            <th>Phone</th>
-                            <th>DOB</th>
-                            <th id="action-header">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="student-table-body"></tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- Ambica AI Academic Assistant -->
-        <section class="card-3d content-card ai-assistant-card">
-            <div class="card-title-row">
-                <h3>Ambica AI Academic Assistant</h3>
-                <span class="badge-pill badge-ai">ChatGPT-4o</span>
-            </div>
-            <div id="chat-messages" class="chat-viewport">
-                <div class="chat-bubble ai-bubble">
-                    Namaste! Hu Shree Ambica Vidhyalaya no AI Assistant chhu. Krupya tamaro academic athva school no prashna pucho.
+            <div class="sidebar-footer">
+                <div class="user-profile-badge">
+                    <div class="user-avatar-dot"></div>
+                    <div class="user-info-text">
+                        <strong id="user-display-name">Admin Session</strong>
+                        <span id="user-badge" class="badge-role">Principal</span>
+                    </div>
                 </div>
+                <button class="btn-3d btn-logout btn-sm btn-full" onclick="window.logout()" data-i18n="logoutBtn">Log Out</button>
             </div>
-            <div class="chat-input-bar">
-                <input type="text" id="chat-input" class="input-field" placeholder="Ask any academic or institutional question..." onkeypress="window.handleKey(event)">
-                <button class="btn-3d btn-primary" onclick="window.sendChatMessage()">Send Query</button>
-            </div>
-        </section>
+        </aside>
 
-        <!-- Credits Footer -->
-        <footer class="card-3d app-footer">
-            <p class="footer-title">Engineering & Development Team</p>
-            <div class="team-grid">
-                <span>Jeet J. Rana</span> • 
-                <span>Gopal H. Valiya</span> • 
-                <span>Divy S. Pipaliya</span> • 
-                <span>Vedant J. Panchal</span>
-            </div>
-        </footer>
+        <!-- Main Viewport Content -->
+        <main class="viewport-content">
+            
+            <!-- Top App Bar -->
+            <header class="card-3d app-header">
+                <div class="header-breadcrumb">
+                    <span class="text-muted" data-i18n="institutionalPortal">Institutional Portal</span> / 
+                    <strong id="active-breadcrumb" data-i18n="menuHome">Dashboard Home</strong>
+                </div>
+                <div class="header-right-tools">
+                    <span class="cloud-indicator">
+                        <span class="cloud-dot"></span> Google Cloud 5TB Storage Active
+                    </span>
+                    <button class="lang-toggle-btn" onclick="window.cycleLanguage()">🌐 <span id="current-lang-tag">EN</span></button>
+                </div>
+            </header>
+
+            <!-- SECTION 1: HOME / WELCOME SCREEN -->
+            <section id="view-home" class="view-panel active">
+                <div class="welcome-hero-card card-3d">
+                    <div class="hero-left">
+                        <span class="hero-tag" data-i18n="heroWelcomeTag">OFFICIAL ACADEMIC REPOSITORY</span>
+                        <h1 data-i18n="heroWelcomeTitle">Welcome to Shree Ambica Vidhyalaya</h1>
+                        <p data-i18n="heroWelcomeDesc">An integrated institutional management platform supporting advanced student records, statutory compliance, real-time daily roll checks, and academic digital assistance.</p>
+                        <div class="hero-quick-actions">
+                            <button class="btn-3d btn-primary" onclick="window.navigateTo('view-student-mgmt')" data-i18n="quickNewAdmission">+ Enroll Student</button>
+                            <button class="btn-3d btn-secondary" onclick="window.navigateTo('view-attendance')" data-i18n="quickAttendance">Mark Attendance</button>
+                        </div>
+                    </div>
+                    <div class="hero-right">
+                        <div class="metric-cube-3d">
+                            <span class="metric-number" id="stat-total-students">0</span>
+                            <span class="metric-label" data-i18n="statEnrolled">Total Students</span>
+                        </div>
+                        <div class="metric-cube-3d">
+                            <span class="metric-number">98.4%</span>
+                            <span class="metric-label" data-i18n="statAttendance">Average Attendance</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid-3d">
+                    <div class="card-3d summary-card">
+                        <h3 data-i18n="homeRecentNotices">Latest Institutional Notices</h3>
+                        <ul class="bullet-list-3d" id="home-notices-list"></ul>
+                    </div>
+                    <div class="card-3d summary-card">
+                        <h3 data-i18n="homeUpcomingHolidays">Upcoming Academic Holidays</h3>
+                        <ul class="bullet-list-3d" id="home-holidays-list"></ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: STUDENT MANAGEMENT & REGISTRY -->
+            <section id="view-student-mgmt" class="view-panel">
+                <!-- Enrollment Form Card -->
+                <div id="admin-enrollment-card" class="card-3d content-card">
+                    <div class="card-title-row">
+                        <div>
+                            <h3 data-i18n="formTitleEnroll">Comprehensive Student Admission</h3>
+                            <p class="text-muted" data-i18n="formDescEnroll">Complete student demographic and academic registry</p>
+                        </div>
+                        <span class="badge-role">Admin Clearance</span>
+                    </div>
+
+                    <div class="form-grid-3d">
+                        <div class="input-wrapper">
+                            <label class="field-label" data-i18n="fldGrNo">G.R. Number *</label>
+                            <input type="text" id="gr_no" class="input-field-3d" placeholder="e.g., GR-8492">
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="field-label" data-i18n="fldUid">UID Number *</label>
+                            <input type="text" id="uid_no" class="input-field-3d" placeholder="Unique Student ID">
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="field-label" data-i18n="fldName">Full Student Name *</label>
+                            <input type="text" id="st_name" class="input-field-3d" placeholder="Surname First Middle">
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="field-label" data-i18n="fldStandard">Standard / Division *</label>
+                            <select id="st_standard" class="input-field-3d">
+                                <option value="Grade 1-A">Grade 1-A</option>
+                                <option value="Grade 5-A">Grade 5-A</option>
+                                <option value="Grade 9-A">Grade 9-A</option>
+                                <option value="Grade 10-A">Grade 10-A</option>
+                                <option value="Grade 11-Sci">Grade 11-Science</option>
+                                <option value="Grade 11-Com">Grade 11-Commerce</option>
+                                <option value="Grade 12-Sci">Grade 12-Science</option>
+                                <option value="Grade 12-Com">Grade 12-Commerce</option>
+                            </select>
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="field-label" data-i18n="fldRoll">Roll Number *</label>
+                            <input type="number" id="st_roll" class="input-field-3d" placeholder="e.g., 24">
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="field-label" data-i18n="fldDob">Date of Birth *</label>
+                            <input type="date" id="st_dob" class="input-field-3d">
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="field-label" data-i18n="fldGender">Gender *</label>
+                            <select id="st_gender" class="input-field-3d">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="field-label" data-i18n="fldWeight">Weight (KG)</label>
+                            <input type="number" step="0.1" id="st_weight" class="input-field-3d" placeholder="e.g., 42.5">
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="field-label" data-i18n="fldHeight">Height (CM)</label>
+                            <input type="number" step="0.5" id="st_height" class="input-field-3d" placeholder="e.g., 148">
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="field-label" data-i18n="fldBlood">Blood Group</label>
+                            <select id="st_blood" class="input-field-3d">
+                                <option value="A+">A+</option>
+                                <option value="B+">B+</option>
+                                <option value="O+">O+</option>
+                                <option value="AB+">AB+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="field-label" data-i18n="fldAadhaar">Student Aadhaar Number *</label>
+                            <input type="text" id="st_aadhaar" class="input-field-3d" placeholder="12-digit Aadhaar" maxlength="12">
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="field-label" data-i18n="fldFatherName">Father / Guardian Name</label>
+                            <input type="text" id="st_father" class="input-field-3d" placeholder="Father's Full Name">
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="field-label" data-i18n="fldFatherAadhaar">Father Aadhaar Number</label>
+                            <input type="text" id="st_fa_aadhaar" class="input-field-3d" placeholder="Father Aadhaar" maxlength="12">
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="field-label" data-i18n="fldMotherName">Mother Name</label>
+                            <input type="text" id="st_mother" class="input-field-3d" placeholder="Mother's Full Name">
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="field-label" data-i18n="fldMotherAadhaar">Mother Aadhaar Number</label>
+                            <input type="text" id="st_mo_aadhaar" class="input-field-3d" placeholder="Mother Aadhaar" maxlength="12">
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="field-label" data-i18n="fldPhone">Emergency Contact Number *</label>
+                            <input type="tel" id="st_phone" class="input-field-3d" placeholder="10-digit Phone" maxlength="10">
+                        </div>
+                        <div class="input-wrapper full-width-span">
+                            <label class="field-label" data-i18n="fldAddress">Residential Address *</label>
+                            <textarea id="st_address" class="input-field-3d" rows="2" placeholder="Complete address, Taluka, District"></textarea>
+                        </div>
+                        <div class="input-wrapper full-width-span">
+                            <button class="btn-3d btn-primary btn-full" onclick="window.addStudentRecord()" data-i18n="btnSaveStudent">Register & Save Student Data</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Registry Table View -->
+                <div class="card-3d content-card">
+                    <div class="card-title-row">
+                        <div>
+                            <h3 data-i18n="tblTitleRegistry">Institutional Student Registry</h3>
+                            <p class="text-muted" data-i18n="tblDescRegistry">Complete record directory with statutory particulars</p>
+                        </div>
+                        <div class="table-search-box">
+                            <input type="text" id="table-search" class="input-field-3d input-sm" placeholder="Search by Name or GR..." onkeyup="window.filterStudents()">
+                        </div>
+                    </div>
+
+                    <div class="table-container-3d">
+                        <table class="data-table-3d">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th data-i18n="colGr">GR No</th>
+                                    <th data-i18n="colUid">UID No</th>
+                                    <th data-i18n="colName">Student Name</th>
+                                    <th data-i18n="colStd">Standard</th>
+                                    <th data-i18n="colRoll">Roll</th>
+                                    <th data-i18n="colDob">DOB</th>
+                                    <th data-i18n="colPhysical">Ht / Wt</th>
+                                    <th data-i18n="colAadhaar">Aadhaar</th>
+                                    <th data-i18n="colParent">Parents</th>
+                                    <th data-i18n="colPhone">Contact</th>
+                                    <th data-i18n="colAddress">Address</th>
+                                    <th id="col-action-header" data-i18n="colActions">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="student-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: DOCUMENT VAULT (5TB Storage Ready) -->
+            <section id="view-docs-vault" class="view-panel">
+                <div class="card-3d content-card">
+                    <div class="card-title-row">
+                        <div>
+                            <h3 data-i18n="vaultTitle">Google Cloud 5TB Institutional Document Repository</h3>
+                            <p class="text-muted" data-i18n="vaultDesc">Statutory Certificates, Identity Proofs, and High-Resolution Student Photographs</p>
+                        </div>
+                        <span class="badge-role">Cloud Synchronized</span>
+                    </div>
+
+                    <div class="doc-upload-grid">
+                        <div class="upload-box-3d">
+                            <div class="upload-icon">📷</div>
+                            <h4 data-i18n="docPassport">Student Passport Photo</h4>
+                            <p class="text-muted">JPG, PNG (Max 5MB)</p>
+                            <input type="file" id="file-student-photo" class="file-input-hidden" onchange="window.previewDocUpload(this, 'preview-photo')">
+                            <button class="btn-3d btn-secondary btn-sm" onclick="document.getElementById('file-student-photo').click()" data-i18n="btnUpload">Choose File</button>
+                            <div id="preview-photo" class="upload-status-pill">Pending Upload</div>
+                        </div>
+
+                        <div class="upload-box-3d">
+                            <div class="upload-icon">📜</div>
+                            <h4 data-i18n="docBirth">Birth Certificate</h4>
+                            <p class="text-muted">PDF, Image verification</p>
+                            <input type="file" id="file-birth-cert" class="file-input-hidden" onchange="window.previewDocUpload(this, 'preview-birth')">
+                            <button class="btn-3d btn-secondary btn-sm" onclick="document.getElementById('file-birth-cert').click()" data-i18n="btnUpload">Choose File</button>
+                            <div id="preview-birth" class="upload-status-pill">Pending Upload</div>
+                        </div>
+
+                        <div class="upload-box-3d">
+                            <div class="upload-icon">🆔</div>
+                            <h4 data-i18n="docAadhaar">Student Aadhaar Card</h4>
+                            <p class="text-muted">Front & Back scan</p>
+                            <input type="file" id="file-aadhaar" class="file-input-hidden" onchange="window.previewDocUpload(this, 'preview-aadhaar')">
+                            <button class="btn-3d btn-secondary btn-sm" onclick="document.getElementById('file-aadhaar').click()" data-i18n="btnUpload">Choose File</button>
+                            <div id="preview-aadhaar" class="upload-status-pill">Pending Upload</div>
+                        </div>
+
+                        <div class="upload-box-3d">
+                            <div class="upload-icon">💼</div>
+                            <h4 data-i18n="docIncome">Income Certificate</h4>
+                            <p class="text-muted">Taluka / Mamlatdar Approved</p>
+                            <input type="file" id="file-income-cert" class="file-input-hidden" onchange="window.previewDocUpload(this, 'preview-income')">
+                            <button class="btn-3d btn-secondary btn-sm" onclick="document.getElementById('file-income-cert').click()" data-i18n="btnUpload">Choose File</button>
+                            <div id="preview-income" class="upload-status-pill">Pending Upload</div>
+                        </div>
+
+                        <div class="upload-box-3d">
+                            <div class="upload-icon">🏷️</div>
+                            <h4 data-i18n="docCaste">Caste Certificate</h4>
+                            <p class="text-muted">Govt Social Welfare certified</p>
+                            <input type="file" id="file-caste-cert" class="file-input-hidden" onchange="window.previewDocUpload(this, 'preview-caste')">
+                            <button class="btn-3d btn-secondary btn-sm" onclick="document.getElementById('file-caste-cert').click()" data-i18n="btnUpload">Choose File</button>
+                            <div id="preview-caste" class="upload-status-pill">Pending Upload</div>
+                        </div>
+
+                        <div class="upload-box-3d">
+                            <div class="upload-icon">👨‍👩‍👧</div>
+                            <h4 data-i18n="docParentsAadhaar">Parents Aadhaar Documents</h4>
+                            <p class="text-muted">Combined Guardian Identity</p>
+                            <input type="file" id="file-parents-aadhaar" class="file-input-hidden" onchange="window.previewDocUpload(this, 'preview-parents-aadhaar')">
+                            <button class="btn-3d btn-secondary btn-sm" onclick="document.getElementById('file-parents-aadhaar').click()" data-i18n="btnUpload">Choose File</button>
+                            <div id="preview-parents-aadhaar" class="upload-status-pill">Pending Upload</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: ONLINE ATTENDANCE -->
+            <section id="view-attendance" class="view-panel">
+                <div class="card-3d content-card">
+                    <div class="card-title-row">
+                        <div>
+                            <h3 data-i18n="attTitle">Daily Digital Attendance Register</h3>
+                            <p class="text-muted" data-i18n="attDesc">Record real-time student presence and generate daily roll calls</p>
+                        </div>
+                        <div class="attendance-controls">
+                            <input type="date" id="att-date" class="input-field-3d input-sm">
+                            <select id="att-standard-filter" class="input-field-3d input-sm" onchange="window.loadAttendanceRoster()">
+                                <option value="Grade 10-A">Grade 10-A</option>
+                                <option value="Grade 1-A">Grade 1-A</option>
+                                <option value="Grade 5-A">Grade 5-A</option>
+                                <option value="Grade 9-A">Grade 9-A</option>
+                                <option value="Grade 11-Sci">Grade 11-Sci</option>
+                                <option value="Grade 12-Sci">Grade 12-Sci</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="table-container-3d">
+                        <table class="data-table-3d">
+                            <thead>
+                                <tr>
+                                    <th>Roll</th>
+                                    <th data-i18n="colName">Student Name</th>
+                                    <th data-i18n="colGr">GR No</th>
+                                    <th data-i18n="colAttendanceStatus">Status</th>
+                                    <th data-i18n="colMark">Mark Presence</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendance-table-body"></tbody>
+                        </table>
+                    </div>
+                    <div class="att-action-bar">
+                        <button class="btn-3d btn-primary" onclick="window.saveAttendanceRoster()" data-i18n="btnSaveAttendance">Submit Attendance Records</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 5: NOTICE & PARENT COMMUNICATIONS -->
+            <section id="view-notices" class="view-panel">
+                <div class="card-3d content-card">
+                    <div class="card-title-row">
+                        <div>
+                            <h3 data-i18n="noticeTitle">Parent & Institutional Communication Board</h3>
+                            <p class="text-muted" data-i18n="noticeDesc">Official communications, urgent notices, and announcements</p>
+                        </div>
+                        <button class="btn-3d btn-secondary btn-sm" id="btn-create-notice" onclick="window.toggleNoticeForm()" data-i18n="btnNewNotice">+ Post Notice</button>
+                    </div>
+
+                    <div id="notice-publish-form" class="hidden-panel card-3d inner-form-card">
+                        <h4 data-i18n="lblPostNotice">Publish Official Notice</h4>
+                        <input type="text" id="notice-title" class="input-field-3d" placeholder="Notice Title">
+                        <textarea id="notice-body" class="input-field-3d" rows="3" placeholder="Notice Details and instructions for parents..."></textarea>
+                        <div class="form-row-btns">
+                            <button class="btn-3d btn-primary" onclick="window.publishNotice()" data-i18n="btnPublish">Publish Notice</button>
+                            <button class="btn-3d btn-secondary" onclick="window.toggleNoticeForm()" data-i18n="btnCancel">Cancel</button>
+                        </div>
+                    </div>
+
+                    <div class="notices-feed-grid" id="notices-feed"></div>
+                </div>
+            </section>
+
+            <!-- SECTION 6: GOVERNMENT CIRCULARS (SARKARI PARIPATRO) -->
+            <section id="view-circulars" class="view-panel">
+                <div class="card-3d content-card">
+                    <div class="card-title-row">
+                        <div>
+                            <h3 data-i18n="circTitle">Official Government Circulars & Statutory Orders</h3>
+                            <p class="text-muted" data-i18n="circDesc">Gujarat Education Department directives, Board notifications, and compliance orders</p>
+                        </div>
+                        <button class="btn-3d btn-secondary btn-sm" id="btn-create-circ" onclick="window.toggleCircForm()" data-i18n="btnNewCirc">+ Archive Order</button>
+                    </div>
+
+                    <div id="circ-publish-form" class="hidden-panel card-3d inner-form-card">
+                        <h4 data-i18n="lblArchiveOrder">Archive Statutory Circular</h4>
+                        <input type="text" id="circ-num" class="input-field-3d" placeholder="Order / Paripatra Reference Number">
+                        <input type="text" id="circ-title" class="input-field-3d" placeholder="Circular Subject">
+                        <input type="date" id="circ-date" class="input-field-3d">
+                        <div class="form-row-btns">
+                            <button class="btn-3d btn-primary" onclick="window.publishCircular()" data-i18n="btnSaveCircular">Archive Circular</button>
+                            <button class="btn-3d btn-secondary" onclick="window.toggleCircForm()" data-i18n="btnCancel">Cancel</button>
+                        </div>
+                    </div>
+
+                    <div class="circulars-list-3d" id="circulars-feed"></div>
+                </div>
+            </section>
+
+            <!-- SECTION 7: TIMETABLE -->
+            <section id="view-timetable" class="view-panel">
+                <div class="card-3d content-card">
+                    <div class="card-title-row">
+                        <div>
+                            <h3 data-i18n="ttTitle">Master Academic Schedule & Timetable</h3>
+                            <p class="text-muted" data-i18n="ttDesc">Weekly departmental class timetable</p>
+                        </div>
+                    </div>
+
+                    <div class="table-container-3d">
+                        <table class="data-table-3d text-center">
+                            <thead>
+                                <tr>
+                                    <th>Day</th>
+                                    <th>08:00 - 08:45</th>
+                                    <th>08:45 - 09:30</th>
+                                    <th>09:30 - 10:15</th>
+                                    <th>10:15 - 10:45</th>
+                                    <th>10:45 - 11:30</th>
+                                    <th>11:30 - 12:15</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Monday</strong></td>
+                                    <td>Mathematics</td>
+                                    <td>Science Lab</td>
+                                    <td>English</td>
+                                    <td rowspan="6" class="break-cell">RECESS BREAK</td>
+                                    <td>Social Studies</td>
+                                    <td>Sanskrit</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Tuesday</strong></td>
+                                    <td>Science</td>
+                                    <td>Mathematics</td>
+                                    <td>Gujarati</td>
+                                    <td>Physical Edu</td>
+                                    <td>Computer Lab</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Wednesday</strong></td>
+                                    <td>English</td>
+                                    <td>Social Studies</td>
+                                    <td>Mathematics</td>
+                                    <td>Science</td>
+                                    <td>Drawing / Art</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Thursday</strong></td>
+                                    <td>Mathematics</td>
+                                    <td>Science</td>
+                                    <td>Gujarati</td>
+                                    <td>English</td>
+                                    <td>Library Hour</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Friday</strong></td>
+                                    <td>Social Studies</td>
+                                    <td>Science</td>
+                                    <td>Mathematics</td>
+                                    <td>Hindi</td>
+                                    <td>Music / Culture</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Saturday</strong></td>
+                                    <td>Unit Evaluation</td>
+                                    <td>Weekly Test</td>
+                                    <td>Sports / Drill</td>
+                                    <td colspan="2">Assembly & Club Activities</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 8: HOLIDAY CALENDAR -->
+            <section id="view-holidays" class="view-panel">
+                <div class="card-3d content-card">
+                    <div class="card-title-row">
+                        <div>
+                            <h3 data-i18n="hldTitle">Annual & Local Holiday Schedule</h3>
+                            <p class="text-muted" data-i18n="hldDesc">Statutory academic calendar and institutional holiday notifications</p>
+                        </div>
+                    </div>
+                    <div class="holiday-roster-grid" id="holiday-roster"></div>
+                </div>
+            </section>
+
+            <!-- SECTION 9: AMBICA AI ASSISTANT -->
+            <section id="view-ai-bot" class="view-panel">
+                <div class="card-3d content-card ai-assistant-card">
+                    <div class="card-title-row">
+                        <div>
+                            <h3>Ambica AI Academic Assistant</h3>
+                            <p class="text-muted" data-i18n="aiDesc">State-of-the-art academic intelligence powered by ChatGPT-4o Gateway</p>
+                        </div>
+                        <span class="badge-pill badge-ai">ChatGPT-4o</span>
+                    </div>
+                    <div id="chat-messages" class="chat-viewport">
+                        <div class="chat-bubble ai-bubble" id="ai-init-msg">
+                            Hello! I am the Shree Ambica Vidhyalaya AI Assistant. How can I assist you with your academics, syllabus, or administrative inquiries today?
+                        </div>
+                    </div>
+                    <div class="chat-input-bar">
+                        <input type="text" id="chat-input" class="input-field-3d" placeholder="Ask any academic or institutional question..." onkeypress="window.handleKey(event)">
+                        <button class="btn-3d btn-primary" onclick="window.sendChatMessage()">Send Query</button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
     </div>
 
-    <!-- Application JavaScript -->
-    <script src="script.js?v=8"></script>
+    <!-- Application Script -->
+    <script src="script.js?v=10"></script>
 </body>
 </html>
