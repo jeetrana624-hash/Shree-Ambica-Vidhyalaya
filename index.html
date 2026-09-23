@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shree Ambica Vidhyalaya - Enterprise ERP Portal</title>
-    <link rel="stylesheet" href="style.css?v=25">
+    <link rel="stylesheet" href="style.css?v=26">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+Gujarati:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
@@ -73,7 +73,7 @@
                 <div class="brand-mini-badge">SAV</div>
                 <div class="brand-titles">
                     <h3>Ambica Portal</h3>
-                    <span class="version-tag">ERP v5.5</span>
+                    <span class="version-tag">ERP v5.6</span>
                 </div>
             </div>
 
@@ -241,11 +241,15 @@
                         <div class="input-wrapper">
                             <label class="field-label" data-i18n="fldBlood">Blood Group</label>
                             <select id="st_blood" class="input-field-3d">
+                                <option value="N/A">N/A (Not Known / Unknown)</option>
                                 <option value="A+">A+</option>
                                 <option value="B+">B+</option>
                                 <option value="O+">O+</option>
                                 <option value="AB+">AB+</option>
+                                <option value="A-">A-</option>
+                                <option value="B-">B-</option>
                                 <option value="O-">O-</option>
+                                <option value="AB-">AB-</option>
                             </select>
                         </div>
                         <div class="input-wrapper">
@@ -541,7 +545,7 @@
                 </div>
             </section>
 
-            <!-- SECTION 7: EDITABLE TIMETABLE (TIME & SUBJECTS) -->
+            <!-- SECTION 7: EDITABLE TIMETABLE -->
             <section id="view-timetable" class="view-panel">
                 <div class="card-3d content-card">
                     <div class="card-title-row">
@@ -564,9 +568,7 @@
 
                     <div class="table-container-3d">
                         <table class="data-table-3d text-center" id="timetable-table">
-                            <thead id="timetable-header">
-                                <!-- Dynamic Headers with Timings -->
-                            </thead>
+                            <thead id="timetable-header"></thead>
                             <tbody id="timetable-body"></tbody>
                         </table>
                     </div>
@@ -647,6 +649,6 @@
         </div>
     </div>
 
-    <script src="script.js?v=25"></script>
+    <script src="script.js?v=26"></script>
 </body>
 </html>
