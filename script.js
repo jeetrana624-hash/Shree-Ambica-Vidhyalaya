@@ -1,6 +1,6 @@
 // ==========================================================================
 // SHREE AMBICA VIDHYALAYA - ENTERPRISE ERP ENGINE
-// Strict Single-Class Timetable Lock for Students & Full Admin Oversight
+// Single-Student Vault with Replace & Remove, Strict Isolation & Timings
 // ==========================================================================
 
 const firebaseConfig = {
@@ -123,7 +123,7 @@ const translations = {
         colAddress: "Address",
         colActions: "Actions",
         vaultTitle: "Student Individual Document Archive & Gallery",
-        vaultDesc: "Manage and audit identity proofs, certificates, and student gallery",
+        vaultDesc: "Manage, upload, preview, update, and remove student identity proofs and certificates",
         docPassport: "Student Passport Photo",
         docBirth: "Birth Certificate",
         docAadhaar: "Student Govt ID Card",
@@ -221,7 +221,7 @@ const translations = {
         colAddress: "સરનામું",
         colActions: "કાર્યવાહી",
         vaultTitle: "વિદ્યાર્થી દસ્તાવેજ સંગ્રહાગાર અને ગેલેરી",
-        vaultDesc: "દરેક વિદ્યાર્થીવાર ઓળખ પુરાવા, ફોટો અને પ્રમાણપત્રોનું સંચાલન",
+        vaultDesc: "દરેક વિદ્યાર્થીવાર ઓળખ પુરાવા, ફોટો અને પ્રમાણપત્રો અપલોડ, અપડેટ અને ડિલીટ કરો",
         docPassport: "પાસપોર્ટ સાઇઝ ફોટો",
         docBirth: "જન્મ પ્રમાણપત્ર",
         docAadhaar: "વિદ્યાર્થી ઓળખ કાર્ડ",
@@ -424,7 +424,7 @@ window.manualLogin = function() {
 
         if (matched) {
             activeVaultStudentUID = matched.uid;
-            activeStudentStandard = matched.standard; // Lock student to their own class
+            activeStudentStandard = matched.standard;
             openPortal(matched.name);
         } else {
             alert(currentLanguage === 'gu' 
@@ -451,7 +451,7 @@ window.googleLogin = function() {
 
             if (matched) {
                 activeVaultStudentUID = matched.uid;
-                activeStudentStandard = matched.standard; // Lock student to their own class
+                activeStudentStandard = matched.standard;
                 openPortal(matched.name);
             } else {
                 auth.signOut();
@@ -484,7 +484,6 @@ function openPortal(name) {
         document.getElementById('vault-student-selector').style.display = 'none';
         document.querySelectorAll('.admin-only-btn').forEach(b => b.style.display = 'none');
 
-        // STRICT ISOLATION: Hide class dropdown for students, lock to their registered class
         if (ttSelector && activeStudentStandard) {
             ttSelector.value = activeStudentStandard;
             ttSelector.style.display = 'none';
@@ -502,7 +501,6 @@ function openPortal(name) {
         document.getElementById('vault-student-selector').style.display = 'inline-block';
         document.querySelectorAll('.admin-only-btn').forEach(b => b.style.display = 'inline-flex');
 
-        // Admin has full view of all classes
         if (ttSelector) ttSelector.style.display = 'inline-block';
         if (ttEditBtn) ttEditBtn.style.display = 'inline-flex';
     }
@@ -644,7 +642,7 @@ window.filterStudents = function() {
     });
 };
 
-// 5. Document Vault Gallery
+// 5. Document Vault Gallery with Replace & Remove
 function populateVaultStudentDropdown() {
     const sel = document.getElementById('vault-student-selector');
     const students = getStudents();
@@ -679,31 +677,43 @@ window.loadStudentVaultDocs = function() {
     const docTypes = ['photo', 'birth', 'aadhaar', 'income', 'caste', 'parents'];
     let verifiedCount = 0;
 
+    // Profile photo preview
     const photoBox = document.getElementById('showcase-photo-box');
+    const removeProfileBtn = document.getElementById('btn-remove-profile-pic');
+
     if (docs['photo'] && docs['photo'].data) {
         photoBox.innerHTML = `<img src="${docs['photo'].data}" alt="${st.name}">`;
+        if (removeProfileBtn && currentRole === 'school') removeProfileBtn.style.display = 'inline-flex';
     } else {
         photoBox.innerHTML = `<span class="no-photo-placeholder">No Photo</span>`;
+        if (removeProfileBtn) removeProfileBtn.style.display = 'none';
     }
 
     docTypes.forEach(type => {
         const statusBadge = document.getElementById(`status-${type}`);
+        const upBtn = document.getElementById(`btn-up-${type}`);
         const prevBtn = document.getElementById(`prev-${type}`);
         const downBtn = document.getElementById(`down-${type}`);
+        const delBtn = document.getElementById(`del-${type}`);
+        const naBtn = document.getElementById(`na-${type}`);
         const thumbSlot = document.getElementById(`thumb-${type}`);
 
         if (docs[type] && docs[type].status === 'na') {
             statusBadge.innerText = "N/A (Not Applicable)";
             statusBadge.className = "doc-status-badge status-na";
+            if (upBtn) upBtn.innerText = "Upload";
             prevBtn.style.display = 'none';
             downBtn.style.display = 'none';
+            if (delBtn) delBtn.style.display = (currentRole === 'school') ? 'inline-flex' : 'none';
             thumbSlot.innerHTML = '🚫';
             verifiedCount++;
         } else if (docs[type] && docs[type].data) {
             statusBadge.innerText = `Verified (${docs[type].name || 'File'})`;
             statusBadge.className = "doc-status-badge status-ready";
+            if (upBtn) upBtn.innerText = "Change"; // Easy replace option
             prevBtn.style.display = 'inline-flex';
             downBtn.style.display = 'inline-flex';
+            if (delBtn) delBtn.style.display = (currentRole === 'school') ? 'inline-flex' : 'none';
             if (docs[type].data.startsWith('data:image')) {
                 thumbSlot.innerHTML = `<img src="${docs[type].data}" alt="thumb">`;
             } else {
@@ -713,8 +723,10 @@ window.loadStudentVaultDocs = function() {
         } else {
             statusBadge.innerText = "Pending / Missing";
             statusBadge.className = "doc-status-badge";
+            if (upBtn) upBtn.innerText = "Upload";
             prevBtn.style.display = 'none';
             downBtn.style.display = 'none';
+            if (delBtn) delBtn.style.display = 'none';
             thumbSlot.innerHTML = getDocDefaultIcon(type);
         }
     });
@@ -737,16 +749,24 @@ function resetVaultGallery() {
     document.getElementById('showcase-st-std').innerText = 'Standard -';
     document.getElementById('showcase-count-verified').innerText = '0 / 6';
 
+    const removeProfileBtn = document.getElementById('btn-remove-profile-pic');
+    if (removeProfileBtn) removeProfileBtn.style.display = 'none';
+
     const docTypes = ['photo', 'birth', 'aadhaar', 'income', 'caste', 'parents'];
     docTypes.forEach(type => {
         document.getElementById(`status-${type}`).innerText = "Pending / Missing";
         document.getElementById(`status-${type}`).className = "doc-status-badge";
+        const upBtn = document.getElementById(`btn-up-${type}`);
+        if (upBtn) upBtn.innerText = "Upload";
         document.getElementById(`prev-${type}`).style.display = 'none';
         document.getElementById(`down-${type}`).style.display = 'none';
+        const delBtn = document.getElementById(`del-${type}`);
+        if (delBtn) delBtn.style.display = 'none';
         document.getElementById(`thumb-${type}`).innerHTML = getDocDefaultIcon(type);
     });
 }
 
+// Upload & Replace
 window.handleVaultUpload = function(input, docType) {
     const uid = currentRole === 'student' ? activeVaultStudentUID : document.getElementById('vault-student-selector').value;
     if (!uid) {
@@ -775,10 +795,28 @@ window.handleVaultUpload = function(input, docType) {
                 };
                 saveStudents(students);
                 window.loadStudentVaultDocs();
-                alert('Document uploaded successfully!');
+                alert('Document saved successfully!');
             }
         };
         reader.readAsDataURL(file);
+    }
+};
+
+// Delete / Remove Document
+window.removeDoc = function(docType) {
+    const uid = currentRole === 'student' ? activeVaultStudentUID : document.getElementById('vault-student-selector').value;
+    if (!uid) return;
+
+    if (confirm('Are you sure you want to remove this document?')) {
+        const students = getStudents();
+        const idx = students.findIndex(s => s.uid === uid);
+
+        if (idx !== -1 && students[idx].documents && students[idx].documents[docType]) {
+            delete students[idx].documents[docType];
+            saveStudents(students);
+            window.loadStudentVaultDocs();
+            alert('Document removed successfully!');
+        }
     }
 };
 
@@ -841,7 +879,7 @@ window.downloadDoc = function(docType) {
 };
 
 // ==========================================================================
-// 6. TIMETABLE ENGINE (Exact Timings & Strict Standard Isolation)
+// 6. TIMETABLE ENGINE
 // ==========================================================================
 const defaultTimetables = {
     timings: {
@@ -914,10 +952,8 @@ function getTimetableData() {
 }
 
 window.loadTimetable = function() {
-    // Determine the standard to load
     let std = document.getElementById('tt-standard-selector').value;
 
-    // Strict security check: if role is student, enforce their standard
     if (currentRole === 'student' && activeStudentStandard) {
         std = activeStudentStandard;
         document.getElementById('tt-standard-selector').value = std;
@@ -930,7 +966,6 @@ window.loadTimetable = function() {
     const thead = document.getElementById('timetable-header');
     const tbody = document.getElementById('timetable-body');
 
-    // Header Rendering
     if (!isTimetableEditing) {
         thead.innerHTML = `<tr>
             <th>Day</th>
@@ -961,7 +996,6 @@ window.loadTimetable = function() {
         </tr>`;
     }
 
-    // Body Rendering
     tbody.innerHTML = '';
     schedule.forEach((row, rIdx) => {
         if (!isTimetableEditing) {
@@ -997,7 +1031,7 @@ window.loadTimetable = function() {
 };
 
 window.toggleTimetableEdit = function() {
-    if (currentRole !== 'school') return; // Students cannot edit
+    if (currentRole !== 'school') return;
 
     const btn = document.getElementById('btn-edit-tt');
     const std = document.getElementById('tt-standard-selector').value;
@@ -1010,7 +1044,6 @@ window.toggleTimetableEdit = function() {
     } else {
         const fullData = getTimetableData();
 
-        // Update Timings
         fullData.timings = {
             prayer: document.getElementById('time-prayer').value.trim(),
             p1: document.getElementById('time-p1').value.trim(),
@@ -1024,7 +1057,6 @@ window.toggleTimetableEdit = function() {
             p8: document.getElementById('time-p8').value.trim()
         };
 
-        // Update Schedule
         const updatedSchedule = [];
         const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         days.forEach((day, rIdx) => {
