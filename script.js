@@ -1,6 +1,6 @@
 // ==========================================================================
 // SHREE AMBICA VIDHYALAYA - ENTERPRISE ERP ENGINE
-// Interactive Login Logo Changer, Targeted Notices, Full Enterprise Suite
+// Setting-Exclusive Admin Logo Management, Notice Isolation, Full ERP
 // ==========================================================================
 
 const firebaseConfig = {
@@ -65,7 +65,7 @@ function getTeacherCredentials() {
 }
 
 // ==========================================================================
-// 2. SCHOOL LOGO MANAGER (Upload, Change, Delete / Reset)
+// 2. SCHOOL LOGO MANAGER (Admin Settings Exclusive)
 // ==========================================================================
 const DEFAULT_LOGO = "logo.png";
 const FALLBACK_LOGO = "https://cdn-icons-png.flaticon.com/512/2602/2602414.png";
@@ -86,6 +86,12 @@ function refreshSchoolLogos() {
 }
 
 window.handleLogoUpload = function(input) {
+    // Strict Guard: Only Admin can change logo in settings
+    if (currentRole !== 'school') {
+        alert('Permission Denied: Only the Master Administrator can change the institutional logo.');
+        return;
+    }
+
     if (input.files && input.files[0]) {
         const file = input.files[0];
         const reader = new FileReader();
@@ -94,18 +100,23 @@ window.handleLogoUpload = function(input) {
             const base64Logo = e.target.result;
             localStorage.setItem('sav_official_school_logo', base64Logo);
             refreshSchoolLogos();
-            alert('School Official Logo updated successfully!');
+            alert('Official School Logo updated successfully across portal!');
         };
         reader.readAsDataURL(file);
     }
 };
 
-window.removeSchoolLogo = function(e) {
-    if (e) e.stopPropagation();
+window.removeSchoolLogo = function() {
+    // Strict Guard: Only Admin can reset logo in settings
+    if (currentRole !== 'school') {
+        alert('Permission Denied: Only the Master Administrator can reset the institutional logo.');
+        return;
+    }
+
     if (confirm('Are you sure you want to reset to the default school logo?')) {
         localStorage.removeItem('sav_official_school_logo');
         refreshSchoolLogos();
-        alert('School logo reset to default!');
+        alert('School logo reset to default emblem!');
     }
 };
 
@@ -136,6 +147,7 @@ const translations = {
         quickNewAdmission: "+ Enroll Student",
         quickAttendance: "Mark Attendance",
         statEnrolled: "Total Students",
+        statAttendance: "Average Attendance",
         homeRecentNotices: "Latest Institutional Notices",
         homeUpcomingHolidays: "Upcoming Academic Holidays",
         formTitleEnroll: "Comprehensive Student Admission",
@@ -317,7 +329,7 @@ const translations = {
         formTitleEnroll: "छात्र प्रवेश फॉर्म",
         formDescEnroll: "छात्र की विस्तृत जानकारी एवं रजिस्टर",
         fldGrNo: "जी.आर. नंबर (G.R. No) *",
-        fldUid: "यू.આઈ.ડી. નંબર (યુઝરનેમ) *",
+        fldUid: "यू.આઈ.ડી. નંબર (યુઝરनेम) *",
         fldPassword: "छात्र लॉगिन पासवर्ड *",
         fldEmail: "पंजीकृत ईमेल (गूगल लॉगिन हेतु)",
         fldName: "छात्र का पूरा नाम *",
@@ -513,7 +525,14 @@ function openPortal(name) {
     const ttSelector = document.getElementById('tt-standard-selector');
     const ttEditBtn = document.getElementById('btn-edit-tt');
 
+    // Controls visibility
     document.querySelectorAll('.staff-only-btn').forEach(b => b.style.display = isStaff ? 'inline-flex' : 'none');
+
+    // STRICT GUARD: Official Logo Management card inside Settings visible ONLY to Admin
+    const adminLogoCard = document.getElementById('admin-logo-mgmt-card');
+    if (adminLogoCard) {
+        adminLogoCard.style.display = (currentRole === 'school') ? 'block' : 'none';
+    }
 
     if (currentRole === 'student') {
         document.getElementById('admin-quick-actions').style.display = 'none';
