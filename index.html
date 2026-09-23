@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shree Ambica Vidhyalaya - Enterprise ERP Portal</title>
-    <link rel="stylesheet" href="style.css?v=20">
+    <link rel="stylesheet" href="style.css?v=25">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+Gujarati:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
@@ -68,13 +68,12 @@
     <!-- Main Enterprise Layout -->
     <div class="enterprise-app" id="main-content" style="display: none;">
         
-        <!-- Left 3D Vertical Sidebar Menu -->
         <aside class="sidebar-3d">
             <div class="sidebar-brand">
                 <div class="brand-mini-badge">SAV</div>
                 <div class="brand-titles">
                     <h3>Ambica Portal</h3>
-                    <span class="version-tag">ERP v5.2</span>
+                    <span class="version-tag">ERP v5.5</span>
                 </div>
             </div>
 
@@ -123,7 +122,6 @@
         <!-- Main Viewport Content -->
         <main class="viewport-content">
             
-            <!-- Top App Bar -->
             <header class="card-3d app-header">
                 <div class="header-breadcrumb">
                     <span class="text-muted" data-i18n="institutionalPortal">Institutional Portal</span> / 
@@ -137,7 +135,7 @@
                 </div>
             </header>
 
-            <!-- SECTION 1: HOME / WELCOME SCREEN -->
+            <!-- SECTION 1: HOME -->
             <section id="view-home" class="view-panel active">
                 <div class="welcome-hero-card card-3d">
                     <div class="hero-left">
@@ -222,7 +220,7 @@
                         </div>
                         <div class="input-wrapper">
                             <label class="field-label" data-i18n="fldDob">Date of Birth (DD/MM/YYYY) *</label>
-                            <input type="date" id="st_dob" class="input-field-3d">
+                            <input type="text" id="st_dob" class="input-field-3d" placeholder="DD/MM/YYYY" maxlength="10" oninput="window.applyDateMask(this)">
                         </div>
                         <div class="input-wrapper">
                             <label class="field-label" data-i18n="fldGender">Gender *</label>
@@ -337,9 +335,7 @@
                         </div>
                     </div>
 
-                    <!-- Split View Gallery Layout -->
                     <div class="vault-gallery-wrapper">
-                        <!-- Left Student Profile Showcase -->
                         <div class="student-profile-showcase card-3d">
                             <div class="showcase-photo-container" id="showcase-photo-box">
                                 <span class="no-photo-placeholder">No Photo</span>
@@ -354,11 +350,9 @@
                             </div>
                         </div>
 
-                        <!-- Right Documents Interactive Gallery Grid -->
                         <div class="gallery-documents-container">
                             <div class="doc-gallery-grid" id="vault-tiles-grid">
                                 
-                                <!-- 1. Student Passport Photo -->
                                 <div class="gallery-item-card card-3d" id="tile-photo">
                                     <div class="gallery-thumb-slot" id="thumb-photo" onclick="window.previewDoc('photo')">📷</div>
                                     <div class="gallery-details">
@@ -374,7 +368,6 @@
                                     </div>
                                 </div>
 
-                                <!-- 2. Birth Certificate -->
                                 <div class="gallery-item-card card-3d" id="tile-birth">
                                     <div class="gallery-thumb-slot" id="thumb-birth" onclick="window.previewDoc('birth')">📜</div>
                                     <div class="gallery-details">
@@ -390,7 +383,6 @@
                                     </div>
                                 </div>
 
-                                <!-- 3. Govt ID Card -->
                                 <div class="gallery-item-card card-3d" id="tile-aadhaar">
                                     <div class="gallery-thumb-slot" id="thumb-aadhaar" onclick="window.previewDoc('aadhaar')">🆔</div>
                                     <div class="gallery-details">
@@ -406,7 +398,6 @@
                                     </div>
                                 </div>
 
-                                <!-- 4. Income Certificate -->
                                 <div class="gallery-item-card card-3d" id="tile-income">
                                     <div class="gallery-thumb-slot" id="thumb-income" onclick="window.previewDoc('income')">💼</div>
                                     <div class="gallery-details">
@@ -422,7 +413,6 @@
                                     </div>
                                 </div>
 
-                                <!-- 5. Caste Certificate -->
                                 <div class="gallery-item-card card-3d" id="tile-caste">
                                     <div class="gallery-thumb-slot" id="thumb-caste" onclick="window.previewDoc('caste')">🏷️</div>
                                     <div class="gallery-details">
@@ -438,7 +428,6 @@
                                     </div>
                                 </div>
 
-                                <!-- 6. Parents Proof -->
                                 <div class="gallery-item-card card-3d" id="tile-parents">
                                     <div class="gallery-thumb-slot" id="thumb-parents" onclick="window.previewDoc('parents')">👨‍👩‍👧</div>
                                     <div class="gallery-details">
@@ -469,7 +458,7 @@
                             <p class="text-muted" data-i18n="attDesc">Record real-time student presence and generate daily roll calls</p>
                         </div>
                         <div class="attendance-controls">
-                            <input type="date" id="att-date" class="input-field-3d input-sm">
+                            <input type="text" id="att-date" class="input-field-3d input-sm" placeholder="DD/MM/YYYY" maxlength="10" oninput="window.applyDateMask(this)">
                             <select id="att-standard-filter" class="input-field-3d input-sm" onchange="window.loadAttendanceRoster()">
                                 <option value="Grade 9-A">Grade 9-A</option>
                                 <option value="Grade 9-B">Grade 9-B</option>
@@ -526,7 +515,7 @@
                 </div>
             </section>
 
-            <!-- SECTION 6: GOVERNMENT CIRCULARS (WITH ADD & DELETE) -->
+            <!-- SECTION 6: GOVERNMENT CIRCULARS -->
             <section id="view-circulars" class="view-panel">
                 <div class="card-3d content-card">
                     <div class="card-title-row">
@@ -541,7 +530,7 @@
                         <h4 data-i18n="lblArchiveOrder">Archive Statutory Circular</h4>
                         <input type="text" id="circ-num" class="input-field-3d" placeholder="Order / Paripatra Reference Number">
                         <input type="text" id="circ-title" class="input-field-3d" placeholder="Circular Subject">
-                        <input type="date" id="circ-date" class="input-field-3d">
+                        <input type="text" id="circ-date" class="input-field-3d" placeholder="DD/MM/YYYY" maxlength="10" oninput="window.applyDateMask(this)">
                         <div class="form-row-btns">
                             <button class="btn-3d btn-primary" onclick="window.publishCircular()" data-i18n="btnSaveCircular">Archive Circular</button>
                             <button class="btn-3d btn-secondary" onclick="window.toggleCircForm()" data-i18n="btnCancel">Cancel</button>
@@ -552,13 +541,13 @@
                 </div>
             </section>
 
-            <!-- SECTION 7: EDITABLE TIMETABLE (Std 9A, 9B, 10A, 10B, 11-Com, 12-Com) -->
+            <!-- SECTION 7: EDITABLE TIMETABLE (TIME & SUBJECTS) -->
             <section id="view-timetable" class="view-panel">
                 <div class="card-3d content-card">
                     <div class="card-title-row">
                         <div>
                             <h3 data-i18n="ttTitle">Master Academic Schedule & Timetable</h3>
-                            <p class="text-muted" data-i18n="ttDesc">Interactive departmental timetable editor</p>
+                            <p class="text-muted" data-i18n="ttDesc">Interactive departmental timetable editor (Subjects & Timings)</p>
                         </div>
                         <div class="attendance-controls">
                             <select id="tt-standard-selector" class="input-field-3d input-sm" onchange="window.loadTimetable()">
@@ -569,22 +558,14 @@
                                 <option value="Grade 11-Commerce">Grade 11-Commerce</option>
                                 <option value="Grade 12-Commerce">Grade 12-Commerce</option>
                             </select>
-                            <button class="btn-3d btn-primary btn-sm admin-only-btn" id="btn-edit-tt" onclick="window.toggleTimetableEdit()">Edit Timetable</button>
+                            <button class="btn-3d btn-primary btn-sm admin-only-btn" id="btn-edit-tt" onclick="window.toggleTimetableEdit()">Edit Timetable & Timings</button>
                         </div>
                     </div>
 
                     <div class="table-container-3d">
                         <table class="data-table-3d text-center" id="timetable-table">
-                            <thead>
-                                <tr>
-                                    <th>Day</th>
-                                    <th>Period 1<br><small>08:00 - 08:45</small></th>
-                                    <th>Period 2<br><small>08:45 - 09:30</small></th>
-                                    <th>Period 3<br><small>09:30 - 10:15</small></th>
-                                    <th>Break<br><small>10:15 - 10:45</small></th>
-                                    <th>Period 4<br><small>10:45 - 11:30</small></th>
-                                    <th>Period 5<br><small>11:30 - 12:15</small></th>
-                                </tr>
+                            <thead id="timetable-header">
+                                <!-- Dynamic Headers with Timings -->
                             </thead>
                             <tbody id="timetable-body"></tbody>
                         </table>
@@ -592,7 +573,7 @@
                 </div>
             </section>
 
-            <!-- SECTION 8: HOLIDAY CALENDAR (WITH ADD & DELETE) -->
+            <!-- SECTION 8: HOLIDAY CALENDAR -->
             <section id="view-holidays" class="view-panel">
                 <div class="card-3d content-card">
                     <div class="card-title-row">
@@ -606,7 +587,7 @@
                     <div id="holiday-add-form" class="hidden-panel card-3d inner-form-card">
                         <h4>Add School / Local Holiday</h4>
                         <input type="text" id="hld-name" class="input-field-3d" placeholder="Holiday Name / Occasion">
-                        <input type="date" id="hld-date" class="input-field-3d">
+                        <input type="text" id="hld-date" class="input-field-3d" placeholder="DD/MM/YYYY" maxlength="10" oninput="window.applyDateMask(this)">
                         <select id="hld-type" class="input-field-3d">
                             <option value="National Holiday">National Holiday</option>
                             <option value="State Festival">State Festival</option>
@@ -666,6 +647,6 @@
         </div>
     </div>
 
-    <script src="script.js?v=20"></script>
+    <script src="script.js?v=25"></script>
 </body>
 </html>
