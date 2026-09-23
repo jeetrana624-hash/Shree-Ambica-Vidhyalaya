@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shree Ambica Vidhyalaya - Enterprise ERP Portal</title>
-    <link rel="stylesheet" href="style.css?v=60">
+    <link rel="stylesheet" href="style.css?v=65">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+Gujarati:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
@@ -15,21 +15,12 @@
 </head>
 <body class="lang-en theme-dark-enterprise">
 
-    <!-- Pre-Login Modal Card with Direct Click-to-Change Logo -->
+    <!-- Pre-Login Modal Card (Clean Display Only, No Public Change Option) -->
     <div id="login-modal" class="modal-backdrop">
         <div class="card-3d auth-card">
             <div class="school-brand">
-                <!-- Interactive Logo Crest with Quick Change & Reset -->
-                <div class="login-logo-interactive-wrap">
-                    <div class="school-logo-crest" id="login-logo-container" onclick="document.getElementById('file-login-direct-logo').click()" title="Click to Upload / Change School Logo">
-                        <img id="login-logo-img" src="logo.png" alt="SAV Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2602/2602414.png'">
-                        <div class="logo-hover-overlay">
-                            <span>📷 Edit</span>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-logo-quick-reset" onclick="window.removeSchoolLogo(event)" title="Reset to Default Logo">✕</button>
-                    <!-- Hidden File Input for Login Logo -->
-                    <input type="file" id="file-login-direct-logo" class="file-input-hidden" accept="image/*" onchange="window.handleLogoUpload(this)">
+                <div class="school-logo-crest" id="login-logo-container">
+                    <img id="login-logo-img" src="logo.png" alt="SAV Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2602/2602414.png'">
                 </div>
 
                 <h2>Shree Ambica Vidhyalaya</h2>
@@ -88,12 +79,12 @@
     <div class="enterprise-app" id="main-content" style="display: none;">
         <aside class="sidebar-3d">
             <div class="sidebar-brand">
-                <div class="school-logo-crest-sm" id="sidebar-logo-container" onclick="window.navigateTo('view-admin-settings')" title="Manage Logo in Settings">
+                <div class="school-logo-crest-sm" id="sidebar-logo-container">
                     <img id="sidebar-logo-img" src="logo.png" alt="Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2602/2602414.png'">
                 </div>
                 <div class="brand-titles">
                     <h3>Shree Ambica Vidhyalaya</h3>
-                    <span class="version-tag">ERP v8.5</span>
+                    <span class="version-tag">ERP v9.0</span>
                 </div>
             </div>
 
@@ -663,15 +654,17 @@
                 </div>
             </section>
 
-            <!-- SECTION 9: ADMIN & FACULTY SECURITY + OFFICIAL LOGO MANAGER -->
+            <!-- SECTION 9: ADMIN ONLY OFFICIAL LOGO MANAGER & CREDENTIALS SETTINGS -->
             <section id="view-admin-settings" class="view-panel">
-                <div class="card-3d content-card" style="max-width: 680px; margin: 0 auto 28px;">
+                
+                <!-- OFFICIAL LOGO MANAGEMENT (STRICT ADMIN ONLY) -->
+                <div class="card-3d content-card admin-only-card" id="admin-logo-mgmt-card" style="max-width: 680px; margin: 0 auto 28px;">
                     <div class="card-title-row">
                         <div>
                             <h3>Official School Logo Management</h3>
-                            <p class="text-muted">Upload, change, or reset institutional portal emblem & crest</p>
+                            <p class="text-muted">Master administrator controls: Upload new logo, replace or restore default emblem</p>
                         </div>
-                        <span class="badge-role">Brand Clearance</span>
+                        <span class="badge-role">Root Clearance</span>
                     </div>
 
                     <div class="logo-mgmt-showcase">
@@ -680,12 +673,13 @@
                         </div>
                         <div class="logo-mgmt-actions">
                             <input type="file" id="file-school-logo" class="file-input-hidden" accept="image/*" onchange="window.handleLogoUpload(this)">
-                            <button class="btn-3d btn-primary staff-only-btn" onclick="document.getElementById('file-school-logo').click()">📷 Upload / Change Logo</button>
-                            <button class="btn-3d btn-danger staff-only-btn" onclick="window.removeSchoolLogo()">🗑️ Reset Default Logo</button>
+                            <button class="btn-3d btn-primary" onclick="document.getElementById('file-school-logo').click()">📷 Upload / Change School Logo</button>
+                            <button class="btn-3d btn-danger" onclick="window.removeSchoolLogo()">🗑️ Reset to Default Emblem</button>
                         </div>
                     </div>
                 </div>
 
+                <!-- Account & Password Settings -->
                 <div class="card-3d content-card" style="max-width: 680px; margin: 0 auto;">
                     <div class="card-title-row">
                         <div>
@@ -796,6 +790,6 @@
         </div>
     </div>
 
-    <script src="script.js?v=60"></script>
+    <script src="script.js?v=65"></script>
 </body>
 </html>
