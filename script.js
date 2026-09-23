@@ -1,6 +1,6 @@
 // ==========================================================================
 // SHREE AMBICA VIDHYALAYA - ENTERPRISE ERP ENGINE
-// 8 Lectures Timetable, Strict DD/MM/YYYY Mask, Gallery Architecture
+// Strict Single-Class Timetable Lock for Students & Full Admin Oversight
 // ==========================================================================
 
 const firebaseConfig = {
@@ -20,9 +20,10 @@ const auth = firebase.auth();
 let currentRole = 'school';
 let currentLanguage = 'en';
 let activeVaultStudentUID = null;
+let activeStudentStandard = null;
 let isTimetableEditing = false;
 
-// Strict Date Mask DD/MM/YYYY
+// 1. Strict Date Mask DD/MM/YYYY
 window.applyDateMask = function(input) {
     let v = input.value.replace(/\D/g, '').slice(0, 8);
     if (v.length >= 5) {
@@ -56,7 +57,7 @@ function getAdminCredentials() {
     return saved ? JSON.parse(saved) : { id: "admin", pass: "admin123" };
 }
 
-// Multilingual Dictionary
+// 2. Multilingual Dictionary
 const translations = {
     en: {
         appSubtitle: "Enterprise Academic & Management Portal",
@@ -380,7 +381,7 @@ window.cycleLanguage = function() {
     window.switchLanguage(next);
 };
 
-// Role & Login
+// 3. Role & Authentication
 window.setRole = function(role) {
     currentRole = role;
     document.getElementById('role-school').classList.toggle('active', role === 'school');
@@ -412,6 +413,7 @@ window.manualLogin = function() {
     if (currentRole === 'school') {
         const adminCreds = getAdminCredentials();
         if (user === adminCreds.id && pass === adminCreds.pass) {
+            activeStudentStandard = null;
             openPortal("Principal / Administrator");
         } else {
             alert(currentLanguage === 'gu' ? "અમાન્ય Administrator ઓળખ!" : "Invalid Administrator credentials!");
@@ -422,6 +424,7 @@ window.manualLogin = function() {
 
         if (matched) {
             activeVaultStudentUID = matched.uid;
+            activeStudentStandard = matched.standard; // Lock student to their own class
             openPortal(matched.name);
         } else {
             alert(currentLanguage === 'gu' 
@@ -448,6 +451,7 @@ window.googleLogin = function() {
 
             if (matched) {
                 activeVaultStudentUID = matched.uid;
+                activeStudentStandard = matched.standard; // Lock student to their own class
                 openPortal(matched.name);
             } else {
                 auth.signOut();
@@ -465,6 +469,9 @@ function openPortal(name) {
     document.getElementById('user-display-name').innerText = name;
     document.getElementById('user-badge').innerText = currentRole === 'school' ? 'Principal' : 'Student';
 
+    const ttSelector = document.getElementById('tt-standard-selector');
+    const ttEditBtn = document.getElementById('btn-edit-tt');
+
     if (currentRole === 'student') {
         document.getElementById('admin-quick-actions').style.display = 'none';
         document.getElementById('admin-enrollment-card').style.display = 'none';
@@ -476,6 +483,13 @@ function openPortal(name) {
         document.getElementById('menu-settings-link').style.display = 'none';
         document.getElementById('vault-student-selector').style.display = 'none';
         document.querySelectorAll('.admin-only-btn').forEach(b => b.style.display = 'none');
+
+        // STRICT ISOLATION: Hide class dropdown for students, lock to their registered class
+        if (ttSelector && activeStudentStandard) {
+            ttSelector.value = activeStudentStandard;
+            ttSelector.style.display = 'none';
+        }
+        if (ttEditBtn) ttEditBtn.style.display = 'none';
     } else {
         document.getElementById('admin-quick-actions').style.display = 'flex';
         document.getElementById('admin-enrollment-card').style.display = 'block';
@@ -487,6 +501,10 @@ function openPortal(name) {
         document.getElementById('menu-settings-link').style.display = 'flex';
         document.getElementById('vault-student-selector').style.display = 'inline-block';
         document.querySelectorAll('.admin-only-btn').forEach(b => b.style.display = 'inline-flex');
+
+        // Admin has full view of all classes
+        if (ttSelector) ttSelector.style.display = 'inline-block';
+        if (ttEditBtn) ttEditBtn.style.display = 'inline-flex';
     }
 
     loadStudents();
@@ -522,7 +540,7 @@ window.navigateTo = function(viewId) {
     }
 };
 
-// Students Operations
+// 4. Student Management
 function getStudents() {
     const data = localStorage.getItem('sav_enterprise_students');
     return data ? JSON.parse(data) : [];
@@ -626,7 +644,7 @@ window.filterStudents = function() {
     });
 };
 
-// Document Vault Gallery
+// 5. Document Vault Gallery
 function populateVaultStudentDropdown() {
     const sel = document.getElementById('vault-student-selector');
     const students = getStudents();
@@ -823,7 +841,7 @@ window.downloadDoc = function(docType) {
 };
 
 // ==========================================================================
-// 8 LECTURES TIMETABLE ENGINE WITH EXACT TIMINGS (7:00 AM TO 12:20 PM)
+// 6. TIMETABLE ENGINE (Exact Timings & Strict Standard Isolation)
 // ==========================================================================
 const defaultTimetables = {
     timings: {
@@ -896,7 +914,15 @@ function getTimetableData() {
 }
 
 window.loadTimetable = function() {
-    const std = document.getElementById('tt-standard-selector').value;
+    // Determine the standard to load
+    let std = document.getElementById('tt-standard-selector').value;
+
+    // Strict security check: if role is student, enforce their standard
+    if (currentRole === 'student' && activeStudentStandard) {
+        std = activeStudentStandard;
+        document.getElementById('tt-standard-selector').value = std;
+    }
+
     const ttData = getTimetableData();
     const timings = ttData.timings || defaultTimetables.timings;
     const schedule = (ttData.schedules && ttData.schedules[std]) ? ttData.schedules[std] : defaultTimetables.schedules[std];
@@ -971,6 +997,8 @@ window.loadTimetable = function() {
 };
 
 window.toggleTimetableEdit = function() {
+    if (currentRole !== 'school') return; // Students cannot edit
+
     const btn = document.getElementById('btn-edit-tt');
     const std = document.getElementById('tt-standard-selector').value;
 
@@ -1026,7 +1054,7 @@ window.toggleTimetableEdit = function() {
     }
 };
 
-// Holidays (Add & Delete)
+// 7. Holidays (Add & Delete)
 const defaultHolidays = [
     { id: 1, name: "Gandhi Jayanti", date: "02/10/2026", type: "National Holiday" },
     { id: 2, name: "Navratri Vacation", date: "18/10/2026", type: "State Festival" },
@@ -1107,7 +1135,7 @@ window.deleteHoliday = function(id) {
     }
 };
 
-// Govt Circulars
+// 8. Govt Circulars
 const defaultCircs = [
     { id: 101, num: "GSEB/PARI/2026/842", title: "Commerce Assessment & Accountancy Norms", date: "15/09/2026" },
     { id: 102, num: "EDU-GUJ/STAT/1048", title: "Mandatory Digital Enrollment of Secondary Students", date: "10/09/2026" }
@@ -1176,7 +1204,7 @@ window.deleteCircular = function(id) {
     }
 };
 
-// Notices & Attendance
+// 9. Notices & Attendance
 const defaultNotices = [
     { title: "Quarterly Examination Schedule Published", date: "20/09/2026", body: "Detailed subject timetables have been pinned to the board. Students must clear library dues." },
     { title: "Parent-Teacher Institutional Conference", date: "18/09/2026", body: "The mandatory PTM for Standards 9, 10 and Commerce is scheduled for Saturday at 09:30 AM." }
@@ -1308,5 +1336,5 @@ window.updateAdminCredentials = function() {
     document.getElementById('cfg-new-pass').value = '';
 };
 
-// Start default
+// Default startup
 window.switchLanguage('en');
