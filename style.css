@@ -1,6 +1,6 @@
 /* ==========================================================================
    SHREE AMBICA VIDHYALAYA - ENTERPRISE MODERN LIGHT BLUE & NAVY THEME
-   Strict Logo Dimensions, SaaS Frosted Glass, Hidden Native File Inputs
+   Strict Logo Controls, Interactive Logo Change Trigger, Hidden Native Inputs
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+Gujarati:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap');
@@ -81,14 +81,20 @@ body {
 }
 
 /* ==========================================================================
-   STRICT LOGO CONTROLS (PREVENTS LARGE OVERFLOW)
+   INTERACTIVE LOGO CONTROLS (LOGIN & SIDEBAR)
    ========================================================================== */
+.login-logo-interactive-wrap {
+    position: relative;
+    display: inline-block;
+    margin: 0 auto 14px;
+}
+
 .school-logo-crest {
     width: 72px !important;
     height: 72px !important;
     max-width: 72px !important;
     max-height: 72px !important;
-    margin: 0 auto 16px !important;
+    margin: 0 auto !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -98,6 +104,15 @@ body {
     border: 1.5px solid #bfdbfe !important;
     box-shadow: 0 10px 22px rgba(2, 132, 199, 0.16) !important;
     overflow: hidden !important;
+    position: relative !important;
+    cursor: pointer !important;
+    transition: var(--transition-snappy);
+}
+
+.school-logo-crest:hover {
+    transform: scale(1.04);
+    border-color: #38bdf8 !important;
+    box-shadow: 0 12px 26px rgba(2, 132, 199, 0.28) !important;
 }
 
 .school-logo-crest img,
@@ -108,6 +123,54 @@ body {
     max-height: 52px !important;
     object-fit: contain !important;
     display: block !important;
+}
+
+.logo-hover-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(2, 132, 199, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: var(--transition-snappy);
+    border-radius: 18px;
+}
+
+.logo-hover-overlay span {
+    font-size: 11px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+}
+
+.school-logo-crest:hover .logo-hover-overlay {
+    opacity: 1;
+}
+
+.btn-logo-quick-reset {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #ef4444;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: var(--transition-snappy);
+}
+
+.btn-logo-quick-reset:hover {
+    background: #dc2626;
+    transform: scale(1.15);
 }
 
 .school-logo-crest-sm {
@@ -123,6 +186,7 @@ body {
     padding: 6px !important;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
     overflow: hidden !important;
+    cursor: pointer;
 }
 
 .school-logo-crest-sm img,
@@ -167,11 +231,12 @@ body {
     gap: 10px;
 }
 
-/* Strictly Hide Raw Native File Pickers */
+/* Strictly Hide Raw Native File Inputs */
 .file-input-hidden,
 input[type="file"].file-input-hidden,
 .gallery-item-card input[type="file"],
-.student-profile-showcase input[type="file"] {
+.student-profile-showcase input[type="file"],
+.login-logo-interactive-wrap input[type="file"] {
     display: none !important;
     opacity: 0 !important;
     position: absolute !important;
@@ -181,7 +246,7 @@ input[type="file"].file-input-hidden,
 }
 
 /* ==========================================================================
-   AUTHENTICATION CARD & PROFESSIONAL SSO DIVIDER
+   AUTHENTICATION CARD & SSO DIVIDER
    ========================================================================== */
 .modal-backdrop {
     position: fixed;
@@ -370,7 +435,9 @@ input[type="file"].file-input-hidden,
 .btn-full { width: 100%; }
 .btn-sm { padding: 7px 12px; font-size: 12px; border-radius: 8px; }
 
-/* Sidebar */
+/* ==========================================================================
+   SIDEBAR & DASHBOARD VIEWPORT
+   ========================================================================== */
 .enterprise-app { display: flex; min-height: 100vh; }
 
 .sidebar-3d { 
@@ -430,7 +497,6 @@ input[type="file"].file-input-hidden,
 .user-info-text strong { color: #f8fafc; font-size: 13px; }
 .badge-role { font-size: 10px; color: var(--accent-cyan); font-weight: 800; text-transform: uppercase; }
 
-/* Main Viewport */
 .viewport-content { flex: 1; padding: 28px 36px; overflow-y: auto; }
 .app-header { 
     display: flex; 
