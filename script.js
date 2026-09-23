@@ -1,6 +1,6 @@
 // ==========================================================================
 // SHREE AMBICA VIDHYALAYA - ENTERPRISE ERP ENGINE
-// Interactive Timetable, Statutory Gallery, Strict DD/MM/YYYY Mask
+// 8 Lectures Timetable, Strict DD/MM/YYYY Mask, Gallery Architecture
 // ==========================================================================
 
 const firebaseConfig = {
@@ -22,7 +22,7 @@ let currentLanguage = 'en';
 let activeVaultStudentUID = null;
 let isTimetableEditing = false;
 
-// 1. Strict DD/MM/YYYY Masking & Normalization
+// Strict Date Mask DD/MM/YYYY
 window.applyDateMask = function(input) {
     let v = input.value.replace(/\D/g, '').slice(0, 8);
     if (v.length >= 5) {
@@ -56,7 +56,7 @@ function getAdminCredentials() {
     return saved ? JSON.parse(saved) : { id: "admin", pass: "admin123" };
 }
 
-// 2. Multilingual Dictionary
+// Multilingual Dictionary
 const translations = {
     en: {
         appSubtitle: "Enterprise Academic & Management Portal",
@@ -146,7 +146,7 @@ const translations = {
         lblArchiveOrder: "Archive Statutory Circular",
         btnSaveCircular: "Archive Circular",
         ttTitle: "Master Academic Schedule & Timetable",
-        ttDesc: "Interactive departmental timetable editor (Subjects & Timings)",
+        ttDesc: "Weekly 8-Lecture academic schedule with Prayer and Recess",
         hldTitle: "Annual & Local Holiday Schedule",
         hldDesc: "Statutory academic calendar and institutional holiday notifications",
         adminSettingsTitle: "Administrator Credentials Configuration",
@@ -244,7 +244,7 @@ const translations = {
         lblArchiveOrder: "સરકારી પરિપત્ર સાચવો",
         btnSaveCircular: "સાચવો",
         ttTitle: "સાપ્તાહિક શૈક્ષણિક સમયપત્રક",
-        ttDesc: "વિષય અને સમય સાથે ટાઇમટેબલ સંપાદન",
+        ttDesc: "પ્રાર્થના, રીસેસ અને 8 તાસ સાથે ટાઇમટેબલ",
         hldTitle: "શાળા શૈક્ષણિક અને સ્થાનિક રજાઓ",
         hldDesc: "વાર્ષિક કેલેન્ડર અને તહેવારોની યાદી",
         adminSettingsTitle: "એડમિનિસ્ટ્રેટર આઈડી અને પાસવર્ડ બદલો",
@@ -342,7 +342,7 @@ const translations = {
         lblArchiveOrder: "सरकारी परिपत्र सुरक्षित करें",
         btnSaveCircular: "सुरक्षित करें",
         ttTitle: "मास्टर शैक्षणिक समय सारिणी",
-        ttDesc: "साप्ताहिक कक्षा समय सारिणी एवं समय संपादन",
+        ttDesc: "प्रार्थना, विश्राम एवं 8 तास के साथ समय सारिणी",
         hldTitle: "वार्षिक एवं स्थानीय अवकाश सूची",
         hldDesc: "वार्षिक कैलेंडर और त्योहारों की सूची",
         adminSettingsTitle: "व्यवस्थापक आईडी एवं पासवर्ड बदलें",
@@ -380,7 +380,7 @@ window.cycleLanguage = function() {
     window.switchLanguage(next);
 };
 
-// 3. Role & Login
+// Role & Login
 window.setRole = function(role) {
     currentRole = role;
     document.getElementById('role-school').classList.toggle('active', role === 'school');
@@ -522,7 +522,7 @@ window.navigateTo = function(viewId) {
     }
 };
 
-// 4. Students Operations
+// Students Operations
 function getStudents() {
     const data = localStorage.getItem('sav_enterprise_students');
     return data ? JSON.parse(data) : [];
@@ -626,7 +626,7 @@ window.filterStudents = function() {
     });
 };
 
-// 5. Document Vault Gallery
+// Document Vault Gallery
 function populateVaultStudentDropdown() {
     const sel = document.getElementById('vault-student-selector');
     const students = getStudents();
@@ -823,71 +823,75 @@ window.downloadDoc = function(docType) {
 };
 
 // ==========================================================================
-// 6. EDITABLE TIMETABLE & TIMINGS (Subjects & Times)
+// 8 LECTURES TIMETABLE ENGINE WITH EXACT TIMINGS (7:00 AM TO 12:20 PM)
 // ==========================================================================
 const defaultTimetables = {
     timings: {
-        p1: "08:00 - 08:45",
-        p2: "08:45 - 09:30",
-        p3: "09:30 - 10:15",
-        breakTime: "10:15 - 10:45",
-        p4: "10:45 - 11:30",
-        p5: "11:30 - 12:15"
+        prayer: "07:00 - 07:20",
+        p1: "07:20 - 07:55",
+        p2: "07:55 - 08:30",
+        p3: "08:30 - 09:05",
+        p4: "09:05 - 09:40",
+        recess: "09:40 - 10:00",
+        p5: "10:00 - 10:35",
+        p6: "10:35 - 11:10",
+        p7: "11:10 - 11:45",
+        p8: "11:45 - 12:20"
     },
     schedules: {
         "Grade 9-A": [
-            { day: "Monday", p1: "Mathematics", p2: "Science", p3: "English", p4: "Social Sci", p5: "Gujarati" },
-            { day: "Tuesday", p1: "Science", p2: "Mathematics", p3: "Gujarati", p4: "Physical Edu", p5: "Computer" },
-            { day: "Wednesday", p1: "English", p2: "Social Sci", p3: "Mathematics", p4: "Science", p5: "Art / Drawing" },
-            { day: "Thursday", p1: "Mathematics", p2: "Science", p3: "Gujarati", p4: "English", p5: "Library" },
-            { day: "Friday", p1: "Social Sci", p2: "Science", p3: "Mathematics", p4: "Hindi", p5: "Sanskrit" },
-            { day: "Saturday", p1: "Unit Evaluation", p2: "Weekly Test", p3: "Sports", p4: "Activity", p5: "Assembly" }
+            { day: "Monday", p1: "Maths", p2: "Science", p3: "English", p4: "Gujarati", p5: "SS", p6: "Hindi", p7: "Sanskrit", p8: "PT" },
+            { day: "Tuesday", p1: "Science", p2: "Maths", p3: "Gujarati", p4: "English", p5: "SS", p6: "Computer", p7: "Hindi", p8: "Drawing" },
+            { day: "Wednesday", p1: "English", p2: "SS", p3: "Maths", p4: "Science", p5: "Gujarati", p6: "Hindi", p7: "PT", p8: "Library" },
+            { day: "Thursday", p1: "Maths", p2: "Science", p3: "Gujarati", p4: "English", p5: "SS", p6: "Sanskrit", p7: "Computer", p8: "Music" },
+            { day: "Friday", p1: "SS", p2: "Science", p3: "Maths", p4: "Hindi", p5: "English", p6: "Gujarati", p7: "Moral Sci", p8: "Sports" },
+            { day: "Saturday", p1: "Unit Test", p2: "Weekly Exam", p3: "Evaluation", p4: "Sports", p5: "Activity", p6: "Assembly", p7: "Club", p8: "Cleanliness" }
         ],
         "Grade 9-B": [
-            { day: "Monday", p1: "Science", p2: "Mathematics", p3: "English", p4: "Gujarati", p5: "Social Sci" },
-            { day: "Tuesday", p1: "Mathematics", p2: "Science", p3: "Computer", p4: "Gujarati", p5: "Physical Edu" },
-            { day: "Wednesday", p1: "Social Sci", p2: "English", p3: "Science", p4: "Mathematics", p5: "Library" },
-            { day: "Thursday", p1: "Gujarati", p2: "Mathematics", p3: "Science", p4: "English", p5: "Sports" },
-            { day: "Friday", p1: "Hindi", p2: "Social Sci", p3: "Mathematics", p4: "Science", p5: "Drawing" },
-            { day: "Saturday", p1: "Weekly Test", p2: "Unit Evaluation", p3: "Sports", p4: "Activity", p5: "Assembly" }
+            { day: "Monday", p1: "Science", p2: "Maths", p3: "Gujarati", p4: "English", p5: "SS", p6: "Sanskrit", p7: "Hindi", p8: "PT" },
+            { day: "Tuesday", p1: "Maths", p2: "Science", p3: "English", p4: "Gujarati", p5: "Computer", p6: "SS", p7: "Drawing", p8: "Hindi" },
+            { day: "Wednesday", p1: "SS", p2: "English", p3: "Science", p4: "Maths", p5: "Hindi", p6: "Gujarati", p7: "Library", p8: "PT" },
+            { day: "Thursday", p1: "Gujarati", p2: "Maths", p3: "Science", p4: "English", p5: "Computer", p6: "SS", p7: "Music", p8: "Sanskrit" },
+            { day: "Friday", p1: "Hindi", p2: "SS", p3: "Maths", p4: "Science", p5: "Gujarati", p6: "English", p7: "Sports", p8: "Moral Sci" },
+            { day: "Saturday", p1: "Unit Test", p2: "Weekly Exam", p3: "Evaluation", p4: "Sports", p5: "Activity", p6: "Assembly", p7: "Club", p8: "Cleanliness" }
         ],
         "Grade 10-A": [
-            { day: "Monday", p1: "Mathematics", p2: "Science", p3: "English", p4: "Social Sci", p5: "Gujarati" },
-            { day: "Tuesday", p1: "Science", p2: "Mathematics", p3: "Gujarati", p4: "Computer", p5: "Social Sci" },
-            { day: "Wednesday", p1: "Social Sci", p2: "Mathematics", p3: "Science", p4: "English", p5: "Lab Practice" },
-            { day: "Thursday", p1: "Mathematics", p2: "Science", p3: "English", p4: "Gujarati", p5: "Library" },
-            { day: "Friday", p1: "Board Prep", p2: "Science", p3: "Mathematics", p4: "Social Sci", p5: "Hindi" },
-            { day: "Saturday", p1: "Mock Test", p2: "Weekly Exam", p3: "Paper Solution", p4: "Sports", p5: "Assembly" }
+            { day: "Monday", p1: "Maths", p2: "Science", p3: "SS", p4: "English", p5: "Gujarati", p6: "Hindi", p7: "Sanskrit", p8: "Board Prep" },
+            { day: "Tuesday", p1: "Science", p2: "Maths", p3: "English", p4: "SS", p5: "Gujarati", p6: "Computer", p7: "Board Prep", p8: "PT" },
+            { day: "Wednesday", p1: "SS", p2: "Maths", p3: "Science", p4: "English", p5: "Hindi", p6: "Gujarati", p7: "Lab Practical", p8: "Doubt Solving" },
+            { day: "Thursday", p1: "Maths", p2: "Science", p3: "English", p4: "Gujarati", p5: "SS", p6: "Sanskrit", p7: "Paper Practice", p8: "Library" },
+            { day: "Friday", p1: "Science", p2: "Maths", p3: "SS", p4: "Hindi", p5: "English", p6: "Gujarati", p7: "Board Prep", p8: "Sports" },
+            { day: "Saturday", p1: "Mock Test", p2: "Weekly Exam", p3: "Solution", p4: "Paper Check", p5: "Evaluation", p6: "Assembly", p7: "Discussion", p8: "Cleanliness" }
         ],
         "Grade 10-B": [
-            { day: "Monday", p1: "Science", p2: "Mathematics", p3: "Social Sci", p4: "English", p5: "Gujarati" },
-            { day: "Tuesday", p1: "Mathematics", p2: "Science", p3: "Social Sci", p4: "Gujarati", p5: "Computer" },
-            { day: "Wednesday", p1: "English", p2: "Social Sci", p3: "Mathematics", p4: "Science", p5: "Lab Practice" },
-            { day: "Thursday", p1: "Science", p2: "Mathematics", p3: "Gujarati", p4: "English", p5: "Library" },
-            { day: "Friday", p1: "Social Sci", p2: "Science", p3: "Board Prep", p4: "Hindi", p5: "Mathematics" },
-            { day: "Saturday", p1: "Mock Test", p2: "Weekly Exam", p3: "Paper Solution", p4: "Sports", p5: "Assembly" }
+            { day: "Monday", p1: "Science", p2: "Maths", p3: "English", p4: "SS", p5: "Gujarati", p6: "Sanskrit", p7: "Hindi", p8: "Board Prep" },
+            { day: "Tuesday", p1: "Maths", p2: "Science", p3: "SS", p4: "English", p5: "Computer", p6: "Gujarati", p7: "PT", p8: "Board Prep" },
+            { day: "Wednesday", p1: "English", p2: "SS", p3: "Maths", p4: "Science", p5: "Gujarati", p6: "Hindi", p7: "Doubt Solving", p8: "Lab Practical" },
+            { day: "Thursday", p1: "Science", p2: "Maths", p3: "Gujarati", p4: "English", p5: "SS", p6: "Paper Practice", p7: "Sanskrit", p8: "Library" },
+            { day: "Friday", p1: "Maths", p2: "Science", p3: "Hindi", p4: "SS", p5: "Gujarati", p6: "English", p7: "Sports", p8: "Board Prep" },
+            { day: "Saturday", p1: "Mock Test", p2: "Weekly Exam", p3: "Solution", p4: "Paper Check", p5: "Evaluation", p6: "Assembly", p7: "Discussion", p8: "Cleanliness" }
         ],
         "Grade 11-Commerce": [
-            { day: "Monday", p1: "Accountancy", p2: "B.A. (Org)", p3: "English", p4: "Economics", p5: "Statistics" },
-            { day: "Tuesday", p1: "Statistics", p2: "Accountancy", p3: "Economics", p4: "English", p5: "Computer" },
-            { day: "Wednesday", p1: "Economics", p2: "Statistics", p3: "Accountancy", p4: "B.A. (Org)", p5: "SPCC" },
-            { day: "Thursday", p1: "Accountancy", p2: "B.A. (Org)", p3: "Statistics", p4: "Gujarati", p5: "Library" },
-            { day: "Friday", p1: "Statistics", p2: "Accountancy", p3: "Economics", p4: "SPCC", p5: "Career Guiding" },
-            { day: "Saturday", p1: "Account Test", p2: "Stats Test", p3: "Ledger Practical", p4: "Sports", p5: "Assembly" }
+            { day: "Monday", p1: "Accounts", p2: "Stats", p3: "Economics", p4: "B.A.", p5: "English", p6: "SPCC", p7: "Gujarati", p8: "Practical" },
+            { day: "Tuesday", p1: "Stats", p2: "Accounts", p3: "B.A.", p4: "Economics", p5: "English", p6: "Computer", p7: "SPCC", p8: "Library" },
+            { day: "Wednesday", p1: "Accounts", p2: "Economics", p3: "Stats", p4: "B.A.", p5: "Gujarati", p6: "English", p7: "Career Guiding", p8: "SPCC" },
+            { day: "Thursday", p1: "B.A.", p2: "Accounts", p3: "Stats", p4: "Economics", p5: "English", p6: "SPCC", p7: "Computer", p8: "Sports" },
+            { day: "Friday", p1: "Stats", p2: "Accounts", p3: "Economics", p4: "B.A.", p5: "English", p6: "Gujarati", p7: "Commerce Lab", p8: "Activity" },
+            { day: "Saturday", p1: "Ledger Test", p2: "Stats Exam", p3: "Audit Prep", p4: "Doubts", p5: "Evaluation", p6: "Assembly", p7: "Sports", p8: "Cleanliness" }
         ],
         "Grade 12-Commerce": [
-            { day: "Monday", p1: "Accountancy", p2: "Statistics", p3: "B.A. (Org)", p4: "Economics", p5: "English" },
-            { day: "Tuesday", p1: "Statistics", p2: "Accountancy", p3: "Economics", p4: "B.A. (Org)", p5: "Computer" },
-            { day: "Wednesday", p1: "Accountancy", p2: "Statistics", p3: "English", p4: "SPCC", p5: "Board Audit" },
-            { day: "Thursday", p1: "B.A. (Org)", p2: "Accountancy", p3: "Statistics", p4: "Economics", p5: "Library" },
-            { day: "Friday", p1: "Economics", p2: "Accountancy", p3: "Statistics", p4: "SPCC", p5: "Commerce Lab" },
-            { day: "Saturday", p1: "Board Mock Exam", p2: "Accounts Evaluation", p3: "Doubt Solving", p4: "Sports", p5: "Assembly" }
+            { day: "Monday", p1: "Accounts", p2: "Stats", p3: "B.A.", p4: "Economics", p5: "English", p6: "SPCC", p7: "Board Audit", p8: "Practice" },
+            { day: "Tuesday", p1: "Stats", p2: "Accounts", p3: "Economics", p4: "B.A.", p5: "Computer", p6: "English", p7: "SPCC", p8: "Paper Practice" },
+            { day: "Wednesday", p1: "Accounts", p2: "Stats", p3: "B.A.", p4: "Economics", p5: "English", p6: "Gujarati", p7: "Doubt Session", p8: "Board Prep" },
+            { day: "Thursday", p1: "Stats", p2: "Accounts", p3: "Economics", p4: "B.A.", p5: "SPCC", p6: "English", p7: "Library", p8: "Paper Sol" },
+            { day: "Friday", p1: "Accounts", p2: "Stats", p3: "B.A.", p4: "Economics", p5: "SPCC", p6: "Gujarati", p7: "Board Mock", p8: "Discussion" },
+            { day: "Saturday", p1: "Board Exam", p2: "Mock Test", p3: "Checking", p4: "Evaluation", p5: "Guidance", p6: "Assembly", p7: "Counseling", p8: "Cleanliness" }
         ]
     }
 };
 
 function getTimetableData() {
-    const saved = localStorage.getItem('sav_app_timetables_v2');
+    const saved = localStorage.getItem('sav_app_timetables_v3');
     return saved ? JSON.parse(saved) : defaultTimetables;
 }
 
@@ -904,22 +908,30 @@ window.loadTimetable = function() {
     if (!isTimetableEditing) {
         thead.innerHTML = `<tr>
             <th>Day</th>
+            <th>Prayer<br><small>${timings.prayer}</small></th>
             <th>Period 1<br><small>${timings.p1}</small></th>
             <th>Period 2<br><small>${timings.p2}</small></th>
             <th>Period 3<br><small>${timings.p3}</small></th>
-            <th>Break<br><small>${timings.breakTime}</small></th>
             <th>Period 4<br><small>${timings.p4}</small></th>
+            <th>Recess<br><small>${timings.recess}</small></th>
             <th>Period 5<br><small>${timings.p5}</small></th>
+            <th>Period 6<br><small>${timings.p6}</small></th>
+            <th>Period 7<br><small>${timings.p7}</small></th>
+            <th>Period 8<br><small>${timings.p8}</small></th>
         </tr>`;
     } else {
         thead.innerHTML = `<tr>
             <th>Day</th>
+            <th>Prayer<br><input type="text" class="tt-time-input" id="time-prayer" value="${timings.prayer}"></th>
             <th>Period 1<br><input type="text" class="tt-time-input" id="time-p1" value="${timings.p1}"></th>
             <th>Period 2<br><input type="text" class="tt-time-input" id="time-p2" value="${timings.p2}"></th>
             <th>Period 3<br><input type="text" class="tt-time-input" id="time-p3" value="${timings.p3}"></th>
-            <th>Break<br><input type="text" class="tt-time-input" id="time-break" value="${timings.breakTime}"></th>
             <th>Period 4<br><input type="text" class="tt-time-input" id="time-p4" value="${timings.p4}"></th>
+            <th>Recess<br><input type="text" class="tt-time-input" id="time-recess" value="${timings.recess}"></th>
             <th>Period 5<br><input type="text" class="tt-time-input" id="time-p5" value="${timings.p5}"></th>
+            <th>Period 6<br><input type="text" class="tt-time-input" id="time-p6" value="${timings.p6}"></th>
+            <th>Period 7<br><input type="text" class="tt-time-input" id="time-p7" value="${timings.p7}"></th>
+            <th>Period 8<br><input type="text" class="tt-time-input" id="time-p8" value="${timings.p8}"></th>
         </tr>`;
     }
 
@@ -929,22 +941,30 @@ window.loadTimetable = function() {
         if (!isTimetableEditing) {
             tbody.innerHTML += `<tr>
                 <td><strong>${row.day}</strong></td>
+                ${rIdx === 0 ? `<td rowspan="6" class="break-cell">DAILY PRAYER & ASSEMBLY</td>` : ''}
                 <td>${row.p1}</td>
                 <td>${row.p2}</td>
                 <td>${row.p3}</td>
-                ${rIdx === 0 ? `<td rowspan="6" class="break-cell">RECESS BREAK</td>` : ''}
                 <td>${row.p4}</td>
+                ${rIdx === 0 ? `<td rowspan="6" class="break-cell">RECESS BREAK</td>` : ''}
                 <td>${row.p5}</td>
+                <td>${row.p6}</td>
+                <td>${row.p7}</td>
+                <td>${row.p8}</td>
             </tr>`;
         } else {
             tbody.innerHTML += `<tr>
                 <td><strong>${row.day}</strong></td>
+                ${rIdx === 0 ? `<td rowspan="6" class="break-cell">DAILY PRAYER & ASSEMBLY</td>` : ''}
                 <td><input type="text" class="tt-editable-input" id="tt-${rIdx}-p1" value="${row.p1}"></td>
                 <td><input type="text" class="tt-editable-input" id="tt-${rIdx}-p2" value="${row.p2}"></td>
                 <td><input type="text" class="tt-editable-input" id="tt-${rIdx}-p3" value="${row.p3}"></td>
-                ${rIdx === 0 ? `<td rowspan="6" class="break-cell">RECESS BREAK</td>` : ''}
                 <td><input type="text" class="tt-editable-input" id="tt-${rIdx}-p4" value="${row.p4}"></td>
+                ${rIdx === 0 ? `<td rowspan="6" class="break-cell">RECESS BREAK</td>` : ''}
                 <td><input type="text" class="tt-editable-input" id="tt-${rIdx}-p5" value="${row.p5}"></td>
+                <td><input type="text" class="tt-editable-input" id="tt-${rIdx}-p6" value="${row.p6}"></td>
+                <td><input type="text" class="tt-editable-input" id="tt-${rIdx}-p7" value="${row.p7}"></td>
+                <td><input type="text" class="tt-editable-input" id="tt-${rIdx}-p8" value="${row.p8}"></td>
             </tr>`;
         }
     });
@@ -964,15 +984,19 @@ window.toggleTimetableEdit = function() {
 
         // Update Timings
         fullData.timings = {
+            prayer: document.getElementById('time-prayer').value.trim(),
             p1: document.getElementById('time-p1').value.trim(),
             p2: document.getElementById('time-p2').value.trim(),
             p3: document.getElementById('time-p3').value.trim(),
-            breakTime: document.getElementById('time-break').value.trim(),
             p4: document.getElementById('time-p4').value.trim(),
-            p5: document.getElementById('time-p5').value.trim()
+            recess: document.getElementById('time-recess').value.trim(),
+            p5: document.getElementById('time-p5').value.trim(),
+            p6: document.getElementById('time-p6').value.trim(),
+            p7: document.getElementById('time-p7').value.trim(),
+            p8: document.getElementById('time-p8').value.trim()
         };
 
-        // Update Schedule for standard
+        // Update Schedule
         const updatedSchedule = [];
         const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         days.forEach((day, rIdx) => {
@@ -982,14 +1006,17 @@ window.toggleTimetableEdit = function() {
                 p2: document.getElementById(`tt-${rIdx}-p2`).value.trim(),
                 p3: document.getElementById(`tt-${rIdx}-p3`).value.trim(),
                 p4: document.getElementById(`tt-${rIdx}-p4`).value.trim(),
-                p5: document.getElementById(`tt-${rIdx}-p5`).value.trim()
+                p5: document.getElementById(`tt-${rIdx}-p5`).value.trim(),
+                p6: document.getElementById(`tt-${rIdx}-p6`).value.trim(),
+                p7: document.getElementById(`tt-${rIdx}-p7`).value.trim(),
+                p8: document.getElementById(`tt-${rIdx}-p8`).value.trim()
             });
         });
 
         if (!fullData.schedules) fullData.schedules = {};
         fullData.schedules[std] = updatedSchedule;
 
-        localStorage.setItem('sav_app_timetables_v2', JSON.stringify(fullData));
+        localStorage.setItem('sav_app_timetables_v3', JSON.stringify(fullData));
 
         isTimetableEditing = false;
         btn.innerText = "Edit Timetable & Timings";
@@ -999,7 +1026,7 @@ window.toggleTimetableEdit = function() {
     }
 };
 
-// 7. Holidays (Add & Delete)
+// Holidays (Add & Delete)
 const defaultHolidays = [
     { id: 1, name: "Gandhi Jayanti", date: "02/10/2026", type: "National Holiday" },
     { id: 2, name: "Navratri Vacation", date: "18/10/2026", type: "State Festival" },
@@ -1080,7 +1107,7 @@ window.deleteHoliday = function(id) {
     }
 };
 
-// 8. Govt Circulars (Add & Delete)
+// Govt Circulars
 const defaultCircs = [
     { id: 101, num: "GSEB/PARI/2026/842", title: "Commerce Assessment & Accountancy Norms", date: "15/09/2026" },
     { id: 102, num: "EDU-GUJ/STAT/1048", title: "Mandatory Digital Enrollment of Secondary Students", date: "10/09/2026" }
@@ -1149,7 +1176,7 @@ window.deleteCircular = function(id) {
     }
 };
 
-// 9. Notices & Attendance
+// Notices & Attendance
 const defaultNotices = [
     { title: "Quarterly Examination Schedule Published", date: "20/09/2026", body: "Detailed subject timetables have been pinned to the board. Students must clear library dues." },
     { title: "Parent-Teacher Institutional Conference", date: "18/09/2026", body: "The mandatory PTM for Standards 9, 10 and Commerce is scheduled for Saturday at 09:30 AM." }
@@ -1281,5 +1308,5 @@ window.updateAdminCredentials = function() {
     document.getElementById('cfg-new-pass').value = '';
 };
 
-// Default setup
+// Start default
 window.switchLanguage('en');
