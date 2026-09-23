@@ -1,6 +1,6 @@
 // ==========================================================================
 // SHREE AMBICA VIDHYALAYA - ENTERPRISE ERP ENGINE
-// Single-Student Vault with Replace & Remove, Strict Isolation & Timings
+// School Logo Manager (Upload, Change, Delete), Targeted Notices, Full ERP
 // ==========================================================================
 
 const firebaseConfig = {
@@ -21,6 +21,7 @@ let currentRole = 'school';
 let currentLanguage = 'en';
 let activeVaultStudentUID = null;
 let activeStudentStandard = null;
+let activeTeacherCode = null;
 let isTimetableEditing = false;
 
 // 1. Strict Date Mask DD/MM/YYYY
@@ -52,20 +53,71 @@ function formatToDDMMYYYY(dateString) {
     return dateString;
 }
 
+// Credentials
 function getAdminCredentials() {
     const saved = localStorage.getItem('sav_admin_credentials');
     return saved ? JSON.parse(saved) : { id: "admin", pass: "admin123" };
 }
 
-// 2. Multilingual Dictionary
+function getTeacherCredentials() {
+    const saved = localStorage.getItem('sav_teacher_credentials');
+    return saved ? JSON.parse(saved) : { code: "TCH101", pass: "teach123", name: "Senior Faculty" };
+}
+
+// ==========================================================================
+// 2. SCHOOL LOGO MANAGER (Upload, Change, Delete / Reset)
+// ==========================================================================
+const DEFAULT_LOGO = "logo.png";
+const FALLBACK_LOGO = "https://cdn-icons-png.flaticon.com/512/2602/2602414.png";
+
+function getSchoolLogo() {
+    return localStorage.getItem('sav_official_school_logo') || DEFAULT_LOGO;
+}
+
+function refreshSchoolLogos() {
+    const logoUrl = getSchoolLogo();
+    const loginImg = document.getElementById('login-logo-img');
+    const sideImg = document.getElementById('sidebar-logo-img');
+    const prevImg = document.getElementById('mgmt-logo-preview');
+
+    if (loginImg) loginImg.src = logoUrl;
+    if (sideImg) sideImg.src = logoUrl;
+    if (prevImg) prevImg.src = logoUrl;
+}
+
+window.handleLogoUpload = function(input) {
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            const base64Logo = e.target.result;
+            localStorage.setItem('sav_official_school_logo', base64Logo);
+            refreshSchoolLogos();
+            alert('School Official Logo updated successfully across portal!');
+        };
+        reader.readAsDataURL(file);
+    }
+};
+
+window.removeSchoolLogo = function() {
+    if (confirm('Are you sure you want to reset to the default school logo?')) {
+        localStorage.removeItem('sav_official_school_logo');
+        refreshSchoolLogos();
+        alert('School logo reset to default!');
+    }
+};
+
+// 3. Multilingual Dictionary
 const translations = {
     en: {
-        appSubtitle: "Enterprise Academic & Management Portal",
+        appSubtitle: "Enterprise Academic & Institutional Portal",
         selectLanguage: "Portal System Language",
-        adminRole: "Administrator",
-        studentRole: "Student Portal",
+        adminRole: "Admin",
+        teacherRole: "Teacher",
+        studentRole: "Student",
         loginBtn: "Secure Enterprise Login",
-        orGoogle: "OFFICIAL GOOGLE WORKSPACE SSO",
+        orGoogle: "OR CONTINUE WITH GOOGLE",
         menuHome: "Dashboard Home",
         menuStudents: "Student Admission & Registry",
         menuVault: "Document Vault",
@@ -74,7 +126,7 @@ const translations = {
         menuCirculars: "Govt Circulars",
         menuTimetable: "Timetable",
         menuHolidays: "Holiday Calendar",
-        menuSettings: "Admin Security Settings",
+        menuSettings: "Security Settings",
         logoutBtn: "Log Out",
         institutionalPortal: "Institutional Portal",
         heroWelcomeTag: "OFFICIAL ACADEMIC REPOSITORY",
@@ -100,7 +152,7 @@ const translations = {
         fldWeight: "Weight (KG)",
         fldHeight: "Height (CM)",
         fldBlood: "Blood Group",
-        fldAadhaar: "Student Identification Number *",
+        fldAadhaar: "Student Govt ID Number *",
         fldFatherName: "Father / Guardian Name",
         fldFatherAadhaar: "Father Identification Number",
         fldMotherName: "Mother Name",
@@ -109,7 +161,7 @@ const translations = {
         fldAddress: "Residential Address *",
         btnSaveStudent: "Register & Save Student Data",
         tblTitleRegistry: "Institutional Student Registry",
-        tblDescRegistry: "Complete record directory with statutory particulars",
+        tblDescRegistry: "Complete directory with record editing, deletion, and credentials administration",
         colGr: "GR No",
         colUid: "UID (User)",
         colName: "Student Name",
@@ -117,10 +169,7 @@ const translations = {
         colRoll: "Roll",
         colDob: "DOB (DD/MM/YYYY)",
         colPhysical: "Ht / Wt",
-        colAadhaar: "Govt ID",
-        colParent: "Parents",
         colPhone: "Contact",
-        colAddress: "Address",
         colActions: "Actions",
         vaultTitle: "Student Individual Document Archive & Gallery",
         vaultDesc: "Manage, upload, preview, update, and remove student identity proofs and certificates",
@@ -131,12 +180,11 @@ const translations = {
         docCaste: "Caste Certificate",
         docParentsAadhaar: "Parents Proofs",
         attTitle: "Daily Digital Attendance Register",
-        attDesc: "Record real-time student presence and generate daily roll calls",
+        attDesc: "Instant single-click roll call with automatic toggle & bulk actions",
         colAttendanceStatus: "Status",
-        colMark: "Mark Presence",
         btnSaveAttendance: "Submit Attendance Records",
         noticeTitle: "Parent & Institutional Communication Board",
-        noticeDesc: "Official communications, urgent notices, and announcements",
+        noticeDesc: "Official circulars, urgent announcements, and class-specific student notices",
         btnNewNotice: "+ Post Notice",
         lblPostNotice: "Publish Official Notice",
         btnPublish: "Publish Notice",
@@ -149,21 +197,16 @@ const translations = {
         ttTitle: "Master Academic Schedule & Timetable",
         ttDesc: "Weekly 8-Lecture academic schedule with Prayer and Recess",
         hldTitle: "Annual & Local Holiday Schedule",
-        hldDesc: "Statutory academic calendar and institutional holiday notifications",
-        adminSettingsTitle: "Administrator Credentials Configuration",
-        adminSettingsDesc: "Update master administrator ID and secure access password",
-        lblCurrentPass: "Current Password *",
-        lblNewAdminId: "New Administrator ID *",
-        lblNewAdminPass: "New Administrator Password *",
-        btnUpdateAdmin: "Update Admin Credentials"
+        hldDesc: "Statutory academic calendar and institutional holiday notifications"
     },
     gu: {
-        appSubtitle: "શિક્ષણ અને વહીવટી સંચાલન પોર્ટલ",
+        appSubtitle: "શિક્ષણ અને વહીવટી સંચાલન પ્રણાલી",
         selectLanguage: "પોર્ટલની મુખ્ય ભાષા પસંદ કરો",
-        adminRole: "વહીવટકર્તા (Admin)",
-        studentRole: "વિદ્યાર્થી પોર્ટલ",
+        adminRole: "એડમિન",
+        teacherRole: "શિક્ષક",
+        studentRole: "વિદ્યાર્થી",
         loginBtn: "સુરક્ષિત લૉગિન",
-        orGoogle: "સત્તાવાર ગૂગલ SSO લૉગિન",
+        orGoogle: "અથવા ગૂગલ વડે લૉગિન કરો",
         menuHome: "ડેશબોર્ડ મુખ્ય પૃષ્ઠ",
         menuStudents: "વિદ્યાર્થી પ્રવેશ / રજિસ્ટર",
         menuVault: "દસ્તાવેજ સંગ્રહાલય",
@@ -172,7 +215,7 @@ const translations = {
         menuCirculars: "સરકારી પરિપત્રો",
         menuTimetable: "સમયપત્રક (ટાઇમટેબલ)",
         menuHolidays: "રજાઓનું કેલેન્ડર",
-        menuSettings: "એડમિન પાસવર્ડ સેટિંગ્સ",
+        menuSettings: "સિક્યોરિટી સેટિંગ્સ",
         logoutBtn: "લૉગ આઉટ",
         institutionalPortal: "શાળા સંચાલન પ્રણાલી",
         heroWelcomeTag: "સત્તાવાર શૈક્ષણિક પોર્ટલ",
@@ -207,7 +250,7 @@ const translations = {
         fldAddress: "રહેઠાણનું સરનામું *",
         btnSaveStudent: "વિદ્યાર્થી માહિતી સાચવો",
         tblTitleRegistry: "વિદ્યાર્થી જનરલ રજિસ્ટર",
-        tblDescRegistry: "સંપૂર્ણ શૈક્ષણિક અને ઓળખ વિગતોની ડિરેક્ટરી",
+        tblDescRegistry: "વિગતો સંપાદન, ડિલીટ અને લૉગિન બદલવાની સુવિધા",
         colGr: "જી.આર.",
         colUid: "UID (User)",
         colName: "વિદ્યાર્થી નામ",
@@ -215,10 +258,7 @@ const translations = {
         colRoll: "રોલ",
         colDob: "જન્મ તારીખ (DD/MM/YYYY)",
         colPhysical: "ઊંચાઈ/વજન",
-        colAadhaar: "ઓળખ ક્રમાંક",
-        colParent: "માતા-પિતા",
         colPhone: "સંપર્ક",
-        colAddress: "સરનામું",
         colActions: "કાર્યવાહી",
         vaultTitle: "વિદ્યાર્થી દસ્તાવેજ સંગ્રહાગાર અને ગેલેરી",
         vaultDesc: "દરેક વિદ્યાર્થીવાર ઓળખ પુરાવા, ફોટો અને પ્રમાણપત્રો અપલોડ, અપડેટ અને ડિલીટ કરો",
@@ -229,12 +269,11 @@ const translations = {
         docCaste: "જાતિનો દાખલો",
         docParentsAadhaar: "માતા-પિતાના પુરાવા",
         attTitle: "દૈનિક ઓનલાઇન હાજરી રજિસ્ટર",
-        attDesc: "દરેક વર્ગની તારીખવાર ડિજિટલ હાજરી ભરો",
+        attDesc: "એક જ ક્લિકમાં P/A ટૉગલ વડે હાજરી પૂરો",
         colAttendanceStatus: "સ્થિતિ",
-        colMark: "હાજરી નોંધો",
         btnSaveAttendance: "હાજરી સબમિટ કરો",
         noticeTitle: "વાલી અને શાળા સંચાર બોર્ડ",
-        noticeDesc: "મહત્વપૂર્ણ ઘોષણાઓ અને સૂચનાઓ",
+        noticeDesc: "સત્તાવાર પરિપત્રો, જાહેરાતો અને વર્ગવાર વિદ્યાર્થી નોટિસ",
         btnNewNotice: "+ નવી નોટિસ",
         lblPostNotice: "સત્તાવાર નોટિસ જાહેર કરો",
         btnPublish: "પ્રકાશિત કરો",
@@ -247,21 +286,16 @@ const translations = {
         ttTitle: "સાપ્તાહિક શૈક્ષણિક સમયપત્રક",
         ttDesc: "પ્રાર્થના, રીસેસ અને 8 તાસ સાથે ટાઇમટેબલ",
         hldTitle: "શાળા શૈક્ષણિક અને સ્થાનિક રજાઓ",
-        hldDesc: "વાર્ષિક કેલેન્ડર અને તહેવારોની યાદી",
-        adminSettingsTitle: "એડમિનિસ્ટ્રેટર આઈડી અને પાસવર્ડ બદલો",
-        adminSettingsDesc: "મુખ્ય એડમિન યુઝરનેમ અને સિક્યોરિટી પાસવર્ડ અપડેટ કરો",
-        lblCurrentPass: "હાલનો પાસવર્ડ *",
-        lblNewAdminId: "નવો Administrator ID *",
-        lblNewAdminPass: "નવો પાસવર્ડ *",
-        btnUpdateAdmin: "માહિતી અપડેટ કરો"
+        hldDesc: "વાર્ષિક કેલેન્ડર અને તહેવારોની યાદી"
     },
     hi: {
-        appSubtitle: "संस्थागत शैक्षणिक एवं प्रबंधन पोर्टल",
+        appSubtitle: "संस्थागत शैक्षणिक एवं प्रबंधन प्रणाली",
         selectLanguage: "पोर्टल की मुख्य भाषा चुनें",
-        adminRole: "प्रशासक (Admin)",
-        studentRole: "छात्र पोर्टल",
+        adminRole: "व्यवस्थापक",
+        teacherRole: "शिक्षक",
+        studentRole: "छात्र",
         loginBtn: "सुरक्षित लॉगिन",
-        orGoogle: "आधिकारिक गूगल SSO लॉगिन",
+        orGoogle: "या गूगल से लॉगिन करें",
         menuHome: "डैशबोर्ड मुख्य पृष्ठ",
         menuStudents: "छात्र प्रवेश / रजिस्टर",
         menuVault: "दस्तावेज़ संग्रह",
@@ -270,7 +304,7 @@ const translations = {
         menuCirculars: "सरकारी परिपत्र",
         menuTimetable: "समय सारिणी",
         menuHolidays: "अवकाश कैलेंडर",
-        menuSettings: "एडमिन सुरक्षा सेटिंग्स",
+        menuSettings: "सुरक्षा सेटिंग्स",
         logoutBtn: "लॉग आउट",
         institutionalPortal: "संस्थागत प्रबंधन प्रणाली",
         heroWelcomeTag: "आधिकारिक शैक्षणिक पोर्टल",
@@ -305,7 +339,7 @@ const translations = {
         fldAddress: "स्थायी पता *",
         btnSaveStudent: "छात्र डेटा सुरक्षित करें",
         tblTitleRegistry: "छात्र जनरल रजिस्टर",
-        tblDescRegistry: "संपूर्ण शैक्षणिक एवं पहचान विवरण डायरेक्टरी",
+        tblDescRegistry: "विवरण संपादन, विलोपन और लॉगिन प्रबंधन",
         colGr: "जी.आर.",
         colUid: "UID (User)",
         colName: "छात्र का नाम",
@@ -313,13 +347,10 @@ const translations = {
         colRoll: "रोल",
         colDob: "जन्म तिथि (DD/MM/YYYY)",
         colPhysical: "ऊंचाई/वजन",
-        colAadhaar: "पहचान पत्र",
-        colParent: "माता-पिता",
         colPhone: "संपर्क",
-        colAddress: "पता",
         colActions: "कार्यवाही",
         vaultTitle: "छात्र दस्तावेज़ संग्रह एवं गैलरी",
-        vaultDesc: "छात्र वार पहचान पत्र, फोटो और प्रमाण पत्रों का प्रबंधन",
+        vaultDesc: "पहचान पत्र, फोटो और प्रमाण पत्रों का प्रबंधन",
         docPassport: "पासपोर्ट साइज फोटो",
         docBirth: "जन्म प्रमाण पत्र",
         docAadhaar: "छात्र पहचान कार्ड",
@@ -327,9 +358,8 @@ const translations = {
         docCaste: "जाति प्रमाण पत्र",
         docParentsAadhaar: "माता-पिता के दस्तावेज",
         attTitle: "दैनिक डिजिटल उपस्थिति रजिस्टर",
-        attDesc: "प्रत्येक कक्षा की दैनिक उपस्थिति दर्ज करें",
+        attDesc: "एक क्लिक में P/A टॉगल द्वारा उपस्थिति दर्ज करें",
         colAttendanceStatus: "स्थिति",
-        colMark: "उपस्थिति चुनें",
         btnSaveAttendance: "उपस्थिति जमा करें",
         noticeTitle: "अभिभावक एवं विद्यालय संवाद पट्ट",
         noticeDesc: "महत्वपूर्ण सूचनाएं और निर्देश",
@@ -345,13 +375,7 @@ const translations = {
         ttTitle: "मास्टर शैक्षणिक समय सारिणी",
         ttDesc: "प्रार्थना, विश्राम एवं 8 तास के साथ समय सारिणी",
         hldTitle: "वार्षिक एवं स्थानीय अवकाश सूची",
-        hldDesc: "वार्षिक कैलेंडर और त्योहारों की सूची",
-        adminSettingsTitle: "व्यवस्थापक आईडी एवं पासवर्ड बदलें",
-        adminSettingsDesc: "मुख्य व्यवस्थापक यूज़रनेम एवं पासवर्ड अपडेट करें",
-        lblCurrentPass: "वर्तमान पासवर्ड *",
-        lblNewAdminId: "नया Admin ID *",
-        lblNewAdminPass: "नया पासवर्ड *",
-        btnUpdateAdmin: "डेटा अपडेट करें"
+        hldDesc: "वार्षिक कैलेंडर और त्योहारों की सूची"
     }
 };
 
@@ -381,23 +405,29 @@ window.cycleLanguage = function() {
     window.switchLanguage(next);
 };
 
-// 3. Role & Authentication
+// 4. Multi-Role Management
 window.setRole = function(role) {
     currentRole = role;
     document.getElementById('role-school').classList.toggle('active', role === 'school');
+    document.getElementById('role-teacher').classList.toggle('active', role === 'teacher');
     document.getElementById('role-student').classList.toggle('active', role === 'student');
 
     const oauthBox = document.getElementById('student-oauth-container');
     const credBox = document.getElementById('credentials-box');
+    const uInput = document.getElementById('login-username');
 
     if (role === 'school') {
         oauthBox.style.display = 'none';
         credBox.style.display = 'block';
-        document.getElementById('login-username').placeholder = "Administrator ID";
+        uInput.placeholder = "Administrator ID";
+    } else if (role === 'teacher') {
+        oauthBox.style.display = 'none';
+        credBox.style.display = 'block';
+        uInput.placeholder = "Teacher Employee Code (e.g. TCH101)";
     } else {
         oauthBox.style.display = 'block';
         credBox.style.display = 'block';
-        document.getElementById('login-username').placeholder = "Student UID Number (Username)";
+        uInput.placeholder = "Student UID Number (Username)";
     }
 };
 
@@ -406,7 +436,7 @@ window.manualLogin = function() {
     const pass = document.getElementById('login-password').value.trim();
 
     if (!user || !pass) {
-        alert(currentLanguage === 'gu' ? 'કૃપા કરીને ID/UID અને પાસવર્ડ દાખલ કરો.' : 'Please enter ID/UID and Password.');
+        alert('Please enter ID/Code and Password.');
         return;
     }
 
@@ -414,9 +444,19 @@ window.manualLogin = function() {
         const adminCreds = getAdminCredentials();
         if (user === adminCreds.id && pass === adminCreds.pass) {
             activeStudentStandard = null;
+            activeTeacherCode = null;
             openPortal("Principal / Administrator");
         } else {
-            alert(currentLanguage === 'gu' ? "અમાન્ય Administrator ઓળખ!" : "Invalid Administrator credentials!");
+            alert("Invalid Administrator credentials!");
+        }
+    } else if (currentRole === 'teacher') {
+        const tch = getTeacherCredentials();
+        if (user === tch.code && pass === tch.pass) {
+            activeTeacherCode = tch.code;
+            activeStudentStandard = null;
+            openPortal(`${tch.name} (${tch.code})`);
+        } else {
+            alert("Invalid Teacher Employee Code or Password!");
         }
     } else {
         const students = getStudents();
@@ -427,16 +467,14 @@ window.manualLogin = function() {
             activeStudentStandard = matched.standard;
             openPortal(matched.name);
         } else {
-            alert(currentLanguage === 'gu' 
-                ? "નોંધાયેલ વિદ્યાર્થી મળ્યો નથી અથવા પાસવર્ડ ખોટો છે!" 
-                : "Unregistered student or invalid password!");
+            alert("Unregistered student or invalid password!");
         }
     }
 };
 
 window.googleLogin = function() {
-    if (currentRole === 'school') {
-        alert('Administrator access is restricted to official ID and Password.');
+    if (currentRole !== 'student') {
+        alert('Google Sign-In is configured exclusively for Student Portals.');
         return;
     }
 
@@ -467,23 +505,25 @@ function openPortal(name) {
     document.getElementById('login-modal').style.display = 'none';
     document.getElementById('main-content').style.display = 'flex';
     document.getElementById('user-display-name').innerText = name;
-    document.getElementById('user-badge').innerText = currentRole === 'school' ? 'Principal' : 'Student';
+    
+    let roleText = 'Principal';
+    if (currentRole === 'teacher') roleText = 'Teacher';
+    if (currentRole === 'student') roleText = 'Student';
+    document.getElementById('user-badge').innerText = roleText;
 
+    const isStaff = (currentRole === 'school' || currentRole === 'teacher');
     const ttSelector = document.getElementById('tt-standard-selector');
     const ttEditBtn = document.getElementById('btn-edit-tt');
+
+    document.querySelectorAll('.staff-only-btn').forEach(b => b.style.display = isStaff ? 'inline-flex' : 'none');
 
     if (currentRole === 'student') {
         document.getElementById('admin-quick-actions').style.display = 'none';
         document.getElementById('admin-enrollment-card').style.display = 'none';
         document.getElementById('col-action-header').style.display = 'none';
-        document.getElementById('btn-create-notice').style.display = 'none';
-        document.getElementById('btn-create-circ').style.display = 'none';
-        document.getElementById('att-submit-container').style.display = 'none';
-        document.getElementById('att-mark-header').style.display = 'none';
         document.getElementById('menu-settings-link').style.display = 'none';
         document.getElementById('vault-student-selector').style.display = 'none';
-        document.querySelectorAll('.admin-only-btn').forEach(b => b.style.display = 'none');
-
+        
         if (ttSelector && activeStudentStandard) {
             ttSelector.value = activeStudentStandard;
             ttSelector.style.display = 'none';
@@ -493,21 +533,28 @@ function openPortal(name) {
         document.getElementById('admin-quick-actions').style.display = 'flex';
         document.getElementById('admin-enrollment-card').style.display = 'block';
         document.getElementById('col-action-header').style.display = 'table-cell';
-        document.getElementById('btn-create-notice').style.display = 'inline-block';
-        document.getElementById('btn-create-circ').style.display = 'inline-block';
-        document.getElementById('att-submit-container').style.display = 'flex';
-        document.getElementById('att-mark-header').style.display = 'table-cell';
         document.getElementById('menu-settings-link').style.display = 'flex';
         document.getElementById('vault-student-selector').style.display = 'inline-block';
-        document.querySelectorAll('.admin-only-btn').forEach(b => b.style.display = 'inline-flex');
-
+        
         if (ttSelector) ttSelector.style.display = 'inline-block';
         if (ttEditBtn) ttEditBtn.style.display = 'inline-flex';
     }
 
+    const setRoleBadge = document.getElementById('settings-role-badge');
+    const setLblId = document.getElementById('lbl-new-id');
+    if (currentRole === 'school') {
+        setRoleBadge.innerText = 'Admin Security';
+        setLblId.innerText = 'New Administrator ID *';
+    } else if (currentRole === 'teacher') {
+        setRoleBadge.innerText = 'Faculty Security';
+        setLblId.innerText = 'New Teacher Code *';
+    }
+
+    refreshSchoolLogos();
     loadStudents();
     populateVaultStudentDropdown();
     loadHomeData();
+    renderAttendanceChart();
     loadAttendanceRoster();
     loadNotices();
     loadCirculars();
@@ -538,7 +585,7 @@ window.navigateTo = function(viewId) {
     }
 };
 
-// 4. Student Management
+// 5. Student Management & Full Edit
 function getStudents() {
     const data = localStorage.getItem('sav_enterprise_students');
     return data ? JSON.parse(data) : [];
@@ -557,13 +604,16 @@ function loadStudents() {
     if (countEl) countEl.innerText = list.length;
 
     if (list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="${currentRole === 'school' ? 13 : 12}" style="text-align:center; color:#64748b; padding:28px;">No student records found in registry.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="${currentRole === 'student' ? 10 : 12}" style="text-align:center; color:#64748b; padding:28px;">No student records found in registry.</td></tr>`;
         return;
     }
 
     list.forEach((st, idx) => {
-        const actionCol = currentRole === 'school'
-            ? `<td><button class="btn-3d btn-danger btn-sm" onclick="window.deleteStudent(${idx})">Delete</button></td>`
+        const actionCol = (currentRole === 'school' || currentRole === 'teacher')
+            ? `<td>
+                <button class="btn-3d btn-secondary btn-sm" onclick="window.openEditStudentModal(${idx})">Edit</button>
+                <button class="btn-3d btn-danger btn-sm" onclick="window.deleteStudent(${idx})">Delete</button>
+               </td>`
             : '';
 
         tbody.innerHTML += `<tr>
@@ -573,12 +623,11 @@ function loadStudents() {
             <td><strong>${st.name}</strong></td>
             <td>${st.standard}</td>
             <td><code>${st.roll}</code></td>
+            <td><small>${st.email || '-'}</small></td>
             <td>${formatToDDMMYYYY(st.dob)}</td>
             <td>${st.height ? st.height + 'cm' : '-'} / ${st.weight ? st.weight + 'kg' : '-'}</td>
-            <td><code>${st.aadhaar ? 'Verified' : '-'}</code></td>
-            <td>${st.father || '-'} / ${st.mother || '-'}</td>
+            <td><code>${st.blood || 'N/A'}</code></td>
             <td><code>${st.phone || '-'}</code></td>
-            <td><small>${st.address || '-'}</small></td>
             ${actionCol}
         </tr>`;
     });
@@ -621,7 +670,54 @@ window.addStudentRecord = function() {
     document.querySelectorAll('#admin-enrollment-card input, #admin-enrollment-card textarea').forEach(inp => inp.value = '');
     loadStudents();
     populateVaultStudentDropdown();
+    renderAttendanceChart();
     alert('Student record registered successfully!');
+};
+
+window.openEditStudentModal = function(index) {
+    const list = getStudents();
+    const st = list[index];
+    if (!st) return;
+
+    document.getElementById('edit-student-idx').value = index;
+    document.getElementById('edit-st-name').value = st.name || '';
+    document.getElementById('edit-st-roll').value = st.roll || '';
+    document.getElementById('edit-st-standard').value = st.standard || 'Grade 9-A';
+    document.getElementById('edit-st-email').value = st.email || '';
+    document.getElementById('edit-st-password').value = st.password || '';
+    document.getElementById('edit-st-phone').value = st.phone || '';
+    document.getElementById('edit-st-dob').value = formatToDDMMYYYY(st.dob) || '';
+    document.getElementById('edit-st-blood').value = st.blood || 'N/A';
+    document.getElementById('edit-st-address').value = st.address || '';
+
+    document.getElementById('edit-student-modal').style.display = 'flex';
+};
+
+window.closeEditModal = function() {
+    document.getElementById('edit-student-modal').style.display = 'none';
+};
+
+window.saveEditedStudentRecord = function() {
+    const idx = parseInt(document.getElementById('edit-student-idx').value);
+    const list = getStudents();
+    if (isNaN(idx) || !list[idx]) return;
+
+    list[idx].name = document.getElementById('edit-st-name').value.trim();
+    list[idx].roll = document.getElementById('edit-st-roll').value.trim();
+    list[idx].standard = document.getElementById('edit-st-standard').value;
+    list[idx].email = document.getElementById('edit-st-email').value.trim();
+    list[idx].password = document.getElementById('edit-st-password').value.trim();
+    list[idx].phone = document.getElementById('edit-st-phone').value.trim();
+    list[idx].dob = formatToDDMMYYYY(document.getElementById('edit-st-dob').value.trim());
+    list[idx].blood = document.getElementById('edit-st-blood').value;
+    list[idx].address = document.getElementById('edit-st-address').value.trim();
+
+    saveStudents(list);
+    window.closeEditModal();
+    loadStudents();
+    populateVaultStudentDropdown();
+    renderAttendanceChart();
+    alert('Student record & credentials updated successfully!');
 };
 
 window.deleteStudent = function(index) {
@@ -631,6 +727,7 @@ window.deleteStudent = function(index) {
         saveStudents(list);
         loadStudents();
         populateVaultStudentDropdown();
+        renderAttendanceChart();
     }
 };
 
@@ -642,7 +739,117 @@ window.filterStudents = function() {
     });
 };
 
-// 5. Document Vault Gallery with Replace & Remove
+// 6. Attendance Graph Analytics
+function renderAttendanceChart() {
+    const chartContainer = document.getElementById('attendance-bar-chart');
+    if (!chartContainer) return;
+
+    const standards = ["Grade 9-A", "Grade 9-B", "Grade 10-A", "Grade 10-B", "Grade 11-Commerce", "Grade 12-Commerce"];
+    const percentages = [98, 96, 99, 97, 95, 98];
+
+    chartContainer.innerHTML = '';
+
+    standards.forEach((std, i) => {
+        const shortName = std.replace("Grade ", "").replace("-Commerce", " Com");
+        const pct = percentages[i];
+
+        chartContainer.innerHTML += `
+            <div class="chart-bar-group">
+                <span class="chart-bar-percent">${pct}%</span>
+                <div class="chart-bar-track">
+                    <div class="chart-bar-fill" style="height: ${pct}%;"></div>
+                </div>
+                <span class="chart-bar-label">${shortName}</span>
+            </div>
+        `;
+    });
+}
+
+// 7. Fast 1-Click P / A Attendance
+function getAttendanceStorageKey(date, std) {
+    return `sav_attendance_${date}_${std}`;
+}
+
+window.loadAttendanceRoster = function() {
+    const std = document.getElementById('att-standard-filter').value;
+    const dateInput = document.getElementById('att-date');
+    if (!dateInput.value) {
+        dateInput.value = formatToDDMMYYYY(new Date().toISOString().split('T')[0]);
+    }
+
+    const curDate = dateInput.value;
+    const list = getStudents().filter(s => s.standard === std);
+    const tbody = document.getElementById('attendance-table-body');
+    tbody.innerHTML = '';
+
+    if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b; padding:20px;">No students enrolled in ${std}.</td></tr>`;
+        return;
+    }
+
+    const savedSheet = JSON.parse(localStorage.getItem(getAttendanceStorageKey(curDate, std)) || '{}');
+
+    list.forEach((st, idx) => {
+        const status = savedSheet[st.uid] || 'Present';
+        const isPres = status === 'Present';
+        const isStaff = (currentRole === 'school' || currentRole === 'teacher');
+
+        const markCol = isStaff
+            ? `<td>
+                <div class="pa-toggle-group">
+                    <button class="pa-btn ${isPres ? 'active-p' : ''}" onclick="window.setPresence('${st.uid}', 'Present', ${idx})">P</button>
+                    <button class="pa-btn ${!isPres ? 'active-a' : ''}" onclick="window.setPresence('${st.uid}', 'Absent', ${idx})">A</button>
+                </div>
+               </td>`
+            : '<td>-</td>';
+
+        tbody.innerHTML += `<tr>
+            <td><code>${st.roll}</code></td>
+            <td><strong>${st.name}</strong></td>
+            <td><code>${st.gr || '-'}</code></td>
+            <td><span class="${isPres ? 'status-badge-ready' : 'status-badge-na'}" id="att-status-text-${idx}">${status}</span></td>
+            ${markCol}
+        </tr>`;
+    });
+};
+
+window.setPresence = function(uid, newStatus, idx) {
+    if (currentRole !== 'school' && currentRole !== 'teacher') return;
+
+    const std = document.getElementById('att-standard-filter').value;
+    const curDate = document.getElementById('att-date').value || formatToDDMMYYYY(new Date().toISOString().split('T')[0]);
+    const storageKey = getAttendanceStorageKey(curDate, std);
+    
+    const savedSheet = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    savedSheet[uid] = newStatus;
+    localStorage.setItem(storageKey, JSON.stringify(savedSheet));
+
+    window.loadAttendanceRoster();
+};
+
+window.markBulkAttendance = function(statusToApply) {
+    if (currentRole !== 'school' && currentRole !== 'teacher') return;
+
+    const std = document.getElementById('att-standard-filter').value;
+    const curDate = document.getElementById('att-date').value || formatToDDMMYYYY(new Date().toISOString().split('T')[0]);
+    const storageKey = getAttendanceStorageKey(curDate, std);
+    const list = getStudents().filter(s => s.standard === std);
+
+    const savedSheet = {};
+    list.forEach(st => {
+        savedSheet[st.uid] = statusToApply;
+    });
+
+    localStorage.setItem(storageKey, JSON.stringify(savedSheet));
+    window.loadAttendanceRoster();
+};
+
+window.saveAttendanceRoster = function() {
+    const selectedDate = document.getElementById('att-date').value || formatToDDMMYYYY(new Date().toISOString().split('T')[0]);
+    alert(`Attendance register for ${selectedDate} finalized and submitted!`);
+};
+
+// 8. Document Vault Gallery
 function populateVaultStudentDropdown() {
     const sel = document.getElementById('vault-student-selector');
     const students = getStudents();
@@ -677,13 +884,12 @@ window.loadStudentVaultDocs = function() {
     const docTypes = ['photo', 'birth', 'aadhaar', 'income', 'caste', 'parents'];
     let verifiedCount = 0;
 
-    // Profile photo preview
     const photoBox = document.getElementById('showcase-photo-box');
     const removeProfileBtn = document.getElementById('btn-remove-profile-pic');
 
     if (docs['photo'] && docs['photo'].data) {
         photoBox.innerHTML = `<img src="${docs['photo'].data}" alt="${st.name}">`;
-        if (removeProfileBtn && currentRole === 'school') removeProfileBtn.style.display = 'inline-flex';
+        if (removeProfileBtn && (currentRole === 'school' || currentRole === 'teacher')) removeProfileBtn.style.display = 'inline-flex';
     } else {
         photoBox.innerHTML = `<span class="no-photo-placeholder">No Photo</span>`;
         if (removeProfileBtn) removeProfileBtn.style.display = 'none';
@@ -695,8 +901,8 @@ window.loadStudentVaultDocs = function() {
         const prevBtn = document.getElementById(`prev-${type}`);
         const downBtn = document.getElementById(`down-${type}`);
         const delBtn = document.getElementById(`del-${type}`);
-        const naBtn = document.getElementById(`na-${type}`);
         const thumbSlot = document.getElementById(`thumb-${type}`);
+        const isStaff = (currentRole === 'school' || currentRole === 'teacher');
 
         if (docs[type] && docs[type].status === 'na') {
             statusBadge.innerText = "N/A (Not Applicable)";
@@ -704,16 +910,16 @@ window.loadStudentVaultDocs = function() {
             if (upBtn) upBtn.innerText = "Upload";
             prevBtn.style.display = 'none';
             downBtn.style.display = 'none';
-            if (delBtn) delBtn.style.display = (currentRole === 'school') ? 'inline-flex' : 'none';
+            if (delBtn) delBtn.style.display = isStaff ? 'inline-flex' : 'none';
             thumbSlot.innerHTML = '🚫';
             verifiedCount++;
         } else if (docs[type] && docs[type].data) {
             statusBadge.innerText = `Verified (${docs[type].name || 'File'})`;
             statusBadge.className = "doc-status-badge status-ready";
-            if (upBtn) upBtn.innerText = "Change"; // Easy replace option
+            if (upBtn) upBtn.innerText = "Change";
             prevBtn.style.display = 'inline-flex';
             downBtn.style.display = 'inline-flex';
-            if (delBtn) delBtn.style.display = (currentRole === 'school') ? 'inline-flex' : 'none';
+            if (delBtn) delBtn.style.display = isStaff ? 'inline-flex' : 'none';
             if (docs[type].data.startsWith('data:image')) {
                 thumbSlot.innerHTML = `<img src="${docs[type].data}" alt="thumb">`;
             } else {
@@ -733,7 +939,7 @@ window.loadStudentVaultDocs = function() {
 
     document.getElementById('showcase-count-verified').innerText = `${verifiedCount} / 6`;
     document.getElementById('showcase-status-label').innerText = verifiedCount === 6 ? 'Complete' : 'Incomplete';
-    document.getElementById('showcase-status-label').style.color = verifiedCount === 6 ? '#10b981' : '#f59e0b';
+    document.getElementById('showcase-status-label').style.color = verifiedCount === 6 ? '#059669' : '#d97706';
 };
 
 function getDocDefaultIcon(type) {
@@ -766,7 +972,6 @@ function resetVaultGallery() {
     });
 }
 
-// Upload & Replace
 window.handleVaultUpload = function(input, docType) {
     const uid = currentRole === 'student' ? activeVaultStudentUID : document.getElementById('vault-student-selector').value;
     if (!uid) {
@@ -802,7 +1007,6 @@ window.handleVaultUpload = function(input, docType) {
     }
 };
 
-// Delete / Remove Document
 window.removeDoc = function(docType) {
     const uid = currentRole === 'student' ? activeVaultStudentUID : document.getElementById('vault-student-selector').value;
     if (!uid) return;
@@ -878,9 +1082,7 @@ window.downloadDoc = function(docType) {
     }
 };
 
-// ==========================================================================
-// 6. TIMETABLE ENGINE
-// ==========================================================================
+// 9. Timetable Engine
 const defaultTimetables = {
     timings: {
         prayer: "07:00 - 07:20",
@@ -1031,7 +1233,7 @@ window.loadTimetable = function() {
 };
 
 window.toggleTimetableEdit = function() {
-    if (currentRole !== 'school') return;
+    if (currentRole !== 'school' && currentRole !== 'teacher') return;
 
     const btn = document.getElementById('btn-edit-tt');
     const std = document.getElementById('tt-standard-selector').value;
@@ -1039,7 +1241,7 @@ window.toggleTimetableEdit = function() {
     if (!isTimetableEditing) {
         isTimetableEditing = true;
         btn.innerText = "Save Timetable & Timings";
-        btn.className = "btn-3d btn-primary btn-sm admin-only-btn";
+        btn.className = "btn-3d btn-primary btn-sm staff-only-btn";
         window.loadTimetable();
     } else {
         const fullData = getTimetableData();
@@ -1080,13 +1282,113 @@ window.toggleTimetableEdit = function() {
 
         isTimetableEditing = false;
         btn.innerText = "Edit Timetable & Timings";
-        btn.className = "btn-3d btn-primary btn-sm admin-only-btn";
+        btn.className = "btn-3d btn-primary btn-sm staff-only-btn";
         window.loadTimetable();
         alert(`Timetable and Timings for ${std} successfully saved!`);
     }
 };
 
-// 7. Holidays (Add & Delete)
+// ==========================================================================
+// 10. STANDARD-TARGETED NOTICES & NOTICE DELETION
+// ==========================================================================
+const defaultNotices = [
+    { id: 101, title: "Quarterly Examination Schedule Published", target: "ALL", date: "20/09/2026", body: "Detailed subject timetables have been pinned to the board. Students must clear library dues." },
+    { id: 102, title: "Parent-Teacher Institutional Conference", target: "ALL", date: "18/09/2026", body: "The mandatory PTM for Standards 9, 10 and Commerce is scheduled for Saturday at 09:30 AM." }
+];
+
+function getNotices() {
+    const data = localStorage.getItem('sav_enterprise_notices_v2');
+    return data ? JSON.parse(data) : defaultNotices;
+}
+
+function loadNotices() {
+    const list = getNotices();
+    const container = document.getElementById('notices-feed');
+    const homeList = document.getElementById('home-notices-list');
+    
+    if (container) container.innerHTML = '';
+    if (homeList) homeList.innerHTML = '';
+
+    list.forEach(n => {
+        // Strict Student View Isolation: Show only ALL or student's own standard
+        if (currentRole === 'student' && activeStudentStandard) {
+            if (n.target !== "ALL" && n.target !== activeStudentStandard) {
+                return; 
+            }
+        }
+
+        const formattedDate = formatToDDMMYYYY(n.date);
+        const isStaff = (currentRole === 'school' || currentRole === 'teacher');
+        const delBtn = isStaff 
+            ? `<button class="btn-3d btn-danger btn-sm" onclick="window.deleteNotice(${n.id})">Delete Notice</button>` 
+            : '';
+
+        const targetBadge = (n.target === "ALL")
+            ? `<span class="badge-role" style="color:#059669; background:#dcfce7; padding:2px 8px; border-radius:10px;">All School</span>`
+            : `<span class="badge-role" style="color:#0284c7; background:#e0f2fe; padding:2px 8px; border-radius:10px;">${n.target}</span>`;
+
+        if (container) {
+            container.innerHTML += `<div class="notice-item-3d">
+                <div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <h4>${n.title}</h4>
+                        ${targetBadge}
+                    </div>
+                    <div class="notice-meta">Published: ${formattedDate} | Authority: Principal Office</div>
+                    <p style="color:#334155; font-size:13px; line-height:1.6;">${n.body}</p>
+                </div>
+                <div class="card-item-footer">
+                    <span style="font-size:12px; color:#64748b;">Notice Status: Active</span>
+                    ${delBtn}
+                </div>
+            </div>`;
+        }
+        if (homeList) {
+            homeList.innerHTML += `<li><strong>${n.title}</strong> <small style="color:#0284c7;">(${n.target})</small> <span style="color:#64748b;">(${formattedDate})</span></li>`;
+        }
+    });
+}
+
+window.toggleNoticeForm = function() {
+    document.getElementById('notice-publish-form').classList.toggle('hidden-panel');
+};
+
+window.publishNotice = function() {
+    const title = document.getElementById('notice-title').value.trim();
+    const target = document.getElementById('notice-target').value;
+    const body = document.getElementById('notice-body').value.trim();
+    if (!title || !body) {
+        alert('Please fill Notice Title and Body.');
+        return;
+    }
+
+    const list = getNotices();
+    list.unshift({ 
+        id: Date.now(),
+        title, 
+        target, 
+        body, 
+        date: formatToDDMMYYYY(new Date().toISOString().split('T')[0]) 
+    });
+    localStorage.setItem('sav_enterprise_notices_v2', JSON.stringify(list));
+    
+    document.getElementById('notice-title').value = '';
+    document.getElementById('notice-body').value = '';
+    window.toggleNoticeForm();
+    loadNotices();
+    alert('Notice published successfully!');
+};
+
+window.deleteNotice = function(id) {
+    if (confirm('Are you sure you want to delete this notice?')) {
+        let list = getNotices();
+        list = list.filter(n => n.id !== id);
+        localStorage.setItem('sav_enterprise_notices_v2', JSON.stringify(list));
+        loadNotices();
+    }
+};
+
+// 11. Holidays
 const defaultHolidays = [
     { id: 1, name: "Gandhi Jayanti", date: "02/10/2026", type: "National Holiday" },
     { id: 2, name: "Navratri Vacation", date: "18/10/2026", type: "State Festival" },
@@ -1107,7 +1409,8 @@ function loadHolidays() {
 
     const list = getHolidays();
     list.forEach(h => {
-        const delBtn = currentRole === 'school'
+        const isStaff = (currentRole === 'school' || currentRole === 'teacher');
+        const delBtn = isStaff
             ? `<button class="btn-3d btn-danger btn-sm" onclick="window.deleteHoliday(${h.id})">Delete</button>`
             : '';
 
@@ -1167,7 +1470,7 @@ window.deleteHoliday = function(id) {
     }
 };
 
-// 8. Govt Circulars
+// 12. Govt Circulars
 const defaultCircs = [
     { id: 101, num: "GSEB/PARI/2026/842", title: "Commerce Assessment & Accountancy Norms", date: "15/09/2026" },
     { id: 102, num: "EDU-GUJ/STAT/1048", title: "Mandatory Digital Enrollment of Secondary Students", date: "10/09/2026" }
@@ -1185,7 +1488,8 @@ function loadCirculars() {
     container.innerHTML = '';
 
     list.forEach(c => {
-        const delBtn = currentRole === 'school'
+        const isStaff = (currentRole === 'school' || currentRole === 'teacher');
+        const delBtn = isStaff
             ? `<button class="btn-3d btn-danger btn-sm" onclick="window.deleteCircular(${c.id})">Delete</button>`
             : '';
 
@@ -1236,137 +1540,47 @@ window.deleteCircular = function(id) {
     }
 };
 
-// 9. Notices & Attendance
-const defaultNotices = [
-    { title: "Quarterly Examination Schedule Published", date: "20/09/2026", body: "Detailed subject timetables have been pinned to the board. Students must clear library dues." },
-    { title: "Parent-Teacher Institutional Conference", date: "18/09/2026", body: "The mandatory PTM for Standards 9, 10 and Commerce is scheduled for Saturday at 09:30 AM." }
-];
-
-function getNotices() {
-    const data = localStorage.getItem('sav_enterprise_notices');
-    return data ? JSON.parse(data) : defaultNotices;
-}
-
-function loadNotices() {
-    const list = getNotices();
-    const container = document.getElementById('notices-feed');
-    const homeList = document.getElementById('home-notices-list');
-    
-    if (container) container.innerHTML = '';
-    if (homeList) homeList.innerHTML = '';
-
-    list.forEach(n => {
-        const formattedDate = formatToDDMMYYYY(n.date);
-        if (container) {
-            container.innerHTML += `<div class="notice-item-3d">
-                <h4>${n.title}</h4>
-                <div class="notice-meta">Published: ${formattedDate} | Authority: Principal Office</div>
-                <p>${n.body}</p>
-            </div>`;
-        }
-        if (homeList) {
-            homeList.innerHTML += `<li><strong>${n.title}</strong> <span style="color:#64748b;">(${formattedDate})</span></li>`;
-        }
-    });
-}
-
-window.toggleNoticeForm = function() {
-    document.getElementById('notice-publish-form').classList.toggle('hidden-panel');
-};
-
-window.publishNotice = function() {
-    const title = document.getElementById('notice-title').value.trim();
-    const body = document.getElementById('notice-body').value.trim();
-    if (!title || !body) return;
-
-    const list = getNotices();
-    list.unshift({ title, body, date: formatToDDMMYYYY(new Date().toISOString().split('T')[0]) });
-    localStorage.setItem('sav_enterprise_notices', JSON.stringify(list));
-    
-    document.getElementById('notice-title').value = '';
-    document.getElementById('notice-body').value = '';
-    window.toggleNoticeForm();
-    loadNotices();
-};
-
-window.loadAttendanceRoster = function() {
-    const std = document.getElementById('att-standard-filter').value;
-    const dateInput = document.getElementById('att-date');
-    if (!dateInput.value) {
-        dateInput.value = formatToDDMMYYYY(new Date().toISOString().split('T')[0]);
-    }
-
-    const list = getStudents().filter(s => s.standard === std);
-    const tbody = document.getElementById('attendance-table-body');
-    tbody.innerHTML = '';
-
-    if (list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b; padding:20px;">No students enrolled in ${std}.</td></tr>`;
-        return;
-    }
-
-    list.forEach((st, idx) => {
-        const markCol = currentRole === 'school'
-            ? `<td><button class="btn-3d btn-secondary btn-sm" onclick="window.togglePresence(${idx})">Toggle Present/Absent</button></td>`
-            : '';
-
-        tbody.innerHTML += `<tr>
-            <td><code>${st.roll}</code></td>
-            <td><strong>${st.name}</strong></td>
-            <td><code>${st.gr || '-'}</code></td>
-            <td><span class="status-badge-present" id="att-status-${idx}">Present</span></td>
-            ${markCol}
-        </tr>`;
-    });
-};
-
-window.togglePresence = function(idx) {
-    if (currentRole !== 'school') return;
-    const pill = document.getElementById(`att-status-${idx}`);
-    if (pill.innerText === "Present") {
-        pill.innerText = "Absent";
-        pill.className = "status-badge-absent";
-    } else {
-        pill.innerText = "Present";
-        pill.className = "status-badge-present";
-    }
-};
-
-window.saveAttendanceRoster = function() {
-    if (currentRole !== 'school') return;
-    const selectedDate = document.getElementById('att-date').value || formatToDDMMYYYY(new Date().toISOString().split('T')[0]);
-    alert(`Attendance roster for ${selectedDate} submitted successfully!`);
-};
-
 function loadHomeData() {
     loadNotices();
     loadHolidays();
 }
 
-window.updateAdminCredentials = function() {
+// 13. Security Credentials Updater
+window.updateUserCredentials = function() {
     const currPass = document.getElementById('cfg-curr-pass').value.trim();
     const newId = document.getElementById('cfg-new-id').value.trim();
     const newPass = document.getElementById('cfg-new-pass').value.trim();
 
-    const currentCreds = getAdminCredentials();
-
-    if (currPass !== currentCreds.pass) {
-        alert("Current password is incorrect!");
-        return;
+    if (currentRole === 'school') {
+        const currentCreds = getAdminCredentials();
+        if (currPass !== currentCreds.pass) {
+            alert("Current Administrator password is incorrect!");
+            return;
+        }
+        if (!newId || !newPass) {
+            alert("New ID and Password are required.");
+            return;
+        }
+        localStorage.setItem('sav_admin_credentials', JSON.stringify({ id: newId, pass: newPass }));
+        alert(`Administrator ID and password successfully updated!\nNew ID: ${newId}`);
+    } else if (currentRole === 'teacher') {
+        const currentCreds = getTeacherCredentials();
+        if (currPass !== currentCreds.pass) {
+            alert("Current Teacher password is incorrect!");
+            return;
+        }
+        if (!newId || !newPass) {
+            alert("New Teacher Employee Code and Password are required.");
+            return;
+        }
+        localStorage.setItem('sav_teacher_credentials', JSON.stringify({ code: newId, pass: newPass, name: currentCreds.name }));
+        alert(`Teacher Employee Code and password successfully updated!\nNew Code: ${newId}`);
     }
 
-    if (!newId || !newPass) {
-        alert("New ID and Password are required.");
-        return;
-    }
-
-    localStorage.setItem('sav_admin_credentials', JSON.stringify({ id: newId, pass: newPass }));
-    alert(`Administrator credentials updated!\nNew ID: ${newId}`);
-    
     document.getElementById('cfg-curr-pass').value = '';
     document.getElementById('cfg-new-id').value = '';
     document.getElementById('cfg-new-pass').value = '';
 };
 
-// Default startup
+// Start in default language
 window.switchLanguage('en');
