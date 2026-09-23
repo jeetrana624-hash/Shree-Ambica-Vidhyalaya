@@ -1,6 +1,6 @@
 // ==========================================================================
 // SHREE AMBICA VIDHYALAYA - ENTERPRISE ERP ENGINE
-// School Logo Manager (Upload, Change, Delete), Targeted Notices, Full ERP
+// Interactive Login Logo Changer, Targeted Notices, Full Enterprise Suite
 // ==========================================================================
 
 const firebaseConfig = {
@@ -94,13 +94,14 @@ window.handleLogoUpload = function(input) {
             const base64Logo = e.target.result;
             localStorage.setItem('sav_official_school_logo', base64Logo);
             refreshSchoolLogos();
-            alert('School Official Logo updated successfully across portal!');
+            alert('School Official Logo updated successfully!');
         };
         reader.readAsDataURL(file);
     }
 };
 
-window.removeSchoolLogo = function() {
+window.removeSchoolLogo = function(e) {
+    if (e) e.stopPropagation();
     if (confirm('Are you sure you want to reset to the default school logo?')) {
         localStorage.removeItem('sav_official_school_logo');
         refreshSchoolLogos();
@@ -135,7 +136,6 @@ const translations = {
         quickNewAdmission: "+ Enroll Student",
         quickAttendance: "Mark Attendance",
         statEnrolled: "Total Students",
-        statAttendance: "Average Attendance",
         homeRecentNotices: "Latest Institutional Notices",
         homeUpcomingHolidays: "Upcoming Academic Holidays",
         formTitleEnroll: "Comprehensive Student Admission",
@@ -224,7 +224,6 @@ const translations = {
         quickNewAdmission: "+ નવો પ્રવેશ",
         quickAttendance: "હાજરી પૂરો",
         statEnrolled: "કુલ વિદ્યાર્થીઓ",
-        statAttendance: "સરેરાશ હાજરી",
         homeRecentNotices: "તાજેતરની શાળા સૂચનાઓ",
         homeUpcomingHolidays: "આગામી શૈક્ષણિક રજાઓ",
         formTitleEnroll: "વિદ્યાર્થી પ્રવેશ ફોર્મ",
@@ -313,7 +312,6 @@ const translations = {
         quickNewAdmission: "+ नया प्रवेश",
         quickAttendance: "उपस्थिति दर्ज करें",
         statEnrolled: "कुल छात्र",
-        statAttendance: "औसत उपस्थिति",
         homeRecentNotices: "नवीनतम संस्थागत सूचनाएं",
         homeUpcomingHolidays: "आगामी शैक्षणिक अवकाश",
         formTitleEnroll: "छात्र प्रवेश फॉर्म",
@@ -1288,9 +1286,7 @@ window.toggleTimetableEdit = function() {
     }
 };
 
-// ==========================================================================
-// 10. STANDARD-TARGETED NOTICES & NOTICE DELETION
-// ==========================================================================
+// 10. Standard-Targeted Notices & Deletion
 const defaultNotices = [
     { id: 101, title: "Quarterly Examination Schedule Published", target: "ALL", date: "20/09/2026", body: "Detailed subject timetables have been pinned to the board. Students must clear library dues." },
     { id: 102, title: "Parent-Teacher Institutional Conference", target: "ALL", date: "18/09/2026", body: "The mandatory PTM for Standards 9, 10 and Commerce is scheduled for Saturday at 09:30 AM." }
@@ -1310,7 +1306,6 @@ function loadNotices() {
     if (homeList) homeList.innerHTML = '';
 
     list.forEach(n => {
-        // Strict Student View Isolation: Show only ALL or student's own standard
         if (currentRole === 'student' && activeStudentStandard) {
             if (n.target !== "ALL" && n.target !== activeStudentStandard) {
                 return; 
@@ -1582,5 +1577,6 @@ window.updateUserCredentials = function() {
     document.getElementById('cfg-new-pass').value = '';
 };
 
-// Start in default language
+// Initial Setup
+refreshSchoolLogos();
 window.switchLanguage('en');
