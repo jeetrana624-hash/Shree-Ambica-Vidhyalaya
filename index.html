@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shree Ambica Vidhyalaya - Enterprise ERP Portal</title>
-    <link rel="stylesheet" href="style.css?v=28">
+    <link rel="stylesheet" href="style.css?v=30">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+Gujarati:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
@@ -73,7 +73,7 @@
                 <div class="brand-mini-badge">SAV</div>
                 <div class="brand-titles">
                     <h3>Ambica Portal</h3>
-                    <span class="version-tag">ERP v5.8</span>
+                    <span class="version-tag">ERP v6.0</span>
                 </div>
             </div>
 
@@ -329,7 +329,7 @@
                     <div class="card-title-row">
                         <div>
                             <h3 data-i18n="vaultTitle">Student Individual Document Archive & Gallery</h3>
-                            <p class="text-muted" data-i18n="vaultDesc">Manage and audit identity proofs, certificates, and student gallery</p>
+                            <p class="text-muted" data-i18n="vaultDesc">Manage, upload, preview, update, and remove student identity proofs and certificates</p>
                         </div>
                         <div class="student-select-toolbar">
                             <label class="field-label-sm">Select Student Dossier:</label>
@@ -340,10 +340,23 @@
                     </div>
 
                     <div class="vault-gallery-wrapper">
+                        <!-- Left Student Profile Showcase Card with Direct Upload/Change Button -->
                         <div class="student-profile-showcase card-3d">
                             <div class="showcase-photo-container" id="showcase-photo-box">
                                 <span class="no-photo-placeholder">No Photo</span>
                             </div>
+                            
+                            <!-- Profile Photo Upload / Replace Controls -->
+                            <input type="file" id="file-profile-direct" class="file-input-hidden" accept="image/*" onchange="window.handleVaultUpload(this, 'photo')">
+                            <div class="profile-photo-actions admin-only-btn">
+                                <button class="btn-3d btn-secondary btn-sm btn-full" onclick="document.getElementById('file-profile-direct').click()">
+                                    📷 Upload / Change Photo
+                                </button>
+                                <button class="btn-3d btn-danger btn-sm" id="btn-remove-profile-pic" onclick="window.removeDoc('photo')" style="display:none;" title="Remove Photo">
+                                    🗑️
+                                </button>
+                            </div>
+
                             <h3 id="showcase-st-name">Select a Student</h3>
                             <p class="showcase-meta"><span id="showcase-st-gr">GR: -</span> • <span id="showcase-st-uid">UID: -</span></p>
                             <span class="badge-role" id="showcase-st-std">Standard -</span>
@@ -354,24 +367,28 @@
                             </div>
                         </div>
 
+                        <!-- Right Documents Interactive Gallery Grid -->
                         <div class="gallery-documents-container">
                             <div class="doc-gallery-grid" id="vault-tiles-grid">
                                 
+                                <!-- 1. Student Passport Photo -->
                                 <div class="gallery-item-card card-3d" id="tile-photo">
                                     <div class="gallery-thumb-slot" id="thumb-photo" onclick="window.previewDoc('photo')">📷</div>
                                     <div class="gallery-details">
                                         <h4 data-i18n="docPassport">Student Passport Photo</h4>
                                         <div class="doc-status-badge" id="status-photo">Not Uploaded</div>
                                     </div>
-                                    <input type="file" id="file-photo" class="file-input-hidden" onchange="window.handleVaultUpload(this, 'photo')">
+                                    <input type="file" id="file-photo" class="file-input-hidden" accept="image/*" onchange="window.handleVaultUpload(this, 'photo')">
                                     <div class="gallery-actions">
-                                        <button class="btn-3d btn-primary btn-sm admin-only-btn" onclick="document.getElementById('file-photo').click()">Upload</button>
+                                        <button class="btn-3d btn-primary btn-sm admin-only-btn" id="btn-up-photo" onclick="document.getElementById('file-photo').click()">Upload</button>
                                         <button class="btn-3d btn-secondary btn-sm" id="prev-photo" onclick="window.previewDoc('photo')" style="display:none;">View</button>
                                         <button class="btn-3d btn-secondary btn-sm" id="down-photo" onclick="window.downloadDoc('photo')" style="display:none;">Download</button>
-                                        <button class="btn-3d btn-na btn-sm admin-only-btn" onclick="window.markDocNA('photo')">N/A</button>
+                                        <button class="btn-3d btn-danger btn-sm admin-only-btn" id="del-photo" onclick="window.removeDoc('photo')" style="display:none;" title="Delete Document">Remove</button>
+                                        <button class="btn-3d btn-na btn-sm admin-only-btn" id="na-photo" onclick="window.markDocNA('photo')">N/A</button>
                                     </div>
                                 </div>
 
+                                <!-- 2. Birth Certificate -->
                                 <div class="gallery-item-card card-3d" id="tile-birth">
                                     <div class="gallery-thumb-slot" id="thumb-birth" onclick="window.previewDoc('birth')">📜</div>
                                     <div class="gallery-details">
@@ -380,13 +397,15 @@
                                     </div>
                                     <input type="file" id="file-birth" class="file-input-hidden" onchange="window.handleVaultUpload(this, 'birth')">
                                     <div class="gallery-actions">
-                                        <button class="btn-3d btn-primary btn-sm admin-only-btn" onclick="document.getElementById('file-birth').click()">Upload</button>
+                                        <button class="btn-3d btn-primary btn-sm admin-only-btn" id="btn-up-birth" onclick="document.getElementById('file-birth').click()">Upload</button>
                                         <button class="btn-3d btn-secondary btn-sm" id="prev-birth" onclick="window.previewDoc('birth')" style="display:none;">View</button>
                                         <button class="btn-3d btn-secondary btn-sm" id="down-birth" onclick="window.downloadDoc('birth')" style="display:none;">Download</button>
-                                        <button class="btn-3d btn-na btn-sm admin-only-btn" onclick="window.markDocNA('birth')">N/A</button>
+                                        <button class="btn-3d btn-danger btn-sm admin-only-btn" id="del-birth" onclick="window.removeDoc('birth')" style="display:none;" title="Delete Document">Remove</button>
+                                        <button class="btn-3d btn-na btn-sm admin-only-btn" id="na-birth" onclick="window.markDocNA('birth')">N/A</button>
                                     </div>
                                 </div>
 
+                                <!-- 3. Govt ID Card -->
                                 <div class="gallery-item-card card-3d" id="tile-aadhaar">
                                     <div class="gallery-thumb-slot" id="thumb-aadhaar" onclick="window.previewDoc('aadhaar')">🆔</div>
                                     <div class="gallery-details">
@@ -395,13 +414,15 @@
                                     </div>
                                     <input type="file" id="file-aadhaar" class="file-input-hidden" onchange="window.handleVaultUpload(this, 'aadhaar')">
                                     <div class="gallery-actions">
-                                        <button class="btn-3d btn-primary btn-sm admin-only-btn" onclick="document.getElementById('file-aadhaar').click()">Upload</button>
+                                        <button class="btn-3d btn-primary btn-sm admin-only-btn" id="btn-up-aadhaar" onclick="document.getElementById('file-aadhaar').click()">Upload</button>
                                         <button class="btn-3d btn-secondary btn-sm" id="prev-aadhaar" onclick="window.previewDoc('aadhaar')" style="display:none;">View</button>
                                         <button class="btn-3d btn-secondary btn-sm" id="down-aadhaar" onclick="window.downloadDoc('aadhaar')" style="display:none;">Download</button>
-                                        <button class="btn-3d btn-na btn-sm admin-only-btn" onclick="window.markDocNA('aadhaar')">N/A</button>
+                                        <button class="btn-3d btn-danger btn-sm admin-only-btn" id="del-aadhaar" onclick="window.removeDoc('aadhaar')" style="display:none;" title="Delete Document">Remove</button>
+                                        <button class="btn-3d btn-na btn-sm admin-only-btn" id="na-aadhaar" onclick="window.markDocNA('aadhaar')">N/A</button>
                                     </div>
                                 </div>
 
+                                <!-- 4. Income Certificate -->
                                 <div class="gallery-item-card card-3d" id="tile-income">
                                     <div class="gallery-thumb-slot" id="thumb-income" onclick="window.previewDoc('income')">💼</div>
                                     <div class="gallery-details">
@@ -410,13 +431,15 @@
                                     </div>
                                     <input type="file" id="file-income" class="file-input-hidden" onchange="window.handleVaultUpload(this, 'income')">
                                     <div class="gallery-actions">
-                                        <button class="btn-3d btn-primary btn-sm admin-only-btn" onclick="document.getElementById('file-income').click()">Upload</button>
+                                        <button class="btn-3d btn-primary btn-sm admin-only-btn" id="btn-up-income" onclick="document.getElementById('file-income').click()">Upload</button>
                                         <button class="btn-3d btn-secondary btn-sm" id="prev-income" onclick="window.previewDoc('income')" style="display:none;">View</button>
                                         <button class="btn-3d btn-secondary btn-sm" id="down-income" onclick="window.downloadDoc('income')" style="display:none;">Download</button>
-                                        <button class="btn-3d btn-na btn-sm admin-only-btn" onclick="window.markDocNA('income')">N/A</button>
+                                        <button class="btn-3d btn-danger btn-sm admin-only-btn" id="del-income" onclick="window.removeDoc('income')" style="display:none;" title="Delete Document">Remove</button>
+                                        <button class="btn-3d btn-na btn-sm admin-only-btn" id="na-income" onclick="window.markDocNA('income')">N/A</button>
                                     </div>
                                 </div>
 
+                                <!-- 5. Caste Certificate -->
                                 <div class="gallery-item-card card-3d" id="tile-caste">
                                     <div class="gallery-thumb-slot" id="thumb-caste" onclick="window.previewDoc('caste')">🏷️</div>
                                     <div class="gallery-details">
@@ -425,13 +448,15 @@
                                     </div>
                                     <input type="file" id="file-caste" class="file-input-hidden" onchange="window.handleVaultUpload(this, 'caste')">
                                     <div class="gallery-actions">
-                                        <button class="btn-3d btn-primary btn-sm admin-only-btn" onclick="document.getElementById('file-caste').click()">Upload</button>
+                                        <button class="btn-3d btn-primary btn-sm admin-only-btn" id="btn-up-caste" onclick="document.getElementById('file-caste').click()">Upload</button>
                                         <button class="btn-3d btn-secondary btn-sm" id="prev-caste" onclick="window.previewDoc('caste')" style="display:none;">View</button>
                                         <button class="btn-3d btn-secondary btn-sm" id="down-caste" onclick="window.downloadDoc('caste')" style="display:none;">Download</button>
-                                        <button class="btn-3d btn-na btn-sm admin-only-btn" onclick="window.markDocNA('caste')">N/A</button>
+                                        <button class="btn-3d btn-danger btn-sm admin-only-btn" id="del-caste" onclick="window.removeDoc('caste')" style="display:none;" title="Delete Document">Remove</button>
+                                        <button class="btn-3d btn-na btn-sm admin-only-btn" id="na-caste" onclick="window.markDocNA('caste')">N/A</button>
                                     </div>
                                 </div>
 
+                                <!-- 6. Parents Proof -->
                                 <div class="gallery-item-card card-3d" id="tile-parents">
                                     <div class="gallery-thumb-slot" id="thumb-parents" onclick="window.previewDoc('parents')">👨‍👩‍👧</div>
                                     <div class="gallery-details">
@@ -440,10 +465,11 @@
                                     </div>
                                     <input type="file" id="file-parents" class="file-input-hidden" onchange="window.handleVaultUpload(this, 'parents')">
                                     <div class="gallery-actions">
-                                        <button class="btn-3d btn-primary btn-sm admin-only-btn" onclick="document.getElementById('file-parents').click()">Upload</button>
+                                        <button class="btn-3d btn-primary btn-sm admin-only-btn" id="btn-up-parents" onclick="document.getElementById('file-parents').click()">Upload</button>
                                         <button class="btn-3d btn-secondary btn-sm" id="prev-parents" onclick="window.previewDoc('parents')" style="display:none;">View</button>
                                         <button class="btn-3d btn-secondary btn-sm" id="down-parents" onclick="window.downloadDoc('parents')" style="display:none;">Download</button>
-                                        <button class="btn-3d btn-na btn-sm admin-only-btn" onclick="window.markDocNA('parents')">N/A</button>
+                                        <button class="btn-3d btn-danger btn-sm admin-only-btn" id="del-parents" onclick="window.removeDoc('parents')" style="display:none;" title="Delete Document">Remove</button>
+                                        <button class="btn-3d btn-na btn-sm admin-only-btn" id="na-parents" onclick="window.markDocNA('parents')">N/A</button>
                                     </div>
                                 </div>
 
@@ -545,7 +571,7 @@
                 </div>
             </section>
 
-            <!-- SECTION 7: EDITABLE TIMETABLE (8 LECTURES + PRAYER + RECESS) -->
+            <!-- SECTION 7: EDITABLE TIMETABLE -->
             <section id="view-timetable" class="view-panel">
                 <div class="card-3d content-card">
                     <div class="card-title-row">
@@ -649,6 +675,6 @@
         </div>
     </div>
 
-    <script src="script.js?v=28"></script>
+    <script src="script.js?v=30"></script>
 </body>
 </html>
