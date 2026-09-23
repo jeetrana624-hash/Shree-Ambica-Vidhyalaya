@@ -1,9 +1,8 @@
 // ==========================================================================
 // SHREE AMBICA VIDHYALAYA - ENTERPRISE ERP ENGINE
-// Interactive Timetable, Statutory Gallery, Strict DD/MM/YYYY Format
+// Interactive Timetable, Statutory Gallery, Strict DD/MM/YYYY Mask
 // ==========================================================================
 
-// 1. Firebase Setup
 const firebaseConfig = {
   apiKey: "AIzaSyAPsW-Yn9hLqF8arfRlcdT3gWmNuDlIFAQ",
   authDomain: "shree-ambica-vidhyalaya.firebaseapp.com",
@@ -23,10 +22,20 @@ let currentLanguage = 'en';
 let activeVaultStudentUID = null;
 let isTimetableEditing = false;
 
-// Standard Date Formatter to Strict DD/MM/YYYY
+// 1. Strict DD/MM/YYYY Masking & Normalization
+window.applyDateMask = function(input) {
+    let v = input.value.replace(/\D/g, '').slice(0, 8);
+    if (v.length >= 5) {
+        input.value = `${v.slice(0, 2)}/${v.slice(2, 4)}/${v.slice(4)}`;
+    } else if (v.length >= 3) {
+        input.value = `${v.slice(0, 2)}/${v.slice(2)}`;
+    } else {
+        input.value = v;
+    }
+};
+
 function formatToDDMMYYYY(dateString) {
     if (!dateString) return '-';
-    // If already in DD/MM/YYYY
     if (dateString.includes('/')) return dateString;
     const parts = dateString.split('-');
     if (parts.length === 3) {
@@ -42,7 +51,6 @@ function formatToDDMMYYYY(dateString) {
     return dateString;
 }
 
-// Admin Credentials
 function getAdminCredentials() {
     const saved = localStorage.getItem('sav_admin_credentials');
     return saved ? JSON.parse(saved) : { id: "admin", pass: "admin123" };
@@ -138,7 +146,7 @@ const translations = {
         lblArchiveOrder: "Archive Statutory Circular",
         btnSaveCircular: "Archive Circular",
         ttTitle: "Master Academic Schedule & Timetable",
-        ttDesc: "Interactive departmental timetable editor",
+        ttDesc: "Interactive departmental timetable editor (Subjects & Timings)",
         hldTitle: "Annual & Local Holiday Schedule",
         hldDesc: "Statutory academic calendar and institutional holiday notifications",
         adminSettingsTitle: "Administrator Credentials Configuration",
@@ -236,7 +244,7 @@ const translations = {
         lblArchiveOrder: "સરકારી પરિપત્ર સાચવો",
         btnSaveCircular: "સાચવો",
         ttTitle: "સાપ્તાહિક શૈક્ષણિક સમયપત્રક",
-        ttDesc: "વર્ગ અને વિષયવાર ટાઇમટેબલ સંપાદન",
+        ttDesc: "વિષય અને સમય સાથે ટાઇમટેબલ સંપાદન",
         hldTitle: "શાળા શૈક્ષણિક અને સ્થાનિક રજાઓ",
         hldDesc: "વાર્ષિક કેલેન્ડર અને તહેવારોની યાદી",
         adminSettingsTitle: "એડમિનિસ્ટ્રેટર આઈડી અને પાસવર્ડ બદલો",
@@ -334,7 +342,7 @@ const translations = {
         lblArchiveOrder: "सरकारी परिपत्र सुरक्षित करें",
         btnSaveCircular: "सुरक्षित करें",
         ttTitle: "मास्टर शैक्षणिक समय सारिणी",
-        ttDesc: "साप्ताहिक कक्षा समय सारिणी संपादन",
+        ttDesc: "साप्ताहिक कक्षा समय सारिणी एवं समय संपादन",
         hldTitle: "वार्षिक एवं स्थानीय अवकाश सूची",
         hldDesc: "वार्षिक कैलेंडर और त्योहारों की सूची",
         adminSettingsTitle: "व्यवस्थापक आईडी एवं पासवर्ड बदलें",
@@ -372,7 +380,7 @@ window.cycleLanguage = function() {
     window.switchLanguage(next);
 };
 
-// 3. Role & Authentication
+// 3. Role & Login
 window.setRole = function(role) {
     currentRole = role;
     document.getElementById('role-school').classList.toggle('active', role === 'school');
@@ -495,7 +503,6 @@ window.logout = function() {
     auth.signOut().then(() => location.reload());
 };
 
-// 4. Navigation
 window.navigateTo = function(viewId) {
     document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
@@ -515,7 +522,7 @@ window.navigateTo = function(viewId) {
     }
 };
 
-// 5. Student Registry & Storage
+// 4. Students Operations
 function getStudents() {
     const data = localStorage.getItem('sav_enterprise_students');
     return data ? JSON.parse(data) : [];
@@ -569,7 +576,7 @@ window.addStudentRecord = function() {
     const name = document.getElementById('st_name').value.trim();
     const standard = document.getElementById('st_standard').value;
     const roll = document.getElementById('st_roll').value.trim();
-    const dob = document.getElementById('st_dob').value;
+    const dob = document.getElementById('st_dob').value.trim();
     const gender = document.getElementById('st_gender').value;
     const weight = document.getElementById('st_weight').value.trim();
     const height = document.getElementById('st_height').value.trim();
@@ -582,14 +589,14 @@ window.addStudentRecord = function() {
     const phone = document.getElementById('st_phone').value.trim();
     const address = document.getElementById('st_address').value.trim();
 
-    if (!gr || !uid || !password || !name || !roll || !phone) {
-        alert('Please fill mandatory fields (GR, UID, Password, Name, Roll, Phone).');
+    if (!gr || !uid || !password || !name || !roll || !dob || !phone) {
+        alert('Please fill all mandatory fields (GR, UID, Password, Name, Roll, DOB, Phone).');
         return;
     }
 
     const list = getStudents();
     list.push({
-        gr, uid, password, email, name, standard, roll, dob, gender, weight, height,
+        gr, uid, password, email, name, standard, roll, dob: formatToDDMMYYYY(dob), gender, weight, height,
         blood, aadhaar, father, fa_aadhaar, mother, mo_aadhaar, phone, address,
         documents: {}
     });
@@ -619,9 +626,7 @@ window.filterStudents = function() {
     });
 };
 
-// ==========================================================================
-// 6. GALLERY & STUDENT-SPECIFIC DOCUMENT VAULT
-// ==========================================================================
+// 5. Document Vault Gallery
 function populateVaultStudentDropdown() {
     const sel = document.getElementById('vault-student-selector');
     const students = getStudents();
@@ -647,7 +652,6 @@ window.loadStudentVaultDocs = function() {
         return;
     }
 
-    // Left Showcase
     document.getElementById('showcase-st-name').innerText = st.name;
     document.getElementById('showcase-st-gr').innerText = `GR: ${st.gr}`;
     document.getElementById('showcase-st-uid').innerText = `UID: ${st.uid}`;
@@ -657,7 +661,6 @@ window.loadStudentVaultDocs = function() {
     const docTypes = ['photo', 'birth', 'aadhaar', 'income', 'caste', 'parents'];
     let verifiedCount = 0;
 
-    // Profile photo showcase
     const photoBox = document.getElementById('showcase-photo-box');
     if (docs['photo'] && docs['photo'].data) {
         photoBox.innerHTML = `<img src="${docs['photo'].data}" alt="${st.name}">`;
@@ -820,71 +823,109 @@ window.downloadDoc = function(docType) {
 };
 
 // ==========================================================================
-// 7. EDITABLE TIMETABLE ENGINE (Std 9A, 9B, 10A, 10B, 11-Com, 12-Com)
+// 6. EDITABLE TIMETABLE & TIMINGS (Subjects & Times)
 // ==========================================================================
 const defaultTimetables = {
-    "Grade 9-A": [
-        { day: "Monday", p1: "Mathematics", p2: "Science", p3: "English", p4: "Social Sci", p5: "Gujarati" },
-        { day: "Tuesday", p1: "Science", p2: "Mathematics", p3: "Gujarati", p4: "Physical Edu", p5: "Computer" },
-        { day: "Wednesday", p1: "English", p2: "Social Sci", p3: "Mathematics", p4: "Science", p5: "Art / Drawing" },
-        { day: "Thursday", p1: "Mathematics", p2: "Science", p3: "Gujarati", p4: "English", p5: "Library" },
-        { day: "Friday", p1: "Social Sci", p2: "Science", p3: "Mathematics", p4: "Hindi", p5: "Sanskrit" },
-        { day: "Saturday", p1: "Unit Evaluation", p2: "Weekly Test", p3: "Sports", p4: "Activity", p5: "Assembly" }
-    ],
-    "Grade 9-B": [
-        { day: "Monday", p1: "Science", p2: "Mathematics", p3: "English", p4: "Gujarati", p5: "Social Sci" },
-        { day: "Tuesday", p1: "Mathematics", p2: "Science", p3: "Computer", p4: "Gujarati", p5: "Physical Edu" },
-        { day: "Wednesday", p1: "Social Sci", p2: "English", p3: "Science", p4: "Mathematics", p5: "Library" },
-        { day: "Thursday", p1: "Gujarati", p2: "Mathematics", p3: "Science", p4: "English", p5: "Sports" },
-        { day: "Friday", p1: "Hindi", p2: "Social Sci", p3: "Mathematics", p4: "Science", p5: "Drawing" },
-        { day: "Saturday", p1: "Weekly Test", p2: "Unit Evaluation", p3: "Sports", p4: "Activity", p5: "Assembly" }
-    ],
-    "Grade 10-A": [
-        { day: "Monday", p1: "Mathematics", p2: "Science", p3: "English", p4: "Social Sci", p5: "Gujarati" },
-        { day: "Tuesday", p1: "Science", p2: "Mathematics", p3: "Gujarati", p4: "Computer", p5: "Social Sci" },
-        { day: "Wednesday", p1: "Social Sci", p2: "Mathematics", p3: "Science", p4: "English", p5: "Lab Practice" },
-        { day: "Thursday", p1: "Mathematics", p2: "Science", p3: "English", p4: "Gujarati", p5: "Library" },
-        { day: "Friday", p1: "Board Prep", p2: "Science", p3: "Mathematics", p4: "Social Sci", p5: "Hindi" },
-        { day: "Saturday", p1: "Mock Test", p2: "Weekly Exam", p3: "Paper Solution", p4: "Sports", p5: "Assembly" }
-    ],
-    "Grade 10-B": [
-        { day: "Monday", p1: "Science", p2: "Mathematics", p3: "Social Sci", p4: "English", p5: "Gujarati" },
-        { day: "Tuesday", p1: "Mathematics", p2: "Science", p3: "Social Sci", p4: "Gujarati", p5: "Computer" },
-        { day: "Wednesday", p1: "English", p2: "Social Sci", p3: "Mathematics", p4: "Science", p5: "Lab Practice" },
-        { day: "Thursday", p1: "Science", p2: "Mathematics", p3: "Gujarati", p4: "English", p5: "Library" },
-        { day: "Friday", p1: "Social Sci", p2: "Science", p3: "Board Prep", p4: "Hindi", p5: "Mathematics" },
-        { day: "Saturday", p1: "Mock Test", p2: "Weekly Exam", p3: "Paper Solution", p4: "Sports", p5: "Assembly" }
-    ],
-    "Grade 11-Commerce": [
-        { day: "Monday", p1: "Accountancy", p2: "B.A. (Org)", p3: "English", p4: "Economics", p5: "Statistics" },
-        { day: "Tuesday", p1: "Statistics", p2: "Accountancy", p3: "Economics", p4: "English", p5: "Computer" },
-        { day: "Wednesday", p1: "Economics", p2: "Statistics", p3: "Accountancy", p4: "B.A. (Org)", p5: "SPCC" },
-        { day: "Thursday", p1: "Accountancy", p2: "B.A. (Org)", p3: "Statistics", p4: "Gujarati", p5: "Library" },
-        { day: "Friday", p1: "Statistics", p2: "Accountancy", p3: "Economics", p4: "SPCC", p5: "Career Guiding" },
-        { day: "Saturday", p1: "Account Test", p2: "Stats Test", p3: "Ledger Practical", p4: "Sports", p5: "Assembly" }
-    ],
-    "Grade 12-Commerce": [
-        { day: "Monday", p1: "Accountancy", p2: "Statistics", p3: "B.A. (Org)", p4: "Economics", p5: "English" },
-        { day: "Tuesday", p1: "Statistics", p2: "Accountancy", p3: "Economics", p4: "B.A. (Org)", p5: "Computer" },
-        { day: "Wednesday", p1: "Accountancy", p2: "Statistics", p3: "English", p4: "SPCC", p5: "Board Audit" },
-        { day: "Thursday", p1: "B.A. (Org)", p2: "Accountancy", p3: "Statistics", p4: "Economics", p5: "Library" },
-        { day: "Friday", p1: "Economics", p2: "Accountancy", p3: "Statistics", p4: "SPCC", p5: "Commerce Lab" },
-        { day: "Saturday", p1: "Board Mock Exam", p2: "Accounts Evaluation", p3: "Doubt Solving", p4: "Sports", p5: "Assembly" }
-    ]
+    timings: {
+        p1: "08:00 - 08:45",
+        p2: "08:45 - 09:30",
+        p3: "09:30 - 10:15",
+        breakTime: "10:15 - 10:45",
+        p4: "10:45 - 11:30",
+        p5: "11:30 - 12:15"
+    },
+    schedules: {
+        "Grade 9-A": [
+            { day: "Monday", p1: "Mathematics", p2: "Science", p3: "English", p4: "Social Sci", p5: "Gujarati" },
+            { day: "Tuesday", p1: "Science", p2: "Mathematics", p3: "Gujarati", p4: "Physical Edu", p5: "Computer" },
+            { day: "Wednesday", p1: "English", p2: "Social Sci", p3: "Mathematics", p4: "Science", p5: "Art / Drawing" },
+            { day: "Thursday", p1: "Mathematics", p2: "Science", p3: "Gujarati", p4: "English", p5: "Library" },
+            { day: "Friday", p1: "Social Sci", p2: "Science", p3: "Mathematics", p4: "Hindi", p5: "Sanskrit" },
+            { day: "Saturday", p1: "Unit Evaluation", p2: "Weekly Test", p3: "Sports", p4: "Activity", p5: "Assembly" }
+        ],
+        "Grade 9-B": [
+            { day: "Monday", p1: "Science", p2: "Mathematics", p3: "English", p4: "Gujarati", p5: "Social Sci" },
+            { day: "Tuesday", p1: "Mathematics", p2: "Science", p3: "Computer", p4: "Gujarati", p5: "Physical Edu" },
+            { day: "Wednesday", p1: "Social Sci", p2: "English", p3: "Science", p4: "Mathematics", p5: "Library" },
+            { day: "Thursday", p1: "Gujarati", p2: "Mathematics", p3: "Science", p4: "English", p5: "Sports" },
+            { day: "Friday", p1: "Hindi", p2: "Social Sci", p3: "Mathematics", p4: "Science", p5: "Drawing" },
+            { day: "Saturday", p1: "Weekly Test", p2: "Unit Evaluation", p3: "Sports", p4: "Activity", p5: "Assembly" }
+        ],
+        "Grade 10-A": [
+            { day: "Monday", p1: "Mathematics", p2: "Science", p3: "English", p4: "Social Sci", p5: "Gujarati" },
+            { day: "Tuesday", p1: "Science", p2: "Mathematics", p3: "Gujarati", p4: "Computer", p5: "Social Sci" },
+            { day: "Wednesday", p1: "Social Sci", p2: "Mathematics", p3: "Science", p4: "English", p5: "Lab Practice" },
+            { day: "Thursday", p1: "Mathematics", p2: "Science", p3: "English", p4: "Gujarati", p5: "Library" },
+            { day: "Friday", p1: "Board Prep", p2: "Science", p3: "Mathematics", p4: "Social Sci", p5: "Hindi" },
+            { day: "Saturday", p1: "Mock Test", p2: "Weekly Exam", p3: "Paper Solution", p4: "Sports", p5: "Assembly" }
+        ],
+        "Grade 10-B": [
+            { day: "Monday", p1: "Science", p2: "Mathematics", p3: "Social Sci", p4: "English", p5: "Gujarati" },
+            { day: "Tuesday", p1: "Mathematics", p2: "Science", p3: "Social Sci", p4: "Gujarati", p5: "Computer" },
+            { day: "Wednesday", p1: "English", p2: "Social Sci", p3: "Mathematics", p4: "Science", p5: "Lab Practice" },
+            { day: "Thursday", p1: "Science", p2: "Mathematics", p3: "Gujarati", p4: "English", p5: "Library" },
+            { day: "Friday", p1: "Social Sci", p2: "Science", p3: "Board Prep", p4: "Hindi", p5: "Mathematics" },
+            { day: "Saturday", p1: "Mock Test", p2: "Weekly Exam", p3: "Paper Solution", p4: "Sports", p5: "Assembly" }
+        ],
+        "Grade 11-Commerce": [
+            { day: "Monday", p1: "Accountancy", p2: "B.A. (Org)", p3: "English", p4: "Economics", p5: "Statistics" },
+            { day: "Tuesday", p1: "Statistics", p2: "Accountancy", p3: "Economics", p4: "English", p5: "Computer" },
+            { day: "Wednesday", p1: "Economics", p2: "Statistics", p3: "Accountancy", p4: "B.A. (Org)", p5: "SPCC" },
+            { day: "Thursday", p1: "Accountancy", p2: "B.A. (Org)", p3: "Statistics", p4: "Gujarati", p5: "Library" },
+            { day: "Friday", p1: "Statistics", p2: "Accountancy", p3: "Economics", p4: "SPCC", p5: "Career Guiding" },
+            { day: "Saturday", p1: "Account Test", p2: "Stats Test", p3: "Ledger Practical", p4: "Sports", p5: "Assembly" }
+        ],
+        "Grade 12-Commerce": [
+            { day: "Monday", p1: "Accountancy", p2: "Statistics", p3: "B.A. (Org)", p4: "Economics", p5: "English" },
+            { day: "Tuesday", p1: "Statistics", p2: "Accountancy", p3: "Economics", p4: "B.A. (Org)", p5: "Computer" },
+            { day: "Wednesday", p1: "Accountancy", p2: "Statistics", p3: "English", p4: "SPCC", p5: "Board Audit" },
+            { day: "Thursday", p1: "B.A. (Org)", p2: "Accountancy", p3: "Statistics", p4: "Economics", p5: "Library" },
+            { day: "Friday", p1: "Economics", p2: "Accountancy", p3: "Statistics", p4: "SPCC", p5: "Commerce Lab" },
+            { day: "Saturday", p1: "Board Mock Exam", p2: "Accounts Evaluation", p3: "Doubt Solving", p4: "Sports", p5: "Assembly" }
+        ]
+    }
 };
 
-function getAllTimetables() {
-    const saved = localStorage.getItem('sav_all_timetables');
+function getTimetableData() {
+    const saved = localStorage.getItem('sav_app_timetables_v2');
     return saved ? JSON.parse(saved) : defaultTimetables;
 }
 
 window.loadTimetable = function() {
     const std = document.getElementById('tt-standard-selector').value;
-    const ttData = getAllTimetables()[std] || defaultTimetables[std];
-    const tbody = document.getElementById('timetable-body');
-    tbody.innerHTML = '';
+    const ttData = getTimetableData();
+    const timings = ttData.timings || defaultTimetables.timings;
+    const schedule = (ttData.schedules && ttData.schedules[std]) ? ttData.schedules[std] : defaultTimetables.schedules[std];
 
-    ttData.forEach((row, rIdx) => {
+    const thead = document.getElementById('timetable-header');
+    const tbody = document.getElementById('timetable-body');
+
+    // Header Rendering
+    if (!isTimetableEditing) {
+        thead.innerHTML = `<tr>
+            <th>Day</th>
+            <th>Period 1<br><small>${timings.p1}</small></th>
+            <th>Period 2<br><small>${timings.p2}</small></th>
+            <th>Period 3<br><small>${timings.p3}</small></th>
+            <th>Break<br><small>${timings.breakTime}</small></th>
+            <th>Period 4<br><small>${timings.p4}</small></th>
+            <th>Period 5<br><small>${timings.p5}</small></th>
+        </tr>`;
+    } else {
+        thead.innerHTML = `<tr>
+            <th>Day</th>
+            <th>Period 1<br><input type="text" class="tt-time-input" id="time-p1" value="${timings.p1}"></th>
+            <th>Period 2<br><input type="text" class="tt-time-input" id="time-p2" value="${timings.p2}"></th>
+            <th>Period 3<br><input type="text" class="tt-time-input" id="time-p3" value="${timings.p3}"></th>
+            <th>Break<br><input type="text" class="tt-time-input" id="time-break" value="${timings.breakTime}"></th>
+            <th>Period 4<br><input type="text" class="tt-time-input" id="time-p4" value="${timings.p4}"></th>
+            <th>Period 5<br><input type="text" class="tt-time-input" id="time-p5" value="${timings.p5}"></th>
+        </tr>`;
+    }
+
+    // Body Rendering
+    tbody.innerHTML = '';
+    schedule.forEach((row, rIdx) => {
         if (!isTimetableEditing) {
             tbody.innerHTML += `<tr>
                 <td><strong>${row.day}</strong></td>
@@ -915,17 +956,27 @@ window.toggleTimetableEdit = function() {
 
     if (!isTimetableEditing) {
         isTimetableEditing = true;
-        btn.innerText = "Save Timetable Changes";
+        btn.innerText = "Save Timetable & Timings";
         btn.className = "btn-3d btn-primary btn-sm admin-only-btn";
         window.loadTimetable();
     } else {
-        // Collect and save updated values
-        const allTT = getAllTimetables();
-        const updatedStdTT = [];
-        const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const fullData = getTimetableData();
 
+        // Update Timings
+        fullData.timings = {
+            p1: document.getElementById('time-p1').value.trim(),
+            p2: document.getElementById('time-p2').value.trim(),
+            p3: document.getElementById('time-p3').value.trim(),
+            breakTime: document.getElementById('time-break').value.trim(),
+            p4: document.getElementById('time-p4').value.trim(),
+            p5: document.getElementById('time-p5').value.trim()
+        };
+
+        // Update Schedule for standard
+        const updatedSchedule = [];
+        const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         days.forEach((day, rIdx) => {
-            updatedStdTT.push({
+            updatedSchedule.push({
                 day: day,
                 p1: document.getElementById(`tt-${rIdx}-p1`).value.trim(),
                 p2: document.getElementById(`tt-${rIdx}-p2`).value.trim(),
@@ -935,20 +986,20 @@ window.toggleTimetableEdit = function() {
             });
         });
 
-        allTT[std] = updatedStdTT;
-        localStorage.setItem('sav_all_timetables', JSON.stringify(allTT));
+        if (!fullData.schedules) fullData.schedules = {};
+        fullData.schedules[std] = updatedSchedule;
+
+        localStorage.setItem('sav_app_timetables_v2', JSON.stringify(fullData));
 
         isTimetableEditing = false;
-        btn.innerText = "Edit Timetable";
+        btn.innerText = "Edit Timetable & Timings";
         btn.className = "btn-3d btn-primary btn-sm admin-only-btn";
         window.loadTimetable();
-        alert(`Timetable for ${std} successfully updated!`);
+        alert(`Timetable and Timings for ${std} successfully saved!`);
     }
 };
 
-// ==========================================================================
-// 8. HOLIDAY CALENDAR (WITH ADD & DELETE)
-// ==========================================================================
+// 7. Holidays (Add & Delete)
 const defaultHolidays = [
     { id: 1, name: "Gandhi Jayanti", date: "02/10/2026", type: "National Holiday" },
     { id: 2, name: "Navratri Vacation", date: "18/10/2026", type: "State Festival" },
@@ -968,9 +1019,7 @@ function loadHolidays() {
     if (homeList) homeList.innerHTML = '';
 
     const list = getHolidays();
-
     list.forEach(h => {
-        const formattedDate = formatToDDMMYYYY(h.date);
         const delBtn = currentRole === 'school'
             ? `<button class="btn-3d btn-danger btn-sm" onclick="window.deleteHoliday(${h.id})">Delete</button>`
             : '';
@@ -979,7 +1028,7 @@ function loadHolidays() {
             container.innerHTML += `<div class="holiday-card-3d">
                 <div>
                     <h4>${h.name}</h4>
-                    <div class="notice-meta">Date: ${formattedDate}</div>
+                    <div class="notice-meta">Date: ${formatToDDMMYYYY(h.date)}</div>
                     <span class="badge-role">${h.type}</span>
                 </div>
                 <div class="card-item-footer">
@@ -989,7 +1038,7 @@ function loadHolidays() {
             </div>`;
         }
         if (homeList) {
-            homeList.innerHTML += `<li><strong>${h.name}</strong> <span style="color:#64748b;">(${formattedDate})</span></li>`;
+            homeList.innerHTML += `<li><strong>${h.name}</strong> <span style="color:#64748b;">(${formatToDDMMYYYY(h.date)})</span></li>`;
         }
     });
 }
@@ -1000,11 +1049,11 @@ window.toggleHolidayForm = function() {
 
 window.addHolidayRecord = function() {
     const name = document.getElementById('hld-name').value.trim();
-    const rawDate = document.getElementById('hld-date').value;
+    const date = document.getElementById('hld-date').value.trim();
     const type = document.getElementById('hld-type').value;
 
-    if (!name || !rawDate) {
-        alert('Please fill Holiday Name and Date.');
+    if (!name || !date) {
+        alert('Please fill Holiday Name and Date (DD/MM/YYYY).');
         return;
     }
 
@@ -1012,7 +1061,7 @@ window.addHolidayRecord = function() {
     list.push({
         id: Date.now(),
         name,
-        date: formatToDDMMYYYY(rawDate),
+        date: formatToDDMMYYYY(date),
         type
     });
     localStorage.setItem('sav_enterprise_holidays', JSON.stringify(list));
@@ -1024,17 +1073,14 @@ window.addHolidayRecord = function() {
 };
 
 window.deleteHoliday = function(id) {
-    if (confirm('Are you sure you want to remove this holiday from the academic calendar?')) {
-        let list = getHolidays();
-        list = list.filter(h => h.id !== id);
+    if (confirm('Are you sure you want to delete this holiday?')) {
+        let list = getHolidays().filter(h => h.id !== id);
         localStorage.setItem('sav_enterprise_holidays', JSON.stringify(list));
         loadHolidays();
     }
 };
 
-// ==========================================================================
-// 9. GOVERNMENT CIRCULARS (WITH ADD & DELETE)
-// ==========================================================================
+// 8. Govt Circulars (Add & Delete)
 const defaultCircs = [
     { id: 101, num: "GSEB/PARI/2026/842", title: "Commerce Assessment & Accountancy Norms", date: "15/09/2026" },
     { id: 102, num: "EDU-GUJ/STAT/1048", title: "Mandatory Digital Enrollment of Secondary Students", date: "10/09/2026" }
@@ -1052,7 +1098,6 @@ function loadCirculars() {
     container.innerHTML = '';
 
     list.forEach(c => {
-        const formattedDate = formatToDDMMYYYY(c.date);
         const delBtn = currentRole === 'school'
             ? `<button class="btn-3d btn-danger btn-sm" onclick="window.deleteCircular(${c.id})">Delete</button>`
             : '';
@@ -1060,7 +1105,7 @@ function loadCirculars() {
         container.innerHTML += `<div class="circular-item-3d">
             <div>
                 <h4>${c.title}</h4>
-                <div class="circular-meta">Circular Ref: <code>${c.num}</code> | Date: ${formattedDate}</div>
+                <div class="circular-meta">Circular Ref: <code>${c.num}</code> | Date: ${formatToDDMMYYYY(c.date)}</div>
             </div>
             <div class="card-item-footer">
                 <button class="btn-3d btn-secondary btn-sm" onclick="alert('Digital Circular Archival Verified.')">Download Verified Order</button>
@@ -1077,7 +1122,7 @@ window.toggleCircForm = function() {
 window.publishCircular = function() {
     const num = document.getElementById('circ-num').value.trim();
     const title = document.getElementById('circ-title').value.trim();
-    const rawDate = document.getElementById('circ-date').value;
+    const date = document.getElementById('circ-date').value.trim();
     if (!num || !title) return;
 
     const list = getCirculars();
@@ -1085,28 +1130,26 @@ window.publishCircular = function() {
         id: Date.now(),
         num,
         title,
-        date: rawDate ? formatToDDMMYYYY(rawDate) : formatToDDMMYYYY(new Date().toISOString().split('T')[0])
+        date: date ? formatToDDMMYYYY(date) : formatToDDMMYYYY(new Date().toISOString().split('T')[0])
     });
     localStorage.setItem('sav_enterprise_circs', JSON.stringify(list));
 
     document.getElementById('circ-num').value = '';
     document.getElementById('circ-title').value = '';
+    document.getElementById('circ-date').value = '';
     window.toggleCircForm();
     loadCirculars();
 };
 
 window.deleteCircular = function(id) {
-    if (confirm('Confirm permanent deletion of this archived statutory circular?')) {
-        let list = getCirculars();
-        list = list.filter(c => c.id !== id);
+    if (confirm('Confirm deletion of this circular record?')) {
+        let list = getCirculars().filter(c => c.id !== id);
         localStorage.setItem('sav_enterprise_circs', JSON.stringify(list));
         loadCirculars();
     }
 };
 
-// ==========================================================================
-// 10. NOTICES & ATTENDANCE
-// ==========================================================================
+// 9. Notices & Attendance
 const defaultNotices = [
     { title: "Quarterly Examination Schedule Published", date: "20/09/2026", body: "Detailed subject timetables have been pinned to the board. Students must clear library dues." },
     { title: "Parent-Teacher Institutional Conference", date: "18/09/2026", body: "The mandatory PTM for Standards 9, 10 and Commerce is scheduled for Saturday at 09:30 AM." }
@@ -1163,7 +1206,7 @@ window.loadAttendanceRoster = function() {
     const std = document.getElementById('att-standard-filter').value;
     const dateInput = document.getElementById('att-date');
     if (!dateInput.value) {
-        dateInput.value = new Date().toISOString().split('T')[0];
+        dateInput.value = formatToDDMMYYYY(new Date().toISOString().split('T')[0]);
     }
 
     const list = getStudents().filter(s => s.standard === std);
@@ -1204,7 +1247,7 @@ window.togglePresence = function(idx) {
 
 window.saveAttendanceRoster = function() {
     if (currentRole !== 'school') return;
-    const selectedDate = formatToDDMMYYYY(document.getElementById('att-date').value);
+    const selectedDate = document.getElementById('att-date').value || formatToDDMMYYYY(new Date().toISOString().split('T')[0]);
     alert(`Attendance roster for ${selectedDate} submitted successfully!`);
 };
 
@@ -1213,7 +1256,6 @@ function loadHomeData() {
     loadHolidays();
 }
 
-// Admin Password Update
 window.updateAdminCredentials = function() {
     const currPass = document.getElementById('cfg-curr-pass').value.trim();
     const newId = document.getElementById('cfg-new-id').value.trim();
@@ -1239,5 +1281,5 @@ window.updateAdminCredentials = function() {
     document.getElementById('cfg-new-pass').value = '';
 };
 
-// Start in default language
+// Default setup
 window.switchLanguage('en');
