@@ -1,5 +1,6 @@
 /* ==========================================================================
    SHREE AMBICA VIDHYALAYA - ENTERPRISE MODERN LIGHT BLUE & NAVY THEME
+   Strict Logo Dimensions, SaaS Frosted Glass, Hidden Native File Inputs
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+Gujarati:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap');
@@ -7,10 +8,9 @@
 :root {
     --bg-base: #f0f7ff;
     --bg-surface: #ffffff;
-    --bg-card: rgba(255, 255, 255, 0.94);
+    --bg-card: rgba(255, 255, 255, 0.95);
     --bg-card-hover: #ffffff;
     
-    /* Perfect Contrast Sidebar Palette: Deep Midnight Navy to Sapphire */
     --sidebar-bg: linear-gradient(180deg, #0f172a 0%, #1e293b 45%, #0f274a 100%);
     --sidebar-border: rgba(255, 255, 255, 0.08);
     --sidebar-hover: rgba(56, 189, 248, 0.12);
@@ -34,7 +34,7 @@
     --shadow-3d-floating: 0 20px 35px -8px rgba(2, 132, 199, 0.18), 0 0 20px rgba(56, 189, 248, 0.18);
     --shadow-inner-inset: inset 0 2px 4px rgba(148, 163, 184, 0.15);
     
-    --radius-xl: 20px;
+    --radius-xl: 22px;
     --radius-lg: 16px;
     --radius-md: 12px;
     --transition-snappy: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
@@ -80,12 +80,114 @@ body {
     background: var(--bg-card-hover);
 }
 
-/* Modals */
+/* ==========================================================================
+   STRICT LOGO CONTROLS (PREVENTS LARGE OVERFLOW)
+   ========================================================================== */
+.school-logo-crest {
+    width: 72px !important;
+    height: 72px !important;
+    max-width: 72px !important;
+    max-height: 72px !important;
+    margin: 0 auto 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 20px !important;
+    background: #eff6ff !important;
+    padding: 10px !important;
+    border: 1.5px solid #bfdbfe !important;
+    box-shadow: 0 10px 22px rgba(2, 132, 199, 0.16) !important;
+    overflow: hidden !important;
+}
+
+.school-logo-crest img,
+#login-logo-img {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 52px !important;
+    max-height: 52px !important;
+    object-fit: contain !important;
+    display: block !important;
+}
+
+.school-logo-crest-sm {
+    width: 44px !important;
+    height: 44px !important;
+    max-width: 44px !important;
+    max-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 12px !important;
+    background: #ffffff !important;
+    padding: 6px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+    overflow: hidden !important;
+}
+
+.school-logo-crest-sm img,
+#sidebar-logo-img {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 32px !important;
+    max-height: 32px !important;
+    object-fit: contain !important;
+    display: block !important;
+}
+
+.logo-mgmt-showcase {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 10px 0;
+}
+
+.logo-preview-box {
+    width: 80px;
+    height: 80px;
+    border-radius: 18px;
+    background: #f8fafc;
+    border: 1.5px dashed #93c5fd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 8px;
+}
+
+.logo-preview-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.logo-mgmt-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* Strictly Hide Raw Native File Pickers */
+.file-input-hidden,
+input[type="file"].file-input-hidden,
+.gallery-item-card input[type="file"],
+.student-profile-showcase input[type="file"] {
+    display: none !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    z-index: -10 !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* ==========================================================================
+   AUTHENTICATION CARD & PROFESSIONAL SSO DIVIDER
+   ========================================================================== */
 .modal-backdrop {
     position: fixed;
     inset: 0;
-    background: radial-gradient(circle at center, rgba(15, 23, 42, 0.45) 0%, rgba(15, 23, 42, 0.75) 100%);
-    backdrop-filter: blur(10px);
+    background: radial-gradient(circle at center, rgba(15, 23, 42, 0.4) 0%, rgba(15, 23, 42, 0.7) 100%);
+    backdrop-filter: blur(12px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -96,43 +198,28 @@ body {
 .auth-card {
     width: 100%;
     max-width: 460px;
-    padding: 42px 34px;
+    padding: 38px 32px;
     text-align: center;
-    border-radius: 26px;
+    border-radius: 28px;
     background: #ffffff;
-    border: 1px solid rgba(186, 215, 253, 0.8);
-    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
+    border: 1px solid rgba(186, 215, 253, 0.9);
+    box-shadow: 0 30px 60px -15px rgba(15, 23, 42, 0.22);
 }
 
-.brand-badge-3d {
-    width: 66px;
-    height: 66px;
-    margin: 0 auto 18px;
-    background: var(--primary-gradient);
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    font-weight: 800;
-    color: #ffffff;
-    box-shadow: 0 12px 28px rgba(2, 132, 199, 0.35);
-}
-
-.auth-card h2 { color: #0f172a; font-weight: 800; }
-.brand-subtitle { color: var(--text-secondary); font-size: 13px; margin: 6px 0 24px; }
-.lang-selection-group { margin-bottom: 18px; text-align: left; }
+.auth-card h2 { color: #0f172a; font-weight: 800; font-size: 22px; letter-spacing: -0.4px; }
+.brand-subtitle { color: var(--text-secondary); font-size: 13px; margin: 6px 0 20px; }
+.lang-selection-group { margin-bottom: 16px; text-align: left; }
 .field-label-sm { font-size: 11px; text-transform: uppercase; letter-spacing: 0.9px; color: var(--text-muted); margin-bottom: 8px; display: block; font-weight: 700; }
 
 .lang-pill-selector, .role-segmented-control {
     display: flex;
     background: #f1f5f9;
     border: 1px solid #cbd5e1;
-    padding: 5px;
-    border-radius: 14px;
-    gap: 6px;
+    padding: 4px;
+    border-radius: 12px;
+    gap: 4px;
     box-shadow: var(--shadow-inner-inset);
-    margin-bottom: 22px;
+    margin-bottom: 18px;
 }
 
 .lang-tab, .role-tab {
@@ -140,10 +227,10 @@ body {
     background: transparent;
     border: none;
     color: var(--text-secondary);
-    padding: 10px 0;
-    font-size: 13px;
+    padding: 9px 0;
+    font-size: 12px;
     font-weight: 700;
-    border-radius: 10px;
+    border-radius: 9px;
     cursor: pointer;
     transition: var(--transition-snappy);
 }
@@ -152,6 +239,38 @@ body {
     background: var(--primary-gradient);
     color: #ffffff;
     box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+}
+
+/* Professional SSO Divider */
+.auth-divider-pro {
+    display: flex;
+    align-items: center;
+    margin: 22px 0 16px;
+    width: 100%;
+}
+
+.divider-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #cbd5e1, #cbd5e1);
+}
+
+.divider-line:last-child {
+    background: linear-gradient(90deg, #cbd5e1, #cbd5e1, transparent);
+}
+
+.divider-badge {
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    color: #64748b;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    margin: 0 10px;
+    text-transform: uppercase;
+    white-space: nowrap;
 }
 
 /* Inputs & Buttons */
@@ -225,10 +344,7 @@ body {
     border: 1px solid rgba(239, 68, 68, 0.4); 
     color: #fca5a5; 
 }
-.btn-logout:hover { 
-    background: rgba(239, 68, 68, 0.28); 
-    border-color: rgba(239, 68, 68, 0.6);
-}
+.btn-logout:hover { background: rgba(239, 68, 68, 0.28); }
 
 .btn-google-premium {
     width: 100%;
@@ -239,24 +355,22 @@ body {
     background: #ffffff;
     border: 1.5px solid #cbd5e1;
     border-radius: 14px;
-    padding: 13px 20px;
+    padding: 12px 18px;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     transition: var(--transition-snappy);
 }
 .btn-google-premium:hover { 
     transform: translateY(-2px); 
     border-color: #4285f4; 
-    box-shadow: 0 8px 20px rgba(66, 133, 244, 0.2); 
+    box-shadow: 0 8px 22px rgba(66, 133, 244, 0.2); 
 }
 .google-btn-text { color: #0f172a; font-size: 13px; font-weight: 700; }
 
 .btn-full { width: 100%; }
 .btn-sm { padding: 7px 12px; font-size: 12px; border-radius: 8px; }
 
-/* ==========================================================================
-   UPGRADED SIDEBAR: MIDNIGHT NAVY & SAPPHIRE GLOW
-   ========================================================================== */
+/* Sidebar */
 .enterprise-app { display: flex; min-height: 100vh; }
 
 .sidebar-3d { 
@@ -264,7 +378,7 @@ body {
     background: var(--sidebar-bg); 
     display: flex; 
     flex-direction: column; 
-    padding: 26px 18px; 
+    padding: 24px 16px; 
     flex-shrink: 0; 
     border-right: 1px solid var(--sidebar-border);
     box-shadow: 10px 0 35px rgba(15, 23, 42, 0.12);
@@ -273,25 +387,12 @@ body {
 .sidebar-brand { 
     display: flex; 
     align-items: center; 
-    gap: 14px; 
-    padding-bottom: 24px; 
+    gap: 12px; 
+    padding-bottom: 20px; 
     border-bottom: 1px solid var(--sidebar-border); 
-    margin-bottom: 22px; 
+    margin-bottom: 20px; 
 }
-.brand-mini-badge { 
-    width: 44px; 
-    height: 44px; 
-    background: var(--primary-gradient); 
-    border-radius: 14px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    font-weight: 800; 
-    font-size: 16px; 
-    color: #ffffff; 
-    box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4);
-}
-.brand-titles h3 { font-size: 16px; font-weight: 800; color: #f8fafc; letter-spacing: -0.3px; }
+.brand-titles h3 { font-size: 15px; font-weight: 800; color: #f8fafc; letter-spacing: -0.3px; line-height: 1.2; }
 .version-tag { font-size: 11px; color: var(--accent-cyan); font-weight: 700; }
 
 .nav-menu { display: flex; flex-direction: column; gap: 6px; flex: 1; overflow-y: auto; }
@@ -340,19 +441,6 @@ body {
     background: #ffffff;
 }
 .header-breadcrumb { color: #0f172a; }
-.cloud-indicator { 
-    font-size: 12px; 
-    color: #0369a1; 
-    display: inline-flex; 
-    align-items: center; 
-    gap: 8px; 
-    background: #e0f2fe; 
-    padding: 6px 14px; 
-    border-radius: 20px; 
-    border: 1px solid #bae6fd; 
-    margin-right: 14px; 
-}
-.cloud-dot { width: 8px; height: 8px; border-radius: 50%; background: #0284c7; }
 .lang-toggle-btn { 
     background: #f1f5f9; 
     border: 1px solid #cbd5e1; 
@@ -369,7 +457,7 @@ body {
 .view-panel.active { display: block; }
 @keyframes panelSlideUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Home Overview Hero */
+/* Home Overview & Hero */
 .welcome-hero-card { 
     padding: 40px; 
     display: flex; 
@@ -397,6 +485,52 @@ body {
 }
 .metric-number { font-size: 28px; font-weight: 800; color: #0284c7; display: block; }
 .metric-label { font-size: 11px; color: var(--text-muted); font-weight: 700; margin-top: 4px; display: block; }
+
+/* Bar Chart Analytics */
+.chart-analytics-card { margin-bottom: 28px; }
+.bar-chart-container {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    height: 220px;
+    padding: 24px 10px 10px;
+    background: #f8fafc;
+    border-radius: var(--radius-md);
+    border: 1.5px solid #e2e8f0;
+    margin-top: 14px;
+}
+
+.chart-bar-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    height: 100%;
+    justify-content: flex-end;
+    width: 65px;
+}
+
+.chart-bar-track {
+    width: 32px;
+    height: 140px;
+    background: #e2e8f0;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+}
+
+.chart-bar-fill {
+    width: 100%;
+    background: var(--primary-gradient);
+    border-radius: 8px;
+    transition: height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 -2px 8px rgba(2, 132, 199, 0.3);
+}
+
+.chart-bar-percent { font-size: 11px; font-weight: 800; color: #0284c7; }
+.chart-bar-label { font-size: 11px; font-weight: 700; color: #475569; white-space: nowrap; }
 
 .dashboard-grid-3d { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
 .summary-card { padding: 26px; background: #ffffff; }
@@ -452,6 +586,42 @@ body {
     color: #334155;
 }
 .data-table-3d tr:hover td { background: #f8fafc; }
+
+/* 1-Click P / A Toggle */
+.attendance-bulk-bar { display: flex; gap: 10px; margin-bottom: 16px; }
+
+.pa-toggle-group {
+    display: inline-flex;
+    background: #f1f5f9;
+    border-radius: 8px;
+    padding: 2px;
+    gap: 3px;
+    border: 1px solid #cbd5e1;
+}
+
+.pa-btn {
+    border: none;
+    padding: 6px 14px;
+    font-size: 11px;
+    font-weight: 800;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: var(--transition-snappy);
+    background: transparent;
+    color: var(--text-muted);
+}
+
+.pa-btn.active-p {
+    background: #10b981;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4);
+}
+
+.pa-btn.active-a {
+    background: #ef4444;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
+}
 
 /* Document Vault Gallery */
 .vault-gallery-wrapper {
@@ -545,7 +715,7 @@ body {
 
 .gallery-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
 
-/* Timetable Controls */
+/* Timetable */
 .tt-editable-input {
     width: 100%;
     min-width: 90px;
