@@ -19,7 +19,6 @@
 
     --border-glass: rgba(255, 255, 255, 0.08);
     --border-highlight: rgba(255, 255, 255, 0.18);
-    --glow-blue: 0 0 25px rgba(37, 99, 235, 0.35);
 
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
@@ -75,7 +74,7 @@ body {
     box-shadow: var(--shadow-3d-floating);
 }
 
-/* Modals */
+/* Modal */
 .modal-backdrop {
     position: fixed;
     inset: 0;
@@ -214,7 +213,7 @@ body {
 .btn-full { width: 100%; }
 .btn-sm { padding: 7px 12px; font-size: 12px; border-radius: 8px; }
 
-/* Dashboard Shell */
+/* Dashboard Layout */
 .enterprise-app { display: flex; min-height: 100vh; }
 .sidebar-3d { width: 290px; background: var(--sidebar-bg); border-right: 1px solid var(--border-glass); display: flex; flex-direction: column; padding: 26px 18px; flex-shrink: 0; }
 .sidebar-brand { display: flex; align-items: center; gap: 14px; padding-bottom: 24px; border-bottom: 1px solid var(--border-glass); margin-bottom: 22px; }
@@ -265,8 +264,8 @@ body {
 
 .table-container-3d { width: 100%; overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--border-glass); }
 .data-table-3d { width: 100%; border-collapse: collapse; font-size: 13px; }
-.data-table-3d th { background: #080d1a; padding: 15px 18px; text-align: left; color: var(--text-secondary); font-weight: 700; white-space: nowrap; border-bottom: 1px solid var(--border-glass); }
-.data-table-3d td { padding: 14px 18px; border-bottom: 1px solid var(--border-glass); white-space: nowrap; }
+.data-table-3d th { background: #080d1a; padding: 12px 14px; text-align: left; color: var(--text-secondary); font-weight: 700; white-space: nowrap; border-bottom: 1px solid var(--border-glass); }
+.data-table-3d td { padding: 12px 14px; border-bottom: 1px solid var(--border-glass); white-space: nowrap; }
 
 /* Interactive Gallery & Vault */
 .vault-gallery-wrapper {
@@ -354,25 +353,26 @@ body {
 /* Editable Timetable Inputs */
 .tt-editable-input {
     width: 100%;
+    min-width: 90px;
     background: rgba(15, 23, 42, 0.9);
     border: 1px solid var(--accent-blue);
     color: #fff;
-    padding: 6px 8px;
+    padding: 5px 6px;
     border-radius: 6px;
-    font-size: 12px;
+    font-size: 11px;
     text-align: center;
 }
 
 .tt-time-input {
-    width: 110px;
+    width: 90px;
     background: rgba(8, 13, 26, 0.95);
     border: 1px solid var(--accent-cyan);
     color: var(--accent-cyan);
-    padding: 4px 6px;
-    border-radius: 6px;
-    font-size: 11px;
+    padding: 3px 5px;
+    border-radius: 5px;
+    font-size: 10px;
     text-align: center;
-    margin-top: 4px;
+    margin-top: 3px;
 }
 
 .break-cell {
@@ -382,7 +382,7 @@ body {
     vertical-align: middle;
 }
 
-/* Feeds & Modals */
+/* Feeds & Cards */
 .notices-feed-grid, .holiday-roster-grid, .circulars-list-3d {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
