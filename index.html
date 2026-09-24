@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shree Ambica Vidhyalaya - Enterprise ERP Portal</title>
-    <link rel="stylesheet" href="style.css?v=65">
+    <link rel="stylesheet" href="style.css?v=70">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+Gujarati:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
@@ -15,7 +15,7 @@
 </head>
 <body class="lang-en theme-dark-enterprise">
 
-    <!-- Pre-Login Modal Card (Clean Display Only, No Public Change Option) -->
+    <!-- Pre-Login Modal Card -->
     <div id="login-modal" class="modal-backdrop">
         <div class="card-3d auth-card">
             <div class="school-brand">
@@ -84,7 +84,7 @@
                 </div>
                 <div class="brand-titles">
                     <h3>Shree Ambica Vidhyalaya</h3>
-                    <span class="version-tag">ERP v9.0</span>
+                    <span class="version-tag">ERP v9.5</span>
                 </div>
             </div>
 
@@ -94,6 +94,9 @@
                 </button>
                 <button class="nav-item" id="menu-student-link" onclick="window.navigateTo('view-student-mgmt')">
                     <span class="nav-icon">🎓</span> <span data-i18n="menuStudents">Student Admission & Registry</span>
+                </button>
+                <button class="nav-item admin-only-btn" id="menu-teacher-mgmt-link" onclick="window.navigateTo('view-teacher-mgmt')">
+                    <span class="nav-icon">👨‍🏫</span> <span>Faculty & Teacher Registry</span>
                 </button>
                 <button class="nav-item" id="menu-vault-link" onclick="window.navigateTo('view-docs-vault')">
                     <span class="nav-icon">📁</span> <span data-i18n="menuVault">Document Vault</span>
@@ -149,8 +152,8 @@
                         <h1 data-i18n="heroWelcomeTitle">Welcome to Shree Ambica Vidhyalaya</h1>
                         <p data-i18n="heroWelcomeDesc">An integrated institutional management platform supporting advanced student records, statutory compliance, and real-time daily roll checks.</p>
                         <div class="hero-quick-actions" id="admin-quick-actions">
-                            <button class="btn-3d btn-primary" onclick="window.navigateTo('view-student-mgmt')" data-i18n="quickNewAdmission">+ Enroll Student</button>
-                            <button class="btn-3d btn-secondary" onclick="window.navigateTo('view-attendance')" data-i18n="quickAttendance">Mark Attendance</button>
+                            <button class="btn-3d btn-primary staff-only-btn" onclick="window.navigateTo('view-student-mgmt')" data-i18n="quickNewAdmission">+ Enroll Student</button>
+                            <button class="btn-3d btn-secondary staff-only-btn" onclick="window.navigateTo('view-attendance')" data-i18n="quickAttendance">Mark Attendance</button>
                         </div>
                     </div>
                     <div class="hero-right">
@@ -184,15 +187,15 @@
                 </div>
             </section>
 
-            <!-- SECTION 2: STUDENT MANAGEMENT -->
+            <!-- SECTION 2: STUDENT MANAGEMENT (BOTH ADMIN & TEACHERS CAN ENROLL & EDIT) -->
             <section id="view-student-mgmt" class="view-panel">
-                <div id="admin-enrollment-card" class="card-3d content-card">
+                <div id="admin-enrollment-card" class="card-3d content-card staff-only-card">
                     <div class="card-title-row">
                         <div>
                             <h3 data-i18n="formTitleEnroll">Comprehensive Student Admission</h3>
-                            <p class="text-muted" data-i18n="formDescEnroll">Complete student demographic and academic registry</p>
+                            <p class="text-muted" data-i18n="formDescEnroll">Complete student demographic and academic registry (Admin & Teacher Authorized)</p>
                         </div>
-                        <span class="badge-role">Staff Clearance</span>
+                        <span class="badge-role">Staff Portal</span>
                     </div>
 
                     <div class="form-grid-3d">
@@ -329,6 +332,76 @@
                                 </tr>
                             </thead>
                             <tbody id="student-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2.5: TEACHER REGISTRY (ADMIN EXCLUSIVE) -->
+            <section id="view-teacher-mgmt" class="view-panel">
+                <div class="card-3d content-card">
+                    <div class="card-title-row">
+                        <div>
+                            <h3>Faculty & Teacher Registration</h3>
+                            <p class="text-muted">Create distinct teacher login credentials and assign subject designations</p>
+                        </div>
+                        <span class="badge-role">Admin Only</span>
+                    </div>
+
+                    <div class="form-grid-3d">
+                        <div class="input-wrapper">
+                            <label class="field-label">Teacher Employee Code / Login ID *</label>
+                            <input type="text" id="tch_code" class="input-field-3d" placeholder="e.g. TCH102">
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="field-label">Teacher Full Name *</label>
+                            <input type="text" id="tch_name" class="input-field-3d" placeholder="Teacher Full Name">
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="field-label">Subject Designation / Specialization *</label>
+                            <input type="text" id="tch_subject" class="input-field-3d" placeholder="e.g. Mathematics & Science">
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="field-label">Teacher Login Password *</label>
+                            <input type="text" id="tch_pass" class="input-field-3d" placeholder="Set Secure Password">
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="field-label">Contact Number</label>
+                            <input type="tel" id="tch_phone" class="input-field-3d" placeholder="10-digit Mobile" maxlength="10">
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="field-label">Official Email</label>
+                            <input type="email" id="tch_email" class="input-field-3d" placeholder="teacher@ambica.edu">
+                        </div>
+                        <div class="input-wrapper full-width-span">
+                            <button class="btn-3d btn-primary btn-full" onclick="window.addTeacherRecord()">Register Faculty & Create Teacher Login</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-3d content-card">
+                    <div class="card-title-row">
+                        <div>
+                            <h3>Active Faculty Directory</h3>
+                            <p class="text-muted">Manage all teachers, update access credentials, and review staff profiles</p>
+                        </div>
+                    </div>
+
+                    <div class="table-container-3d">
+                        <table class="data-table-3d">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Teacher Code (Login ID)</th>
+                                    <th>Teacher Full Name</th>
+                                    <th>Subject / Role</th>
+                                    <th>Login Password</th>
+                                    <th>Phone</th>
+                                    <th>Email</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teacher-table-body"></tbody>
                         </table>
                     </div>
                 </div>
@@ -481,13 +554,13 @@
                 </div>
             </section>
 
-            <!-- SECTION 4: ATTENDANCE -->
+            <!-- SECTION 4: ATTENDANCE (EVERY TEACHER CAN MARK ANY CLASS) -->
             <section id="view-attendance" class="view-panel">
                 <div class="card-3d content-card">
                     <div class="card-title-row">
                         <div>
                             <h3 data-i18n="attTitle">Daily Digital Attendance Register</h3>
-                            <p class="text-muted" data-i18n="attDesc">Instant single-click roll call with automatic toggle & bulk actions</p>
+                            <p class="text-muted" data-i18n="attDesc">Instant single-click roll call for any class with automatic toggle & bulk actions</p>
                         </div>
                         <div class="attendance-controls">
                             <input type="text" id="att-date" class="input-field-3d input-sm" placeholder="DD/MM/YYYY" maxlength="10" oninput="window.applyDateMask(this)">
@@ -654,10 +727,8 @@
                 </div>
             </section>
 
-            <!-- SECTION 9: ADMIN ONLY OFFICIAL LOGO MANAGER & CREDENTIALS SETTINGS -->
+            <!-- SECTION 9: ADMIN & FACULTY SECURITY + OFFICIAL LOGO MANAGER -->
             <section id="view-admin-settings" class="view-panel">
-                
-                <!-- OFFICIAL LOGO MANAGEMENT (STRICT ADMIN ONLY) -->
                 <div class="card-3d content-card admin-only-card" id="admin-logo-mgmt-card" style="max-width: 680px; margin: 0 auto 28px;">
                     <div class="card-title-row">
                         <div>
@@ -679,7 +750,6 @@
                     </div>
                 </div>
 
-                <!-- Account & Password Settings -->
                 <div class="card-3d content-card" style="max-width: 680px; margin: 0 auto;">
                     <div class="card-title-row">
                         <div>
@@ -779,6 +849,46 @@
         </div>
     </div>
 
+    <!-- Edit Teacher Record Modal (Admin Only) -->
+    <div id="edit-teacher-modal" class="modal-backdrop" style="display: none;">
+        <div class="card-3d modal-preview-card">
+            <div class="modal-header">
+                <h3>Edit Teacher Credentials & Profile</h3>
+                <button class="btn-3d btn-danger btn-sm" onclick="window.closeEditTeacherModal()">Close (✕)</button>
+            </div>
+            <div class="modal-body" style="text-align: left;">
+                <input type="hidden" id="edit-teacher-idx">
+                <div class="form-grid-3d">
+                    <div class="input-wrapper">
+                        <label class="field-label">Teacher Code (Login ID) *</label>
+                        <input type="text" id="edit-tch-code" class="input-field-3d">
+                    </div>
+                    <div class="input-wrapper">
+                        <label class="field-label">Teacher Full Name *</label>
+                        <input type="text" id="edit-tch-name" class="input-field-3d">
+                    </div>
+                    <div class="input-wrapper">
+                        <label class="field-label">Subject Designation</label>
+                        <input type="text" id="edit-tch-subject" class="input-field-3d">
+                    </div>
+                    <div class="input-wrapper">
+                        <label class="field-label">Login Password *</label>
+                        <input type="text" id="edit-tch-pass" class="input-field-3d">
+                    </div>
+                    <div class="input-wrapper">
+                        <label class="field-label">Phone</label>
+                        <input type="tel" id="edit-tch-phone" class="input-field-3d" maxlength="10">
+                    </div>
+                    <div class="input-wrapper">
+                        <label class="field-label">Email</label>
+                        <input type="email" id="edit-tch-email" class="input-field-3d">
+                    </div>
+                </div>
+                <button class="btn-3d btn-primary btn-full" style="margin-top: 16px;" onclick="window.saveEditedTeacherRecord()">Save Teacher Updates</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Document Modal Viewer -->
     <div id="doc-modal" class="modal-backdrop" style="display: none;">
         <div class="card-3d modal-preview-card">
@@ -790,6 +900,6 @@
         </div>
     </div>
 
-    <script src="script.js?v=65"></script>
+    <script src="script.js?v=70"></script>
 </body>
 </html>
