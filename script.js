@@ -1,6 +1,6 @@
 // ==========================================================================
 // SHREE AMBICA VIDHYALAYA - ENTERPRISE ERP ENGINE
-// Setting-Exclusive Admin Logo Management, Notice Isolation, Full ERP
+// Multi-Teacher Login System, Any Class Attendance, Faculty Admin & Student Admin
 // ==========================================================================
 
 const firebaseConfig = {
@@ -53,20 +53,149 @@ function formatToDDMMYYYY(dateString) {
     return dateString;
 }
 
-// Credentials
+// 2. Admin Credentials
 function getAdminCredentials() {
     const saved = localStorage.getItem('sav_admin_credentials');
     return saved ? JSON.parse(saved) : { id: "admin", pass: "admin123" };
 }
 
-function getTeacherCredentials() {
-    const saved = localStorage.getItem('sav_teacher_credentials');
-    return saved ? JSON.parse(saved) : { code: "TCH101", pass: "teach123", name: "Senior Faculty" };
+// 3. Dynamic Multi-Teacher Registry Storage
+const defaultTeachers = [
+    { code: "TCH101", name: "Rameshwar Sharma", subject: "Science & Physics", pass: "teach123", phone: "9876543210", email: "r.sharma@ambica.edu" },
+    { code: "TCH102", name: "Bhavik Patel", subject: "Accountancy & Commerce", pass: "teach123", phone: "9825012345", email: "b.patel@ambica.edu" },
+    { code: "TCH103", name: "Priyanka Joshi", subject: "Mathematics", pass: "teach123", phone: "9712345678", email: "p.joshi@ambica.edu" }
+];
+
+function getTeachersList() {
+    const saved = localStorage.getItem('sav_enterprise_teachers_list');
+    return saved ? JSON.parse(saved) : defaultTeachers;
 }
 
-// ==========================================================================
-// 2. SCHOOL LOGO MANAGER (Admin Settings Exclusive)
-// ==========================================================================
+function saveTeachersList(list) {
+    localStorage.setItem('sav_enterprise_teachers_list', JSON.stringify(list));
+}
+
+function loadTeachersTable() {
+    const list = getTeachersList();
+    const tbody = document.getElementById('teacher-table-body');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:#64748b; padding:20px;">No teachers registered yet.</td></tr>`;
+        return;
+    }
+
+    list.forEach((tch, idx) => {
+        tbody.innerHTML += `<tr>
+            <td><strong>${idx + 1}</strong></td>
+            <td><code>${tch.code}</code></td>
+            <td><strong>${tch.name}</strong></td>
+            <td>${tch.subject || '-'}</td>
+            <td><code>${tch.pass}</code></td>
+            <td>${tch.phone || '-'}</td>
+            <td><small>${tch.email || '-'}</small></td>
+            <td>
+                <button class="btn-3d btn-secondary btn-sm" onclick="window.openEditTeacherModal(${idx})">Edit</button>
+                <button class="btn-3d btn-danger btn-sm" onclick="window.deleteTeacherRecord(${idx})">Delete</button>
+            </td>
+        </tr>`;
+    });
+}
+
+window.addTeacherRecord = function() {
+    if (currentRole !== 'school') {
+        alert('Permission Denied: Only Master Administrator can register new faculty.');
+        return;
+    }
+
+    const code = document.getElementById('tch_code').value.trim();
+    const name = document.getElementById('tch_name').value.trim();
+    const subject = document.getElementById('tch_subject').value.trim();
+    const pass = document.getElementById('tch_pass').value.trim();
+    const phone = document.getElementById('tch_phone').value.trim();
+    const email = document.getElementById('tch_email').value.trim();
+
+    if (!code || !name || !pass) {
+        alert('Please fill Teacher Code, Full Name, and Login Password.');
+        return;
+    }
+
+    const list = getTeachersList();
+    if (list.some(t => t.code.toLowerCase() === code.toLowerCase())) {
+        alert(`A teacher with code ${code} already exists. Choose a unique code.`);
+        return;
+    }
+
+    list.push({ code, name, subject, pass, phone, email });
+    saveTeachersList(list);
+
+    document.getElementById('tch_code').value = '';
+    document.getElementById('tch_name').value = '';
+    document.getElementById('tch_subject').value = '';
+    document.getElementById('tch_pass').value = '';
+    document.getElementById('tch_phone').value = '';
+    document.getElementById('tch_email').value = '';
+
+    loadTeachersTable();
+    alert(`Teacher ${name} (ID: ${code}) registered successfully!`);
+};
+
+window.openEditTeacherModal = function(idx) {
+    const list = getTeachersList();
+    const tch = list[idx];
+    if (!tch) return;
+
+    document.getElementById('edit-teacher-idx').value = idx;
+    document.getElementById('edit-tch-code').value = tch.code;
+    document.getElementById('edit-tch-name').value = tch.name;
+    document.getElementById('edit-tch-subject').value = tch.subject || '';
+    document.getElementById('edit-tch-pass').value = tch.pass;
+    document.getElementById('edit-tch-phone').value = tch.phone || '';
+    document.getElementById('edit-tch-email').value = tch.email || '';
+
+    document.getElementById('edit-teacher-modal').style.display = 'flex';
+};
+
+window.closeEditTeacherModal = function() {
+    document.getElementById('edit-teacher-modal').style.display = 'none';
+};
+
+window.saveEditedTeacherRecord = function() {
+    const idx = parseInt(document.getElementById('edit-teacher-idx').value);
+    const list = getTeachersList();
+    if (isNaN(idx) || !list[idx]) return;
+
+    const code = document.getElementById('edit-tch-code').value.trim();
+    const name = document.getElementById('edit-tch-name').value.trim();
+    const subject = document.getElementById('edit-tch-subject').value.trim();
+    const pass = document.getElementById('edit-tch-pass').value.trim();
+    const phone = document.getElementById('edit-tch-phone').value.trim();
+    const email = document.getElementById('edit-tch-email').value.trim();
+
+    if (!code || !name || !pass) {
+        alert('Teacher Code, Name, and Password are required.');
+        return;
+    }
+
+    list[idx] = { code, name, subject, pass, phone, email };
+    saveTeachersList(list);
+
+    window.closeEditTeacherModal();
+    loadTeachersTable();
+    alert('Teacher credentials updated successfully!');
+};
+
+window.deleteTeacherRecord = function(idx) {
+    if (confirm('Are you sure you want to remove this teacher? Their login access will be permanently revoked.')) {
+        const list = getTeachersList();
+        list.splice(idx, 1);
+        saveTeachersList(list);
+        loadTeachersTable();
+    }
+};
+
+// 4. School Logo Management (Admin Settings Exclusive)
 const DEFAULT_LOGO = "logo.png";
 const FALLBACK_LOGO = "https://cdn-icons-png.flaticon.com/512/2602/2602414.png";
 
@@ -86,7 +215,6 @@ function refreshSchoolLogos() {
 }
 
 window.handleLogoUpload = function(input) {
-    // Strict Guard: Only Admin can change logo in settings
     if (currentRole !== 'school') {
         alert('Permission Denied: Only the Master Administrator can change the institutional logo.');
         return;
@@ -107,7 +235,6 @@ window.handleLogoUpload = function(input) {
 };
 
 window.removeSchoolLogo = function() {
-    // Strict Guard: Only Admin can reset logo in settings
     if (currentRole !== 'school') {
         alert('Permission Denied: Only the Master Administrator can reset the institutional logo.');
         return;
@@ -120,7 +247,7 @@ window.removeSchoolLogo = function() {
     }
 };
 
-// 3. Multilingual Dictionary
+// 5. Multilingual Translations
 const translations = {
     en: {
         appSubtitle: "Enterprise Academic & Institutional Portal",
@@ -147,7 +274,6 @@ const translations = {
         quickNewAdmission: "+ Enroll Student",
         quickAttendance: "Mark Attendance",
         statEnrolled: "Total Students",
-        statAttendance: "Average Attendance",
         homeRecentNotices: "Latest Institutional Notices",
         homeUpcomingHolidays: "Upcoming Academic Holidays",
         formTitleEnroll: "Comprehensive Student Admission",
@@ -192,7 +318,7 @@ const translations = {
         docCaste: "Caste Certificate",
         docParentsAadhaar: "Parents Proofs",
         attTitle: "Daily Digital Attendance Register",
-        attDesc: "Instant single-click roll call with automatic toggle & bulk actions",
+        attDesc: "Instant single-click roll call for any class with automatic toggle & bulk actions",
         colAttendanceStatus: "Status",
         btnSaveAttendance: "Submit Attendance Records",
         noticeTitle: "Parent & Institutional Communication Board",
@@ -280,7 +406,7 @@ const translations = {
         docCaste: "જાતિનો દાખલો",
         docParentsAadhaar: "માતા-પિતાના પુરાવા",
         attTitle: "દૈનિક ઓનલાઇન હાજરી રજિસ્ટર",
-        attDesc: "એક જ ક્લિકમાં P/A ટૉગલ વડે હાજરી પૂરો",
+        attDesc: "કોઈપણ વર્ગની એક જ ક્લિકમાં P/A ટૉગલ વડે હાજરી પૂરો",
         colAttendanceStatus: "સ્થિતિ",
         btnSaveAttendance: "હાજરી સબમિટ કરો",
         noticeTitle: "વાલી અને શાળા સંચાર બોર્ડ",
@@ -329,7 +455,7 @@ const translations = {
         formTitleEnroll: "छात्र प्रवेश फॉर्म",
         formDescEnroll: "छात्र की विस्तृत जानकारी एवं रजिस्टर",
         fldGrNo: "जी.आर. नंबर (G.R. No) *",
-        fldUid: "यू.આઈ.ડી. નંબર (યુઝરनेम) *",
+        fldUid: "यू.આઈ.ડી. નંબર (યુઝરનેમ) *",
         fldPassword: "छात्र लॉगिन पासवर्ड *",
         fldEmail: "पंजीकृत ईमेल (गूगल लॉगिन हेतु)",
         fldName: "छात्र का पूरा नाम *",
@@ -368,7 +494,7 @@ const translations = {
         docCaste: "जाति प्रमाण पत्र",
         docParentsAadhaar: "माता-पिता के दस्तावेज",
         attTitle: "दैनिक डिजिटल उपस्थिति रजिस्टर",
-        attDesc: "एक क्लिक में P/A टॉगल द्वारा उपस्थिति दर्ज करें",
+        attDesc: "किसी भी कक्षा की एक क्लिक में P/A टॉगल द्वारा उपस्थिति दर्ज करें",
         colAttendanceStatus: "स्थिति",
         btnSaveAttendance: "उपस्थिति जमा करें",
         noticeTitle: "अभिभावक एवं विद्यालय संवाद पट्ट",
@@ -415,7 +541,7 @@ window.cycleLanguage = function() {
     window.switchLanguage(next);
 };
 
-// 4. Multi-Role Management
+// 6. Multi-Role Authentication Logic
 window.setRole = function(role) {
     currentRole = role;
     document.getElementById('role-school').classList.toggle('active', role === 'school');
@@ -460,13 +586,16 @@ window.manualLogin = function() {
             alert("Invalid Administrator credentials!");
         }
     } else if (currentRole === 'teacher') {
-        const tch = getTeacherCredentials();
-        if (user === tch.code && pass === tch.pass) {
-            activeTeacherCode = tch.code;
+        // Authenticate from the dynamic teachers registry
+        const teachers = getTeachersList();
+        const matched = teachers.find(t => t.code.toLowerCase() === user.toLowerCase() && t.pass === pass);
+
+        if (matched) {
+            activeTeacherCode = matched.code;
             activeStudentStandard = null;
-            openPortal(`${tch.name} (${tch.code})`);
+            openPortal(`${matched.name} (${matched.code})`);
         } else {
-            alert("Invalid Teacher Employee Code or Password!");
+            alert("Invalid Teacher Employee Code or Password! Check with school administrator.");
         }
     } else {
         const students = getStudents();
@@ -522,16 +651,18 @@ function openPortal(name) {
     document.getElementById('user-badge').innerText = roleText;
 
     const isStaff = (currentRole === 'school' || currentRole === 'teacher');
+    const isAdmin = (currentRole === 'school');
     const ttSelector = document.getElementById('tt-standard-selector');
     const ttEditBtn = document.getElementById('btn-edit-tt');
 
     // Controls visibility
     document.querySelectorAll('.staff-only-btn').forEach(b => b.style.display = isStaff ? 'inline-flex' : 'none');
+    document.querySelectorAll('.admin-only-btn').forEach(b => b.style.display = isAdmin ? 'inline-flex' : 'none');
 
-    // STRICT GUARD: Official Logo Management card inside Settings visible ONLY to Admin
+    // Official Logo Management card inside Settings visible ONLY to Admin
     const adminLogoCard = document.getElementById('admin-logo-mgmt-card');
     if (adminLogoCard) {
-        adminLogoCard.style.display = (currentRole === 'school') ? 'block' : 'none';
+        adminLogoCard.style.display = isAdmin ? 'block' : 'none';
     }
 
     if (currentRole === 'student') {
@@ -547,6 +678,7 @@ function openPortal(name) {
         }
         if (ttEditBtn) ttEditBtn.style.display = 'none';
     } else {
+        // Both Admin and Teachers can enroll students and see actions
         document.getElementById('admin-quick-actions').style.display = 'flex';
         document.getElementById('admin-enrollment-card').style.display = 'block';
         document.getElementById('col-action-header').style.display = 'table-cell';
@@ -564,11 +696,14 @@ function openPortal(name) {
         setLblId.innerText = 'New Administrator ID *';
     } else if (currentRole === 'teacher') {
         setRoleBadge.innerText = 'Faculty Security';
-        setLblId.innerText = 'New Teacher Code *';
+        setLblId.innerText = 'Teacher Employee Code (Read-Only) *';
+        document.getElementById('cfg-new-id').value = activeTeacherCode || '';
+        document.getElementById('cfg-new-id').disabled = true;
     }
 
     refreshSchoolLogos();
     loadStudents();
+    loadTeachersTable();
     populateVaultStudentDropdown();
     loadHomeData();
     renderAttendanceChart();
@@ -602,7 +737,7 @@ window.navigateTo = function(viewId) {
     }
 };
 
-// 5. Student Management & Full Edit
+// 7. Student Management (Both Admin & Teacher Authorized)
 function getStudents() {
     const data = localStorage.getItem('sav_enterprise_students');
     return data ? JSON.parse(data) : [];
@@ -651,6 +786,11 @@ function loadStudents() {
 }
 
 window.addStudentRecord = function() {
+    if (currentRole !== 'school' && currentRole !== 'teacher') {
+        alert('Permission Denied: Only Staff members can enroll students.');
+        return;
+    }
+
     const gr = document.getElementById('gr_no').value.trim();
     const uid = document.getElementById('uid_no').value.trim();
     const password = document.getElementById('st_password').value.trim();
@@ -756,7 +896,7 @@ window.filterStudents = function() {
     });
 };
 
-// 6. Attendance Graph Analytics
+// 8. Attendance Graph Analytics
 function renderAttendanceChart() {
     const chartContainer = document.getElementById('attendance-bar-chart');
     if (!chartContainer) return;
@@ -782,7 +922,7 @@ function renderAttendanceChart() {
     });
 }
 
-// 7. Fast 1-Click P / A Attendance
+// 9. Fast 1-Click Attendance (Any Teacher can mark Any Class)
 function getAttendanceStorageKey(date, std) {
     return `sav_attendance_${date}_${std}`;
 }
@@ -866,7 +1006,7 @@ window.saveAttendanceRoster = function() {
     alert(`Attendance register for ${selectedDate} finalized and submitted!`);
 };
 
-// 8. Document Vault Gallery
+// 10. Document Vault Gallery
 function populateVaultStudentDropdown() {
     const sel = document.getElementById('vault-student-selector');
     const students = getStudents();
@@ -1099,7 +1239,7 @@ window.downloadDoc = function(docType) {
     }
 };
 
-// 9. Timetable Engine
+// 11. Timetable Engine
 const defaultTimetables = {
     timings: {
         prayer: "07:00 - 07:20",
@@ -1305,7 +1445,7 @@ window.toggleTimetableEdit = function() {
     }
 };
 
-// 10. Standard-Targeted Notices & Deletion
+// 12. Standard-Targeted Notices & Deletion
 const defaultNotices = [
     { id: 101, title: "Quarterly Examination Schedule Published", target: "ALL", date: "20/09/2026", body: "Detailed subject timetables have been pinned to the board. Students must clear library dues." },
     { id: 102, title: "Parent-Teacher Institutional Conference", target: "ALL", date: "18/09/2026", body: "The mandatory PTM for Standards 9, 10 and Commerce is scheduled for Saturday at 09:30 AM." }
@@ -1402,7 +1542,7 @@ window.deleteNotice = function(id) {
     }
 };
 
-// 11. Holidays
+// 13. Holidays
 const defaultHolidays = [
     { id: 1, name: "Gandhi Jayanti", date: "02/10/2026", type: "National Holiday" },
     { id: 2, name: "Navratri Vacation", date: "18/10/2026", type: "State Festival" },
@@ -1484,7 +1624,7 @@ window.deleteHoliday = function(id) {
     }
 };
 
-// 12. Govt Circulars
+// 14. Govt Circulars
 const defaultCircs = [
     { id: 101, num: "GSEB/PARI/2026/842", title: "Commerce Assessment & Accountancy Norms", date: "15/09/2026" },
     { id: 102, num: "EDU-GUJ/STAT/1048", title: "Mandatory Digital Enrollment of Secondary Students", date: "10/09/2026" }
@@ -1559,7 +1699,7 @@ function loadHomeData() {
     loadHolidays();
 }
 
-// 13. Security Credentials Updater
+// 15. Security Credentials Updater
 window.updateUserCredentials = function() {
     const currPass = document.getElementById('cfg-curr-pass').value.trim();
     const newId = document.getElementById('cfg-new-id').value.trim();
@@ -1578,21 +1718,27 @@ window.updateUserCredentials = function() {
         localStorage.setItem('sav_admin_credentials', JSON.stringify({ id: newId, pass: newPass }));
         alert(`Administrator ID and password successfully updated!\nNew ID: ${newId}`);
     } else if (currentRole === 'teacher') {
-        const currentCreds = getTeacherCredentials();
-        if (currPass !== currentCreds.pass) {
+        const list = getTeachersList();
+        const idx = list.findIndex(t => t.code.toLowerCase() === (activeTeacherCode || "").toLowerCase());
+        
+        if (idx === -1) {
+            alert("Teacher record not found.");
+            return;
+        }
+        if (currPass !== list[idx].pass) {
             alert("Current Teacher password is incorrect!");
             return;
         }
-        if (!newId || !newPass) {
-            alert("New Teacher Employee Code and Password are required.");
+        if (!newPass) {
+            alert("New Password is required.");
             return;
         }
-        localStorage.setItem('sav_teacher_credentials', JSON.stringify({ code: newId, pass: newPass, name: currentCreds.name }));
-        alert(`Teacher Employee Code and password successfully updated!\nNew Code: ${newId}`);
+        list[idx].pass = newPass;
+        saveTeachersList(list);
+        alert(`Password for Teacher ${list[idx].name} (${list[idx].code}) updated successfully!`);
     }
 
     document.getElementById('cfg-curr-pass').value = '';
-    document.getElementById('cfg-new-id').value = '';
     document.getElementById('cfg-new-pass').value = '';
 };
 
